@@ -1,0 +1,47 @@
+== Server SoC Hardware Requirements
+
+=== RISC-V Harts
+
+=== Clocks and Timers
+
+=== Interrupt Controllers
+
+=== IOMMU
+
+=== PCIe Subsystem Integration
+
+==== Enhanced Configuration Access Method (ECAM)
+
+==== PCIe Memory Space
+
+==== Access Control Services (ACS)
+
+==== Address Routed Transactions
+
+==== ID Routed Transactions
+
+==== Cacheability and Coherence
+
+==== Message signaled interrupts
+
+==== Precision Time Management
+
+==== Error and Event Reporting
+
+==== Vendor Specific Registers
+
+==== SoC Integrated PCIe Devices
+
+=== Reliability, Availability, and Serviceability (RAS)
+
+=== Quality of Service
+
+=== Manageability
+
+=== Debug
+
+=== Trace
+
+=== Performance Monitoring
+
+=== Security Requirements
