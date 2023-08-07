@@ -62,7 +62,7 @@ specification.
 
 The requirements in this specification use the following format:
 
-[width=90%]
+[width=100%]
 [%header, cols="5,20"]
 |===
 | ID#     ^| Requirement
