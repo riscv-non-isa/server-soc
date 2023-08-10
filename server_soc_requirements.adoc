@@ -1199,9 +1199,9 @@ following options:
              controller.
 
              * I3C as specified  by DSP0233 MCTP I3C transport binding 1.0.0.
-               cite:[DSP0233]
+                cite:[DSP0233]
              * PCIe VDM as specified by DSP0238 MCTP PCIe VDM transport
-               binding 1.2.0.cite:[DSP0238]
+               binding 1.2.0. cite:[DSP0238]
 
 2+| _PCIe VDM and I3C interface supports high bandwidth communication between
      the BMC and the management controllers in the SoC. MCTP provides a
@@ -1215,12 +1215,12 @@ following options:
              in-band and out-of-band communication with the BMC as specified in:
 
              * DSP0274 Security protocol and data model (SPDM)
-               specification 1.2.1.cite:[DSP0274]
-             * DSP0275 SPDM over MCTP binding specification 1.0.1.cite:[DSP0275]
+               specification 1.2.1. cite:[DSP0274]
+             * DSP0275 SPDM over MCTP binding specification 1.0.1. cite:[DSP0275]
              * DSP0276 Secured messages using SPDM over
-               MCTP binding specification 1.1.0.cite:[DSP0276]
+               MCTP binding specification 1.1.0. cite:[DSP0276]
              * DSP0277 Secured messages using SPDM
-               specification 1.1.0.cite:[DSP0277]
+               specification 1.1.0. cite:[DSP0277]
 
 2+| _SPDM authentication protocols support establishing a trust relationship
      between the in-band and out-of-band manageability agents in the SoC and the
@@ -1240,11 +1240,11 @@ following options:
 | MNG_070 a| The SoC MUST support the following DMTF management protocols for
              in-band and out-of-band manageability:
 
-             * DSP0236 MCTP base specification 1.3.1.cite:[DSP0236]
-             * DSP0240 PLDM base specification 1.1.0.cite:[DSP0240]
-             * DSP0266 Redfish specification 1.30.cite:[DSP0266]
+             * DSP0236 MCTP base specification 1.3.1. cite:[DSP0236]
+             * DSP0240 PLDM base specification 1.1.0. cite:[DSP0240]
+             * DSP0266 Redfish specification 1.30. cite:[DSP0266]
              * Intelligent Platform Management Interface (IPMI)
-               2.0.cite:[IPMI20]
+               2.0. cite:[IPMI20]
 
 2+| _Use of DMTF specified manageability protocols enables simpler integration of
      RISC-V based server platforms into cloud and enterprise manageability
@@ -1292,8 +1292,8 @@ following options:
 | TRC_010 a| The SoC MUST support instruction trace using one of the following
              standard extensions:
 
-             * RISC-V E-trace.cite:[ETRACE]
-             * RISC-V N-trace.cite:[NTRACE]
+             * RISC-V E-trace. cite:[ETRACE]
+             * RISC-V N-trace. cite:[NTRACE]
 
 | TRC_020  | The SoC MUST support the RISC-V trace control interface
              specification.
