@@ -9,7 +9,7 @@ processors and may themself implement the RISC-V ISA. The requirements in
 this section only apply to harts in the application processors of the SoC.
 
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | RVA_010  | The RISC-V application processor harts in the SoC MUST support the
@@ -20,6 +20,7 @@ this section only apply to harts in the application processors of the SoC.
 
 | RVA_020  | The RISC-V application processor harts in the SoC MUST support the
              following extensions:
+
              * Sv48
              * Sv48x4
              * Svadu
@@ -32,6 +33,7 @@ this section only apply to harts in the application processors of the SoC.
              * Ssccfg
              * Ssctr
              * Sscrind
+
 2+| _Ssccfg, Sscind, and Ssctr are under construction._                       +
                                                                               +
     _Many of these mandated extensions are optional in the RVA23 ISA profile.
@@ -59,10 +61,12 @@ this section only apply to harts in the application processors of the SoC.
      constraints._
 
 | RVA_050  | The RISC-V application processor hart MUST support:
-             . Single stepping using the step bit in  dcsr 
-             . Debug scratch register 0 (dscratch0)
+
+             . Single stepping using the step bit in  `dcsr` 
+             . Debug scratch register 0 (`dscratch0`)
 
 | RVA_060  | The RISC-V application processor hart MUST support:
+
              . At least 6 instruction address match triggers
              . At least 6 load/store address match triggers
              . At least one icount trigger to support single stepping 
@@ -81,13 +85,14 @@ this section only apply to harts in the application processors of the SoC.
 === Clocks and Timers
 
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | CTI_010  | The `time` CSR MUST increment at a constant frequency and the count
              MUST be in units of 1 ns. The frequency at which the CSR provides
              an updated time value must be at least 100 MHz.
-| CTI_002  | The `time` counter MUST appear to be always on and MUST appear to
+
+| CTI_020  | The `time` counter MUST appear to be always on and MUST appear to
              not lose its count across power states including when the hart is
              powered off.
 |===
@@ -98,7 +103,7 @@ This section specifies the requirements on the interrupt controllers used to
 deliver external interrupts to the RISC-V application processor harts.
 
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | IIC_010  | The RISC-V Advanced Interrupt Architecture cite:[AIA] MUST be
@@ -134,8 +139,9 @@ deliver external interrupts to the RISC-V application processor harts.
 
 | IIC_070  | The memory regions for IMSIC interrupt files MUST have the
              following PMAs:
-             . Not cacheable, coherent, I/O region
-             . Supports 4 byte aligned reads and writes
+
+             * Not cacheable, coherent, I/O region.
+             * Supports 4 byte aligned reads and writes.
 
 | IIC_080  | If the SoC implements devices that use wire-signaled interrupts
              then the SoC MUST implement an APLIC as specified by the RISC-V
@@ -143,10 +149,12 @@ deliver external interrupts to the RISC-V application processor harts.
              wire-signaled interrupts into MSIs.                               +
                                                                                +
              If implemented, the APLIC MUST support:
-             * Supervisor interrupt domain
-             * GEILEN equal to that implemented by the harts
-             * MSI delivery mode
-             * Extempore MSI generation using genmsi register
+
+             * Supervisor interrupt domain.
+             * `GEILEN` equal to that implemented by the harts.
+             * MSI delivery mode.
+             * Extempore MSI generation using the `genmsi` register.
+
 2+| _SoC devices using wire-signaled interrupts must implement the rules related
      to ordering of interrupts vs. older read/writes from devices as specified
      by the device and/or bus interface specifications that such devices conform
@@ -156,7 +164,7 @@ deliver external interrupts to the RISC-V application processor harts.
 === Input-Output Memory Management Unit (IOMMU)
 
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | IOM_010  | All IOMMUs in the SoC MUST support the RISC-V IOMMU specification
@@ -191,7 +199,9 @@ deliver external interrupts to the RISC-V application processor harts.
      by the IOMMU are defined in the IOMMU capabilities register._
 
 | IOM_060  | The IOMMU SHOULD support the following virtual memory extensions:
+
              * Svadu (enumerated by 1 setting of `capabilities.AMO_HWAD`)
+
 2+| _Hardware A/D bit updates capability enables efficient support for use
      models such as VM migration, shared virtual addressing, and user space work
      submission._
@@ -288,7 +298,7 @@ deliver external interrupts to the RISC-V application processor harts.
      peripheral governed by that IOMMU to perform a DMA._
 
 | IOM_240  | The IOMMU SHOULD be implemented as a RCiEP with base class 08H and
-             subclass 06H cite:[PCI_CLS].
+             subclass 06H cite:[PCI-CLS].
 2+| _The base class 08H and sub-class 06H are designated by PCIe for use by an
      IOMMU. Implementing the IOMMU as a PCIe device allows an operating system
      to determine a driver for the IOMMU and to assign resources such as
@@ -324,7 +334,7 @@ deliver external interrupts to the RISC-V application processor harts.
              the IOMMU. 
 
 | IOM_290  | The determination of device_id input to an IOMMU for requests
-             originating from non-PCIe devices is UNSPECIFIED. If PCIe and
+             originating from non-PCIe devices is `UNSPECIFIED`. If PCIe and
              non-PCIe endpoints/RCiEP are governed by the same IOMMU, the SoC
              MUST ensure that there is no overlap between device_id associated
              with non-PCIe devices with the device_id formed using the PCIe
@@ -355,9 +365,11 @@ In some SoCs, devices may be integrated in the same package/die as the root
 complex. Examples of such devices are network controllers, USB host controllers,
 NVMe controllers, AHCI controllers, etc. Such SoC integrated devices may be
 presented to software using one of the following options:
+
 . Presented to software as a PCIe endpoint (EP; See section 1.3.2.2 of the PCIe
   6.0 specification) connected to a PCIe root port. Such PCIe endpoints must
   comply with the PCIe specified rules for endpoints. 
+
 . Presented to software as a root complex integrated endpoint (RCiEP; See
   section 1.3.2.3 of the PCIe 6.0 specification). Such PCIe endpoints must
   comply with the PCIe specified rules for RCiEP. 
@@ -382,11 +394,12 @@ in conjunction with the SoC firmware maps the ECAM address range to the
 hierarchy domain originating at each PCIe root port.
 
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | ECM_010  | The ECAM address ranges MUST have the following physical memory
              attributes (PMAs):
+
              * Not cacheable, non-idempotent, coherent, strongly-ordered
                (I/O ordering) I/O region
              * One, two, and four byte naturally aligned read and write MUST
@@ -432,7 +445,7 @@ hierarchy domain originating at each PCIe root port.
 
 | ECM_080 | The PCIe root port MUST support PCIe Configuration RRS software
             (CRS) visibility capability. The number of times a configuration
-            request is retried on an RRS response is UNSPECIFIED.
+            request is retried on an RRS response is `UNSPECIFIED`.
 
 | ECM_090 | Read and/or write to the ECAM range of the hierarchy domain
             originating at a root port MUST generate PCIe configuration
@@ -442,6 +455,7 @@ hierarchy domain originating at each PCIe root port.
 | ECM_100 | Read access to ECAM address range from a RISC-V hart MUST be
             responded with all 1s data if any of the following conditions are
             TRUE:
+
             . Access is to non-existent functions on the primary bus of a
               hierarchy domain.
             . Accessed bus is not within any of the hierarchy domains.
@@ -454,8 +468,10 @@ hierarchy domain originating at each PCIe root port.
             . PCIe CRS software visibility is enabled, but the access does not
               target the vendor ID register, and a RRS response was received on
               each retry of the configuration read. 
+
 2+| _The data response to the Vendor ID register on receipt of a RRS response
      must follow the PCIe defined rules._                                      +
+                                                                               *
     _See also recommendations in the PCIe specification 6.0 section 2.3.2._
 
 | ECM_110 | Write access from a RISC-V hart to configuration registers of
@@ -480,7 +496,7 @@ hierarchy domain originating at each PCIe root port.
 ==== PCIe Memory Space
 
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | MMS_010  | SoC MUST support designating, for each hierarchy domain, one or
@@ -508,6 +524,7 @@ hierarchy domain originating at each PCIe root port.
 | MMS_040  | The system physical address ranges designated for mapping
              prefetchable and non-prefetchable memory spaces MUST be have the
              following physical memory attributes (PMAs):
+
              . Not cacheable, non-idempotent, coherent, strongly-ordered
                 (I/O ordering) I/O region
              . MUST support all aligned and unaligned access sizes that can be
@@ -520,6 +537,7 @@ hierarchy domain originating at each PCIe root port.
              complete with all 1s response and MUST not lead to lead to any
              other behavior (e.g., hangs, deadlocks, etc.) if any of the
              following are TRUE:
+
              . Address is not within the any of the following
                .. Memory base/limit or prefetchable memory base/limit of any
                   root port.
@@ -540,6 +558,7 @@ hierarchy domain originating at each PCIe root port.
              be dropped (silently ignored or discarded) and MUST not lead to
              errors (e.g., hangs, deadlocks, etc.) if any of the following are
              TRUE:
+
              . Address is not within the the memory base/limit or prefetchable
                memory base/limit of any root port or is not within the BAR
                (including when EA capability is used) of any RCiEP or any
@@ -561,14 +580,15 @@ hierarchy domain originating at each PCIe root port.
 ==== Access Control Services (ACS)
 
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | ACS_010  | PCIe root ports and SoC integrated downstream switch ports MUST
              support the following PCIe access control services (ACS) controls
-             . ACS source validation
-             . ACS translation blocking        
-             . ACS I/O request blocking
+
+             * ACS source validation
+             * ACS translation blocking        
+             * ACS I/O request blocking
 
 | ACS_020  | If a PCIe root port or an SoC integrated downstream switch port
              implements memory BAR space then it SHOULD support the following
@@ -581,15 +601,18 @@ hierarchy domain originating at each PCIe root port.
              support direct routing between root ports or direct routing from
              ingress to egress port of a root port MUST support the following
              PCIe ACS controls
-             . ACS P2P request redirect
-             . ACS P2P completion redirect
-             . ACS upstream forwarding
-             . ACS direct translated P2P
+
+             * ACS P2P request redirect
+             * ACS P2P completion redirect
+             * ACS upstream forwarding
+             * ACS direct translated P2P
 
 | ACS_040  | Root ports and any SoC integrated downstream switch ports that
              support direct routing between root ports or direct routing from
              ingress to egress port of a root port SHOULD support:
-             . ACS P2P Egress control
+
+             * ACS P2P Egress control
+
 2+| _More commonly P2P routing is accomplished by forwarding the TLP to the host
      bridge for routing. See also the application note accompanying Fig 2-14 and
      the section 1.3.1 of PCIe specification 6.0._
@@ -602,7 +625,7 @@ hierarchy domain originating at each PCIe root port.
 ==== Address Routed Transactions
 
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | ADR_010  | The host bridge MUST request IOMMU translations for addresses
@@ -661,7 +684,7 @@ hierarchy domain originating at each PCIe root port.
 
 ==== ID Routed Transactions
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | IDR_010  | Configuration requests from endpoints and RCiEP MUST be treated as
@@ -685,7 +708,7 @@ hierarchy domain originating at each PCIe root port.
 ==== Cacheability and Coherence
 
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | CCA_010  | The host bridge MUST enforce PCIe memory ordering rules and SHOULD
@@ -709,23 +732,23 @@ hierarchy domain originating at each PCIe root port.
 
 | CCS_040  | The host bridge SHOULD implement hardware enforced cache coherency,
              irrespective of the “No Snoop” attribute in the TLP, unless it has
-             been configured through UNSPECIFIED means to not enforce coherency
+             been configured through `UNSPECIFIED` means to not enforce coherency
              for TLPs with “No Snoop” attribute set to 1.
 2+| _A PCIe requester is permitted to set the “No Snoop” in transactions it
      initiates that do not require hardware enforced cache coherency. Host
      bridges that do not support isochronous VCs or can meet deadlines with
      hardware enforced coherency may always enforce coherency. Enforcing cache
-     coherency is always conservative and will not lead to data corruption.    +
+     coherency is always conservative and will not lead to data corruption._   +
                                                                                +
-     Modern systems with integrated memory controllers and snoop directories may
+    _Modern systems with integrated memory controllers and snoop directories may
      not require the use of “No Snoop” to meet the latency targets as memory
      regions accessed for isochronous operations would usually be device
      exclusive. PCIe requires a function to guarantee that addresses accessed
      using “No Snoop” set to 1 are not cached in any of the caches and software
      that instructs a device to perform “No Snoop” transactions must only do so
-     when it can provide this guarantee.                                       +
+     when it can provide this guarantee._                                      +
                                                                                +
-     Some caches in a SoC may perform clean evictions to memory. In such SoCs, 
+    _Some caches in a SoC may perform clean evictions to memory. In such SoCs, 
      if the addresses used by the non-snooped transactions may be cached (e.g.,
      due to speculative accesses from a hart) then such clean evictions may
      cause data corruption even if the caches were explicitly cleaned by
@@ -734,15 +757,15 @@ hierarchy domain originating at each PCIe root port.
      PMA to NC/IO to implement the guarantee required by the PCIe specification
      with use of “No Snoop” attribute set to 1. If Svpbmt was used to override
      the PMA then use of cache management operations defined by Zicbom may be
-     required following to flush data that may be already cached.              +
+     required following to flush data that may be already cached._             +
                                                                                +
-     See also section 7.5.3.4 of PCIe specification 6.0.
+    _See also section 7.5.3.4 of PCIe specification 6.0._
 
 | CCS_050  | The host bridge MUST not violate the coherence PMA if the
              “No Snoop” attribute in the TLP is 0.
 
 | CCS_060  | The interpretation of the TLP processing hints (TPH) by the SoC is
-             UNSPECIFIED.
+             `UNSPECIFIED`.
 2+| _A future extension of the RISC-V IOMMU specification may define standard
      interpretation of the TPH including the use of ATS memory attributes (AMA)
      for performing cache management._
@@ -751,7 +774,7 @@ hierarchy domain originating at each PCIe root port.
 
 ==== Message signaled interrupts
 
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | MSI_010  | Message Signaled Interrupts (MSI/MSI-X) MUST be supported.
@@ -774,7 +797,7 @@ hierarchy domain originating at each PCIe root port.
 ==== Precision Time Management
 
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | PTM_010  | PCIe root ports SHOULD support PCIe PTM capability.
@@ -798,7 +821,7 @@ hierarchy domain originating at each PCIe root port.
 ==== Error and Event Reporting
 
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | AER_010  | PCIe root ports MUST support advanced error reporting (AER) 
@@ -833,15 +856,16 @@ hierarchy domain originating at each PCIe root port.
 
 ==== Vendor Specific Registers
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | VSR_010  | Vendors specific registers in the root ports, host bridge, RCiEP,
              and RCRB MUST be implemented using one or more the following
              capabilities:
-             . Vendor specific capability.
-             . Vendor specific extended capability.
-             . Designated Vendor Specific extended capability.
+
+             * Vendor specific capability.
+             * Vendor specific extended capability.
+             * Designated Vendor Specific extended capability.
 
 | VSR_020  | SoC must not require hypervisors and/or operating system
              interaction with vendor specific registers not defined by industry
@@ -870,16 +894,17 @@ host bridges, interrupt controllers, etc.
 
 Such SoC integrated PCIe devices may be presented to software using one of the
 following options:
-. Presented to software as a PCIe endpoint (EP; See section 1.3.2.2 of the PCIe
+
+* Presented to software as a PCIe endpoint (EP; See section 1.3.2.2 of the PCIe
   6.0 specification) connected to a PCIe root port. Such PCIe endpoints must
   comply with the PCIe specified rules for endpoints. 
 
-. Presented to software as a root complex integrated endpoint (RCiEP; See
+* Presented to software as a root complex integrated endpoint (RCiEP; See
   section 1.3.2.3 of the PCIe 6.0 specification). Such PCIe endpoints must
   comply with the PCIe specified rules for RCiEP. 
 
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | SID_010  | DMA capable SoC integrated devices that are intended to be used by
@@ -919,9 +944,10 @@ following options:
              capable device) that support P2P traffic among functions (including
              among SR-IOV virtual functions) of the device MUST support the
              following PCIe ACS controls:
-             . ACS P2P request redirect.
-             . ACS P2P completion redirect.
-             . ACS direct translated P2P.
+
+             * ACS P2P request redirect.
+             * ACS P2P completion redirect.
+             * ACS direct translated P2P.
 
 | SID_070  | SoC integrated PCIe devices MAY support programmable BAR registers.
              When programmable BAR registers are supported, the Memory Space
@@ -944,10 +970,10 @@ following options:
 === Reliability, Availability, and Serviceability (RAS)
 
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| RAS_010  | The level of RAS implemented by the SoC is UNSPECIFIED.
+| RAS_010  | The level of RAS implemented by the SoC is `UNSPECIFIED`.
 2+| _The level of RAS implemented by a SoC depends on the reliability goals of
      the SoC measured using metrics such as failure-in-time (FIT) and
      defects-per-million (DPM).                                                +
@@ -972,7 +998,7 @@ following options:
      correction capabilities, while minimizing SDE, contribute to lowered
      availability as measured by metrics like mean-time-to-failure (MTTF). A SoC
      should define its FIT targets to minimize SDE and maximize availability to
-     meet its targets.                                                         +
+     meet its targets._                                                        +
                                                                                +
    _This specification recommends implementation of error detection and
     correction codes for storage elements such as large caches and memories.
@@ -983,7 +1009,7 @@ following options:
     code can only correct a single bit error)._
 
 | RAS_020  | SoC SHOULD support generating, storing, and forwarding poisoned
-             data. The granularity at which data is poisoned is UNSPECIFIED
+             data. The granularity at which data is poisoned is `UNSPECIFIED`
 2+| _A component that detects an uncorrected data error may allow possibly
      corrupted data to propagate to the requester of the data but associate a
      poison indicator with the data. Such errors are said to be uncorrected
@@ -1042,7 +1068,7 @@ following options:
              reset. The RAS error records MAY also retain their state across
              other types of implementation defined reset. The state of the
              control register across reset, including RAS initiated reset,
-             is UNSPECIFIED.
+             is `UNSPECIFIED`.
 2+| _Some errors may lead a hardware component to enter a failure mode where it
      cannot service additional requests (colloquially termed as jammed or
      wedged). In such cases the SoC may need to be reset to restore it to an
@@ -1090,7 +1116,7 @@ following options:
 === Quality of Service
 
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | QOS_010  | SoC SHOULD support QoS mechanisms to address undue performance
@@ -1147,7 +1173,7 @@ following options:
 === Manageability
 
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | MNG_010  | SoC SHOULD support the datacenter-ready secure control module
@@ -1171,10 +1197,12 @@ following options:
              MCTP/PLDM protocol for out of band manageability between a
              baseboard management controller (BMC) and the SoC manageability
              controller.
-             . I3C as specified  by DSP0233 MCTP I3C transport binding 1.0.0.
-             cite:[DSP0233]
-             . PCIe VDM as specified by DSP0238 MCTP PCIe VDM transport
+
+             * I3C as specified  by DSP0233 MCTP I3C transport binding 1.0.0.
+               cite:[DSP0233]
+             * PCIe VDM as specified by DSP0238 MCTP PCIe VDM transport
                binding 1.2.0.cite:[DSP0238]
+
 2+| _PCIe VDM and I3C interface supports high bandwidth communication between
      the BMC and the management controllers in the SoC. MCTP provides a
      standard transport protocol for manageability protocols such as PLDM and
@@ -1185,13 +1213,15 @@ following options:
 | MNG_040  | The SoC SHOULD support Security protocol and data model (SPDM)
              attestation and the use of SPDM encrypted secure messages for
              in-band and out-of-band communication with the BMC as specified in:
-             . DSP0274 Security protocol and data model (SPDM)
+
+             * DSP0274 Security protocol and data model (SPDM)
                specification 1.2.1.cite:[DSP0274]
-             . DSP0275 SPDM over MCTP binding specification 1.0.1.cite:[DSP0275]
-             . DSP0276 Secured messages using SPDM over
+             * DSP0275 SPDM over MCTP binding specification 1.0.1.cite:[DSP0275]
+             * DSP0276 Secured messages using SPDM over
                MCTP binding specification 1.1.0.cite:[DSP0276]
-             . DSP0277 Secured messages using SPDM
+             * DSP0277 Secured messages using SPDM
                specification 1.1.0.cite:[DSP0277]
+
 2+| _SPDM authentication protocols support establishing a trust relationship
      between the in-band and out-of-band manageability agents in the SoC and the
      BMC. Use of SPDM secured messages enables preserving the confidentiality and
@@ -1203,15 +1233,19 @@ following options:
 
 | MNG_060  | The SoC MUST provide the following interfaces to firmware/OS on the
              RISC-V application processor for in-band server management.
-             . Network
-             . UART
+
+             * Network
+             * UART
+
 | MNG_070  | The SoC MUST support the following DMTF management protocols for
              in-band and out-of-band manageability:
-             . DSP0236 MCTP base specification 1.3.1.cite:[DSP0236]
-             . DSP0240 PLDM base specification 1.1.0.cite:[DSP0240]
-             . DSP0266 Redfish specification 1.30.cite:[DSP0266]
-             . Intelligent Platform Management Interface (IPMI)
+
+             * DSP0236 MCTP base specification 1.3.1.cite:[DSP0236]
+             * DSP0240 PLDM base specification 1.1.0.cite:[DSP0240]
+             * DSP0266 Redfish specification 1.30.cite:[DSP0266]
+             * Intelligent Platform Management Interface (IPMI)
                2.0.cite:[IPMI20]
+
 2+| _Use of DMTF specified manageability protocols enables simpler integration of
      RISC-V based server platforms into cloud and enterprise manageability
      infrastructure._
@@ -1220,13 +1254,14 @@ following options:
 === Debug
 
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | DBG_010  | The SoC MUST support at least one RISC-V debug modules as specified
              by the RISC-V debug specification.
 
 | DBG_020  | The debug modules MUST support the following capabilities:
+
              * Program buffer to execute instructions in debug mode.
              * Support at least one halt group and at least one resume group.
                besides group 0
@@ -1235,14 +1270,15 @@ following options:
                exact and full set of permissions (i.e., hardwire `relaxedpriv`
                to 0).
              * Freezing hart local counters using `stopcount` control.
+
 2+| _Ability to halt harts as a group and ability to halt at reset allows ease
-     of debugging system software.                                             +
+     of debugging system software._                                            +
                                                                                +
-     _Program buffer provides more flexibility and ease of use compared to
-      abstract access._                                                        +
+    _Program buffer provides more flexibility and ease of use compared to
+     abstract access._                                                         +
                                                                                +
-     _Enforcing a full and exact set of permissions on abstract and program 
-      buffer memory access avoids security concerns._
+    _Enforcing a full and exact set of permissions on abstract and program 
+     buffer memory access avoids security concerns._
 
 | DBG_030  | The SoC MUST support a JTAG debug transport module as specified by
              the RISC-V debug specification.
@@ -1250,13 +1286,14 @@ following options:
 
 === Trace
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | TRC_010  | The SoC MUST support instruction trace using one of the following
              standard extensions:
-             . RISC-V E-trace.cite:[ETRACE]
-             . RISC-V N-trace.cite:[NTRACE]
+
+             * RISC-V E-trace.cite:[ETRACE]
+             * RISC-V N-trace.cite:[NTRACE]
 
 | TRC_020  | The SoC MUST support the RISC-V trace control interface
              specification.
@@ -1275,35 +1312,41 @@ following options:
 === Performance Monitoring
 
 [width=100%]
-[%header, cols="5,20"]
+[%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | SPM_010  | Significant caches in the SoC SHOULD support a HPM capable of
              counting:
+
              * Cache lookup
-             * Cache miss
+             * Cache miss                                                      +
+                                                                               +
              If the SoC supports NUMA configurations, then the HPM SHOULD
              support filtering the counting based on whether the request
              originated in a local node or in a remote node.
 
 | SPM_020  | The memory controllers in the SoC SHOULD support a HPM capable of
              counting:
+
              * Read bandwidth
-             * Write bandwidth
+             * Write bandwidth                                                 +
+                                                                               +
              If the SoC supports NUMA configurations, then the HPM SHOULD
              support filtering the counting based on whether the request
              originated in a local node or in a remote node.
 
 | SPM_030  | The PCIe ports in the SoC SHOULD support a HPM capable of counting:
+
              * Read bandwidth (from system memory)
              * Write bandwidth (to system memory)
 
 | SPM_040  | The SoC SHOULD support a HPM capable of counting the average
              latency of a read request from a memory requester (e.g., a hart,
-             a PCIe host bridge, etc.) in the SoC. If the SoC supports NUMA
-             configurations, then the HPM SHOULD support filtering the counting
-             based on whether the request is to local memory or to remote
-             memory.
+             a PCIe host bridge, etc.) in the SoC.                             +
+                                                                               +
+             If the SoC supports NUMA configurations, then the HPM SHOULD
+             support filtering the counting based on whether the request is to
+             local memory or to remote memory.
 2+| _Bandwidth and latency are the most commonly used performance metrics used
      to guide workload placement and tuning. Bandwidth may be computed as the
      number of bytes transferred passed the monitoring point over an interval._ +
