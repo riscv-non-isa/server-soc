@@ -18,7 +18,7 @@ this section only apply to harts in the application processors of the SoC.
      still under construction. This specification should be updated to comply
      with the RVA24 profiles as the profile definition firms up._
 
-| RVA_020  | The RISC-V application processor harts in the SoC MUST support the
+| RVA_020 a| The RISC-V application processor harts in the SoC MUST support the
              following extensions:
 
              * Sv48
@@ -60,22 +60,22 @@ this section only apply to harts in the application processors of the SoC.
      viewpoint allows system software to migrate tasks among the harts without
      constraints._
 
-| RVA_050  | The RISC-V application processor hart MUST support:
+| RVA_050 a| The RISC-V application processor hart MUST support:
 
-             . Single stepping using the step bit in  `dcsr` 
-             . Debug scratch register 0 (`dscratch0`)
+             * Single stepping using the step bit in  `dcsr` 
+             * Debug scratch register 0 (`dscratch0`)
 
-| RVA_060  | The RISC-V application processor hart MUST support:
+| RVA_060 a| The RISC-V application processor hart MUST support:
 
-             . At least 6 instruction address match triggers
-             . At least 6 load/store address match triggers
-             . At least one icount trigger to support single stepping 
-             . At least one interrupt trigger
-             . At least one exception trigger
-             . Trigger filtering using `hcontext`
-             . Trigger filtering using all VMID encodings supported by the hart
-             . Trigger filtering using `scontext`
-             . Trigger filtering using all ASID encodings supported by the hart
+             * At least 6 instruction address match triggers.
+             * At least 6 load/store address match triggers.
+             * At least one icount trigger to support single stepping.
+             * At least one interrupt trigger.
+             * At least one exception trigger.
+             * Trigger filtering using `hcontext`.
+             * Trigger filtering using all VMID encodings supported by the hart.
+             * Trigger filtering using `scontext`.
+             * Trigger filtering using all ASID encodings supported by the hart.
 
 | RVA_070  | The RISC-V application process MUST support at least 6 hardware
              performance counters defined by the Zihpm extension in addition to
@@ -137,13 +137,13 @@ deliver external interrupts to the RISC-V application processor harts.
 | IIC_060  | The VS-mode interrupt files MUST support at least 63 interrupt
              identities.
 
-| IIC_070  | The memory regions for IMSIC interrupt files MUST have the
+| IIC_070 a| The memory regions for IMSIC interrupt files MUST have the
              following PMAs:
 
              * Not cacheable, coherent, I/O region.
              * Supports 4 byte aligned reads and writes.
 
-| IIC_080  | If the SoC implements devices that use wire-signaled interrupts
+| IIC_080 a| If the SoC implements devices that use wire-signaled interrupts
              then the SoC MUST implement an APLIC as specified by the RISC-V
              AIA specification and MUST use the APLIC to convert the
              wire-signaled interrupts into MSIs.                               +
@@ -198,7 +198,7 @@ deliver external interrupts to the RISC-V application processor harts.
 2+| _The page based virtual memory system modes that may be optionally supported
      by the IOMMU are defined in the IOMMU capabilities register._
 
-| IOM_060  | The IOMMU SHOULD support the following virtual memory extensions:
+| IOM_060 a| The IOMMU SHOULD support the following virtual memory extensions:
 
              * Svadu (enumerated by 1 setting of `capabilities.AMO_HWAD`)
 
@@ -397,7 +397,7 @@ hierarchy domain originating at each PCIe root port.
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| ECM_010  | The ECAM address ranges MUST have the following physical memory
+| ECM_010 a| The ECAM address ranges MUST have the following physical memory
              attributes (PMAs):
 
              * Not cacheable, non-idempotent, coherent, strongly-ordered
@@ -471,7 +471,7 @@ hierarchy domain originating at each PCIe root port.
 
 2+| _The data response to the Vendor ID register on receipt of a RRS response
      must follow the PCIe defined rules._                                      +
-                                                                               *
+                                                                               +
     _See also recommendations in the PCIe specification 6.0 section 2.3.2._
 
 | ECM_110 | Write access from a RISC-V hart to configuration registers of
@@ -583,7 +583,7 @@ hierarchy domain originating at each PCIe root port.
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| ACS_010  | PCIe root ports and SoC integrated downstream switch ports MUST
+| ACS_010 a| PCIe root ports and SoC integrated downstream switch ports MUST
              support the following PCIe access control services (ACS) controls
 
              * ACS source validation
@@ -597,7 +597,7 @@ hierarchy domain originating at each PCIe root port.
      unauthorized accesses to protected memory spaces such as the PCIe root
      ports BAR mapped registers._
 
-| ACS_030  | Root ports and any SOC integrated downstream switch ports that
+| ACS_030 a| Root ports and any SOC integrated downstream switch ports that
              support direct routing between root ports or direct routing from
              ingress to egress port of a root port MUST support the following
              PCIe ACS controls
@@ -607,7 +607,7 @@ hierarchy domain originating at each PCIe root port.
              * ACS upstream forwarding
              * ACS direct translated P2P
 
-| ACS_040  | Root ports and any SoC integrated downstream switch ports that
+| ACS_040 a| Root ports and any SoC integrated downstream switch ports that
              support direct routing between root ports or direct routing from
              ingress to egress port of a root port SHOULD support:
 
@@ -859,7 +859,7 @@ hierarchy domain originating at each PCIe root port.
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| VSR_010  | Vendors specific registers in the root ports, host bridge, RCiEP,
+| VSR_010 a| Vendors specific registers in the root ports, host bridge, RCiEP,
              and RCRB MUST be implemented using one or more the following
              capabilities:
 
@@ -940,7 +940,7 @@ following options:
      interoperability with system software. See also the implementation note on
      PASID width homogeneity in the PCIe specification 6.0 section 6.20.2.2._
 
-| SID_060  | SoC integrated PCIe devices (a multi-function device or a SR-IOV
+| SID_060 a| SoC integrated PCIe devices (a multi-function device or a SR-IOV
              capable device) that support P2P traffic among functions (including
              among SR-IOV virtual functions) of the device MUST support the
              following PCIe ACS controls:
@@ -1193,7 +1193,7 @@ following options:
      VDMs, to use such VDMs to carry MCTP messages to manage platform devices
      such as network controllers, NVMe controllers, FPGAs, GPUs, etc._
 
-| MNG_030  | The SoC MUST support one of the following transport bindings for
+| MNG_030 a| The SoC MUST support one of the following transport bindings for
              MCTP/PLDM protocol for out of band manageability between a
              baseboard management controller (BMC) and the SoC manageability
              controller.
@@ -1210,7 +1210,7 @@ following options:
      temperature, power, etc.), control of parameters (e.g, power limits,
      etc.), and logging (e.g., RAS error records, etc.) by the BMC._
 
-| MNG_040  | The SoC SHOULD support Security protocol and data model (SPDM)
+| MNG_040 a| The SoC SHOULD support Security protocol and data model (SPDM)
              attestation and the use of SPDM encrypted secure messages for
              in-band and out-of-band communication with the BMC as specified in:
 
@@ -1231,13 +1231,13 @@ following options:
 | MNG_050  | The SoC MUST support remote debug using a JTAG interface with the
              BMC.
 
-| MNG_060  | The SoC MUST provide the following interfaces to firmware/OS on the
+| MNG_060 a| The SoC MUST provide the following interfaces to firmware/OS on the
              RISC-V application processor for in-band server management.
 
              * Network
              * UART
 
-| MNG_070  | The SoC MUST support the following DMTF management protocols for
+| MNG_070 a| The SoC MUST support the following DMTF management protocols for
              in-band and out-of-band manageability:
 
              * DSP0236 MCTP base specification 1.3.1.cite:[DSP0236]
@@ -1260,7 +1260,7 @@ following options:
 | DBG_010  | The SoC MUST support at least one RISC-V debug modules as specified
              by the RISC-V debug specification.
 
-| DBG_020  | The debug modules MUST support the following capabilities:
+| DBG_020 a| The debug modules MUST support the following capabilities:
 
              * Program buffer to execute instructions in debug mode.
              * Support at least one halt group and at least one resume group.
@@ -1289,7 +1289,7 @@ following options:
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| TRC_010  | The SoC MUST support instruction trace using one of the following
+| TRC_010 a| The SoC MUST support instruction trace using one of the following
              standard extensions:
 
              * RISC-V E-trace.cite:[ETRACE]
@@ -1315,7 +1315,7 @@ following options:
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| SPM_010  | Significant caches in the SoC SHOULD support a HPM capable of
+| SPM_010 a| Significant caches in the SoC SHOULD support a HPM capable of
              counting:
 
              * Cache lookup
@@ -1325,7 +1325,7 @@ following options:
              support filtering the counting based on whether the request
              originated in a local node or in a remote node.
 
-| SPM_020  | The memory controllers in the SoC SHOULD support a HPM capable of
+| SPM_020 a| The memory controllers in the SoC SHOULD support a HPM capable of
              counting:
 
              * Read bandwidth
@@ -1335,12 +1335,12 @@ following options:
              support filtering the counting based on whether the request
              originated in a local node or in a remote node.
 
-| SPM_030  | The PCIe ports in the SoC SHOULD support a HPM capable of counting:
+| SPM_030 a| The PCIe ports in the SoC SHOULD support a HPM capable of counting:
 
              * Read bandwidth (from system memory)
              * Write bandwidth (to system memory)
 
-| SPM_040  | The SoC SHOULD support a HPM capable of counting the average
+| SPM_040 a| The SoC SHOULD support a HPM capable of counting the average
              latency of a read request from a memory requester (e.g., a hart,
              a PCIe host bridge, etc.) in the SoC.                             +
                                                                                +
