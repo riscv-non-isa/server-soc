@@ -349,6 +349,10 @@ and root complex integrated end points (RCiEPs). The root complex implements
 a host bridge to connect the PCIe root ports, RCECs, RCRBs, and RCiEP, to the
 CPU and system memory in the SoC through an interconnect.
 
+[[fig:RISC-V-Server-RC]]
+.PCIe root complex
+image::riscv-server-rc.svg[width=800]
+
 One or more root ports in a root complex may be part of a hierarchy where a
 hierarchy is a PCI Express I/O interconnect topology, wherein the Configuration
 Space addresses, referred to as the tuple of Bus/Device/Function Numbers (or
@@ -568,8 +572,7 @@ hierarchy domain originating at each PCIe root port.
 
 | MMS_060  | Poisoned data received from completers (EP=1) MUST be forwarded to
              the requesters (a RISC-V hart, a RCiEP, or an endpoint) as poisoned
-             data unless such forwarding is disallowed (e.g., poisoned TLP egress
-             blocking).
+             data unless such forwarding is disallowed.
 
 | MMS_070  | SoC MUST not use EA capability for assigning memory resources to
              PCIe root ports.
