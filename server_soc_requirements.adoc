@@ -365,18 +365,24 @@ i.e. a part of a Hierarchy originating from a single Root Port. The root ports
 are PCI-PCI bridges that bridge a primary PCIe bus to a range of secondary and
 subordinate buses. 
 
-In some SoCs, devices may be integrated in the same package/die as the root
+In some SoCs, PCIe devices may be integrated in the same package/die as the root
 complex. Examples of such devices are network controllers, USB host controllers,
 NVMe controllers, AHCI controllers, etc. Such SoC integrated devices may be
 presented to software using one of the following options:
 
 . Presented to software as a PCIe endpoint (EP; See section 1.3.2.2 of the PCIe
-  6.0 specification) connected to a PCIe root port. Such PCIe endpoints must
-  comply with the PCIe specified rules for endpoints. 
+  6.0 specification) connected to a PCIe root port (See example of such an
+  endpoint connected to root port 3 in <<RISC-V-Server-RC>>). Such PCIe 
+  endpoints must comply with the PCIe specified rules for endpoints. 
 
 . Presented to software as a root complex integrated endpoint (RCiEP; See
   section 1.3.2.3 of the PCIe 6.0 specification). Such PCIe endpoints must
   comply with the PCIe specified rules for RCiEP. 
+
+Implementing integrated devices that perform as RCiEP or EP allows the use of
+standardized PCIe frameworks for memory and interrupt resource allocation,
+virtualization (SR-IOV), ATS/PRI for shared virtual addressing, trusted IO using
+SPDM/TDISP, RAS frameworks like data poisoning and AER, power management, etc.
 
 The host Bridge is placed between the device(s) and the system interconnect to
 process DMA transactions. Devices perform DMA transactions using IO Virtual
@@ -485,16 +491,11 @@ hierarchy domain originating at each PCIe root port.
             system behavior such as a hang, deadlock, etc.
 
 | ECM_120 | Poisoned data received from completers (EP=1) MUST be forwarded to
-            the requesting RISC-V as poisoned data unless such forwarding is
-            disallowed (e.g., poisoned TLP egress blocking or the SoC does not
-            support data poisoning).
-
-| ECM_130 | ECAM access from RCiEP or non-PCIe devices MUST be treated as an
-            Unsupported Request. A read access MUST be responded with all 1s
-            data and write access ignored by the host bridge and no other
-            errors caused.                                                     +
-                                                                               +
-	        This requirement is not applicable to debug modules.
+            the requesting RISC-V hart as poisoned data unless such forwarding
+            is disallowed (e.g., SoC does not support data poisoning or
+            forwarding of poisoned data is disabled though implementation
+            defined means). If forwarding of poisoned data is disallowed then
+            then the poisoned data MUST be replaced with all 1s data.
 |===
 
 ==== PCIe Memory Space
@@ -571,14 +572,26 @@ hierarchy domain originating at each PCIe root port.
                   containment state.
 
 | MMS_060  | Poisoned data received from completers (EP=1) MUST be forwarded to
-             the requesters (a RISC-V hart, a RCiEP, or an endpoint) as poisoned
-             data unless such forwarding is disallowed.
+             a requester PCIe device (a RCiEP or an endpoint) as poisoned data
+             unless such forwarding is disallowed (e.g., poisoned TLP egress
+             blocking).
 
-| MMS_070  | SoC MUST not use EA capability for assigning memory resources to
+| MMS_070  | Poisoned data received from completers (EP=1) MUST be forwarded to
+             a requester RISC-V hart as poisoned data unless such forwarding is
+             disallowed through implementation defined means. When such
+             forwarding is disallowed then the poisoned data MUST be replaced
+             with all 1s data.
+
+| MMS_080  | SoC MUST not use EA capability for assigning memory resources to
              PCIe root ports.
 |===
 
 ==== Access Control Services (ACS)
+
+The PCIe ACS provides controls on routing of PCIe TLPs. ACS controls may be used
+to determine whether the TLP should be routed normally, blocked, or redirected.
+These controls may be applicable to the root complex, switches, multi-function
+devices, and SR-IOV capable devices.
 
 [width=100%]
 [%header, cols="5,25"]
@@ -624,6 +637,11 @@ hierarchy domain originating at each PCIe root port.
 |===
 
 ==== Address Routed Transactions
+
+The rules in this section apply to treatment in the root complex of TLPs that
+are routed by address. Such address carried in such transactions may be the
+address of a host memory location or the address of a location in the memory
+space of a peer endpoint or RCiEP.
 
 [width=100%]
 [%header, cols="5,25"]
@@ -684,6 +702,11 @@ hierarchy domain originating at each PCIe root port.
 |===
 
 ==== ID Routed Transactions
+
+The rules in this section apply to treatment in the root complex of TLPs that
+are routed by ID. Such requests may be ID Configuration requests, ID routed
+messages or completions.
+
 [width=100%]
 [%header, cols="5,25"]
 |===
@@ -699,10 +722,6 @@ hierarchy domain originating at each PCIe root port.
 
 | IDR_030  | P2P routing of PCIe VDM to/from RCIeP MAY be supported.
 
-| IDR_040  | The root port MUST support PCIe device readiness status (DRS) and
-             function readiness status (FRS) protocol.
-
-| IDR_050  | The SoC MUST support PCIe power management events (PME).
 |===
 
 
@@ -775,15 +794,19 @@ hierarchy domain originating at each PCIe root port.
 
 ==== Message signaled interrupts
 
+A message signaled interrupt (MSI or MSI-X) is the preferred interrupt signaling
+mechanism in PCIe.
+
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
 | MSI_010  | Message Signaled Interrupts (MSI/MSI-X) MUST be supported.
 
 | MSI_020  | SoC MUST not require any further action from system software
-             besides configuring the MSI address/data registers in devices with
-             the address of an IMSIC interrupt register file and the interrupt
-             identity to enable MSI/MSI-X.
+             besides configuring the MSI address register in devices with
+             the address of an IMSIC interrupt register file (or a virtual
+             interrupt file) and the MSI data register in devices with an
+             external interrupt identity to enable use of MSI/MSI-X.
 
 | MSI_030  | SoC MUST not support INTx virtual wire based interrupt signaling.
 2+| _PCIe supports INTx emulation to support legacy PCI interrupt mechanisms.
@@ -795,7 +818,7 @@ hierarchy domain originating at each PCIe root port.
 
 |===
 
-==== Precision Time Management
+==== Precision Time Measurement (PTM)
 
 [width=100%]
 [%header, cols="5,25"]
@@ -810,7 +833,7 @@ hierarchy domain originating at each PCIe root port.
 | PTM_020  | When PCIe PTM capability is supported, the SoC MUST make the PTM
              master time available to software.
 2+| _Making PTM master time available to software enables software to translate
-     timing information between local times and PTM master time and thereby
+     timing information between local time and PTM master time and thereby
      enable coordination of events across multiple PCIe devices._
 
 | PTM_030  | When PCIe PTM capability is supported, the PTM master time MUST be
@@ -885,39 +908,18 @@ hierarchy domain originating at each PCIe root port.
 
 ==== SoC Integrated PCIe Devices
 
-The SoC integrated devices governed by the requirements in this section are the
-devices that are DMA capable and used by the operating system for IO operations.
-Examples of such IO devices are network controllers, USB host controllers, NVMe
-controllers, AHCI controllers, etc. 
-
-This section does not apply to platform devices such as memory controllers,
-host bridges, interrupt controllers, etc.
-
-Such SoC integrated PCIe devices may be presented to software using one of the
-following options:
-
-* Presented to software as a PCIe endpoint (EP; See section 1.3.2.2 of the PCIe
-  6.0 specification) connected to a PCIe root port. Such PCIe endpoints must
-  comply with the PCIe specified rules for endpoints. 
-
-* Presented to software as a root complex integrated endpoint (RCiEP; See
-  section 1.3.2.3 of the PCIe 6.0 specification). Such PCIe endpoints must
-  comply with the PCIe specified rules for RCiEP. 
-
 [width=100%]
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| SID_010  | DMA capable SoC integrated devices that are intended to be used by
-             the operating system for IO operations MUST be implemented as a
-             PCIe EP or a PCIe RCiEP. Such devices MUST implement all software
-             visible rules defined by the PCIe specification 6.0 for an EP or
-             RCiEP.
-2+| _Implementing integrated devices that perform IO as RCiEP or EP allows the
-     use of standardized frameworks for memory and interrupt resource allocation,
-     virtualization (SR-IOV), ATS/PRI, shared virtual addressing, trusted IO
-     using SPDM/TDISP, participate in RAS frameworks like data poisoning and
-     AER, power management, etc._
+| SID_010  | SoC integrated PCIe devices MUST implement all software visible
+             rules defined by the PCIe specification 6.0 for an EP or RCiEP as
+             applicable.
+2+| _Implementing integrated devices as RCiEP or EP allows the use of standardized
+     frameworks for memory and interrupt resource allocation, virtualization
+     (SR-IOV), ATS/PRI, shared virtual addressing, trusted IO using SPDM/TDISP,
+     participate in RAS frameworks like data poisoning and AER, power management,
+     etc._
 
 | SID_020  | SoC integrated PCIe devices MUST not be legacy devices and MUST not
              require use of I/O space, I/O transactions, and INTx virtual wire
@@ -1040,7 +1042,7 @@ following options:
 | RAS_030  | If poisoned data needs to be forwarded from a first component to a
              second component that is not capable of handling poison then the
              first component MUST report an uncorrected urgent error instead of
-             propagating the corrupted data.
+             propagating the poisoned data.
 2+| _Some components act as an intermediary through which the data passes
      through. For example, a PCIe/CXL port is an intermediary component that by
      itself does not consume the data it receives from memory but forwards the
