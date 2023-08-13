@@ -18,7 +18,7 @@ server computing systems that may be used for one or more of these purposes.
 
 [[fig:RISC-V-Server-Platform]]
 .Components of a RISC-V Server Platform
-image::riscv-server-platform.svg[width=800]
+image::riscv-server-platform.png[width=800]
 
 The RISC-V server platform is defined as the collection of SoC hardware,
 platform firmware, and the boot/runtime services, and security services. The
