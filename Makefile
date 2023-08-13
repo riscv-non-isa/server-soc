@@ -18,8 +18,8 @@ REVMARK ?= Draft
 DOCKER_RUN := docker run --rm -v ${PWD}:/build -w /build \
 riscvintl/riscv-docs-base-container-image:latest
 
-HEADER_SOURCE := header.adoc
-PDF_RESULT := server-soc.pdf
+HEADER_SOURCE := server_soc_header.adoc
+PDF_RESULT := riscv-server-soc.pdf
 
 ASCIIDOCTOR_PDF := asciidoctor-pdf
 OPTIONS := --trace \
