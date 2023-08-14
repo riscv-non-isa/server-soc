@@ -158,7 +158,7 @@ deliver external interrupts to the RISC-V application processor harts.
 2+| _SoC devices using wire-signaled interrupts must implement the rules related
      to ordering of interrupts vs. older read/writes from devices as specified
      by the device and/or bus interface specifications that such devices conform
-     to. See also SID_006.
+     to. See also SID_006._
 |===
 
 === Input-Output Memory Management Unit (IOMMU)
@@ -688,7 +688,7 @@ space of a peer endpoint or RCiEP.
      disallow peer device memory accesses. Such a VM may attempt to program
      devices passed through to the virtual machine to perform peer memory
      accesses. Such attempts to violate the peer to peer policies  must not
-     lead to system instabilities (e.g., hangs, deadlocks, etc.) or errors.
+     lead to system instabilities (e.g., hangs, deadlocks, etc.) or errors._
 
 | ADR_050  | When a posted or non-posted-with-data request is allowed to access
              peer device memory, then the poisoned data (EP=1) must forwarded as
@@ -983,7 +983,7 @@ mechanism in PCIe.
 | RAS_010  | The level of RAS implemented by the SoC is `UNSPECIFIED`.
 2+| _The level of RAS implemented by a SoC depends on the reliability goals of
      the SoC measured using metrics such as failure-in-time (FIT) and
-     defects-per-million (DPM).                                                +
+     defects-per-million (DPM)._                                               +
                                                                                +
     _A combination of fault prevention, error detection and correction
      techniques may be employed. Fault prevention involves use of techniques
