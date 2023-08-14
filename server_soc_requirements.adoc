@@ -2,7 +2,7 @@
 
 === RISC-V Harts
 
-A RISC-V SoC includes an RISC-V application processor and may include one or
+A RISC-V SoC includes a RISC-V application processor and may include one or
 more service processors. The service processors may provide services such as
 security and power management to software executing on the application
 processors and may themself implement the RISC-V ISA. The requirements in 
@@ -131,7 +131,7 @@ deliver external interrupts to the RISC-V application processor harts.
      file may incur longer latencies due to the need to redirect device
      interrupts to a memory resident interrupt file._
 
-| IIC_050  | The S-mode interrupt files MUST support at least 255 interrupt
+| IIC_050  | The S-mode interrupt file MUST support at least 255 interrupt
              identities.
 
 | IIC_060  | The VS-mode interrupt files MUST support at least 63 interrupt
@@ -261,7 +261,7 @@ deliver external interrupts to the RISC-V application processor harts.
 | IOM_160  | IOMMU MAY support the PASID capability.
 
 | IOM_170  | IOMMU that supports PASID capability MUST support 20-bit PASID
-             width and MAY support 8 and 17 bit PASID width.
+             width and MAY support 8 and 17 bit PASID widths.
 2+| _PCIe specification strongly recommends that hardware implement the maximum
      width of 20 bits to ensure interoperability with system software. See also
      the implementation note on PASID width homogeneity in the PCIe
@@ -269,13 +269,13 @@ deliver external interrupts to the RISC-V application processor harts.
 
 | IOM_180  | IOMMU SHOULD support a hardware performance monitor (HPM).
 2+| _The HPM is a valuable tool for system integrators for performance
-     monitoring and optimizations. An IOMMU is highly recommended to provide a
+     monitoring and optimizations. An IOMMU is highly recommended to provide an
      HPM._
 
-| IOM_190  | IOMMU that supports a HPM, MUST support the cycles counter and at
+| IOM_190  | IOMMU that supports an HPM, MUST support the cycles counter and at
              least 4 event counters. 
 
-| IOM_200  | The cycles counter and the event counters MUST be at least 40-bit
+| IOM_200  | The cycles counter and the event counters MUST be at least 40 bits
              wide.
 
 | IOM_210  | The IOMMU SHOULD support the software debug capabilities enumerated
@@ -322,7 +322,7 @@ deliver external interrupts to the RISC-V application processor harts.
      option is used) - to locate a device context to use for address
      translation and protection. The 16-bit RID uniquely identifies a requester
      within a hierarchy. This RID needs to be augmented with the Hierarchy ID
-     (also known as segment ID) - a 8-bit number - to uniquely identify a
+     (also known as segment ID) - an 8-bit number - to uniquely identify a
      requester across PCIe hierarchies._
 
 | IOM_270  | The host bridge MUST provide the PCIe RID as the bits 15:0 of the
@@ -433,7 +433,7 @@ hierarchy domain originating at each PCIe root port.
 
 | ECM_040 | A SoC MAY support multiple hierarchies. When multiple hierarchies
             are supported, the ECAM address range of the hierarchies MUST not
-            overlap and but are not required to be contiguous. 
+            overlap, but they are not required to be contiguous.
 
 | ECM_050 | The configuration space of the PCIe root ports MUST be associated
             with the primary bus number of the hierarchy associated with the
@@ -481,7 +481,7 @@ hierarchy domain originating at each PCIe root port.
               target the vendor ID register, and a RRS response was received on
               each retry of the configuration read. 
 
-2+| _The data response to the Vendor ID register on receipt of a RRS response
+2+| _The data response to the Vendor ID register on receipt of an RRS response
      must follow the PCIe defined rules._                                      +
                                                                                +
     _See also the recommendations in PCIe specification 6.0 section 2.3.2._
@@ -496,7 +496,7 @@ hierarchy domain originating at each PCIe root port.
             is disallowed (e.g., SoC does not support data poisoning or
             forwarding of poisoned data is disabled though implementation
             defined means). If forwarding of poisoned data is disallowed then
-            then the poisoned data MUST be replaced with all 1s data.
+            the poisoned data MUST be replaced with all 1s data.
 |===
 
 ==== PCIe Memory Space
@@ -508,7 +508,7 @@ hierarchy domain originating at each PCIe root port.
 | MMS_010  | The SoC MUST support designating, for each hierarchy domain, one or
              more ranges of system physical addresses that may be used for
              mapping memory space of endpoints in that hierarchy domain using
-             64-bit wide base address registers (BARs) of the endpoint.
+             the 64-bit wide base address registers (BARs) of the endpoints.
 
 | MMS_020  | SoC MUST support designating, for each hierarchy domain, at
              least one system physical address range for mapping
@@ -520,14 +520,15 @@ hierarchy domain originating at each PCIe root port.
      as high MMIO ranges._ 
 
 | MMS_030 a| The system physical address ranges designated for mapping
-             endpoint memory spaces MUST be have the following physical memory
+             endpoint memory spaces MUST have the following physical memory
              attributes (PMAs):
 
              * Not cacheable, non-idempotent, coherent, strongly-ordered
                (I/O ordering) I/O region.
              * MUST support all aligned and unaligned access sizes that can be
                generated by data requests from any of the RISC-V application
-               processor hart in the SoC or by peer endpoints including RCiEP.
+               processor harts in the SoC or by peer endpoints, including those
+               of type RCiEP.
              * MAY support atomics, instruction fetch, and page walks.
 
 2+| _Software may use the Svpbmt extension to override the PMA to NC if such an
@@ -538,12 +539,12 @@ hierarchy domain originating at each PCIe root port.
      programming mode in section 2.3.1 of PCIe specification 6.0._
 
 | MMS_040 a| A load from a RISC-V application processor hart to memory ranges
-             designated for mapping memory space of endpoints or RCiEP MUST
-             complete with all 1s response and MUST not lead to any other
+             designated for the mapped memory space of endpoints or RCiEP MUST
+             complete with an all 1s response and MUST not lead to any other
              behavior (e.g., hangs, deadlocks, etc.) if any of the following are
              TRUE:
 
-             * Address is not within the any of the following:
+             * Address is not within any of the following:
                ** Memory base/limit or prefetchable memory base/limit of any
                   root port.
                ** BAR (including when EA capability is used) mapped range of
@@ -552,18 +553,18 @@ hierarchy domain originating at each PCIe root port.
                   any root port.
              * The PCIe link of the root port to which the access is routed
                is not active.
-               ** Including due to root port entering downstream port
+               ** Including due to the root port entering downstream port
                   containment state.
              * A UR or a CA response is received from the completer.
              * A completion timeout occurs.
 
 | MMS_050 a| A store from a RISC-V application processor hart to memory ranges
-             designated for mapping to memory space of endpoints or RCiEP MUST
+             designated for the mapped memory space of endpoints or RCiEP MUST
              be dropped (silently ignored or discarded) and MUST not lead to any
              other behavior (e.g., hangs, deadlocks, etc.) if any of the
              following are TRUE:
 
-             * Address is not within the any of the following:
+             * Address is not within any of the following:
                ** Memory base/limit or prefetchable memory base/limit of any
                   root port.
                ** BAR (including when EA capability is used) mapped range of
@@ -572,7 +573,7 @@ hierarchy domain originating at each PCIe root port.
                   any root port.
              * The PCIe link of the root port to which the access is routed
                is not active.
-               ** Including due to root port entering downstream port
+               ** Including due to the root port entering downstream port
                   containment state.
 
 | MMS_060  | Poisoned data received from completers (EP=1) MUST be forwarded to
@@ -608,12 +609,12 @@ devices, and SR-IOV capable devices.
              * ACS translation blocking        
              * ACS I/O request blocking
 
-| ACS_020  | If a PCIe root port or an SoC integrated downstream switch port
-             implements memory BAR space then it SHOULD support the following
+| ACS_020  | If a PCIe root port or a SoC integrated downstream switch port
+             implements memory BAR space, then it SHOULD support the following
              PCIe ACS DSP memory target access control.
 2+| _The ACS DSP memory target access control can be used to prevent
      unauthorized accesses to protected memory spaces such as the PCIe root
-     ports BAR mapped registers._
+     port's BAR mapped registers._
 
 | ACS_030 a| Root ports and any SOC integrated downstream switch ports that
              support direct routing between root ports or direct routing from
@@ -629,7 +630,7 @@ devices, and SR-IOV capable devices.
              support direct routing between root ports or direct routing from
              ingress to egress port of a root port SHOULD support:
 
-             * ACS P2P Egress control
+             * ACS P2P egress control
 
 2+| _More commonly P2P routing is accomplished by forwarding the TLP to the host
      bridge for routing. See also the application note accompanying Fig 2-14 and
@@ -643,7 +644,7 @@ devices, and SR-IOV capable devices.
 ==== Address Routed Transactions
 
 The rules in this section apply to treatment in the root complex of TLPs that
-are routed by address. Addresses carried in such transactions may be the
+are routed by address. An address carried in such transactions may be the
 address of a host memory location or the address of a location in the memory
 space of a peer endpoint or RCiEP.
 
@@ -680,7 +681,7 @@ space of a peer endpoint or RCiEP.
 
 | ADR_040  | The host bridge MAY support access to peer device memory. If peer
              device memory access is not enabled (by design or by configuration)
-             then such accesses MUST be responded to with an UR/CA response. The
+             then such accesses MUST be responded to with a UR/CA response. The
              host bridge must not cause any other error (e.g., hang, deadlock,
              etc.) when rejecting access to peer device memory.
 2+| _A virtual machine may violate the peer to peer policies and/or
@@ -691,12 +692,13 @@ space of a peer endpoint or RCiEP.
      lead to system instabilities (e.g., hangs, deadlocks, etc.) or errors._
 
 | ADR_050  | When a posted or non-posted-with-data request is allowed to access
-             peer device memory, then the poisoned data (EP=1) must forwarded as
-             poisoned data unless such forwarding is disallowed (e.g., poisoned
-             TLP egress blocking, data poisoning is not supported by SoC).
+             peer device memory, then the poisoned data (EP=1) must be forwarded
+             as poisoned data unless such forwarding is disallowed (e.g.,
+             poisoned TLP egress blocking, data poisoning is not supported by
+             SoC).
 
 | ADR_060  | Host memory writes caused by posted or non-posted-with-data requests
-             with poisoned data (EP=1) must mark the data in host host memory as
+             with poisoned data (EP=1) must mark the data in the host memory as
              poisoned.
 
 | ADR_070  | Host memory reads that have uncorrectable data errors detected
@@ -790,7 +792,7 @@ messages or completions.
 
 | CCS_060  | The interpretation of the TLP processing hints (TPH) by the SoC is
              `UNSPECIFIED`.
-2+| _A future extension of the RISC-V IOMMU specification may define standard
+2+| _A future extension of the RISC-V IOMMU specification may define a standard
      interpretation of the TPH including the use of ATS memory attributes (AMA)
      for performing cache management._
 
@@ -814,8 +816,8 @@ mechanism in PCIe.
 
 | MSI_030  | SoC MUST not support INTx virtual wire based interrupt signaling.
 2+| _PCIe supports INTx emulation to support legacy PCI interrupt mechanisms.
-     Modern SoC and devices should not be limited by this emulation mode being
-     not supported._
+     Modern SoC and devices should not be limited by this emulation mode not
+     being supported._
 
 | MSI_040  | PCIe RCiEP, host bridge, RCRB, and root ports MUST support MSI/MSI-X
              and MUST not use INTx virtual wire interrupt signaling.
@@ -888,14 +890,14 @@ mechanism in PCIe.
 |===
 | ID#     ^| Requirement
 | VSR_010 a| Vendors specific registers in the root ports, host bridge, RCiEP,
-             and RCRB MUST be implemented using one or more the following
+             and RCRB MUST be implemented using one or more of the following
              capabilities:
 
              * Vendor specific capability.
              * Vendor specific extended capability.
              * Designated Vendor Specific extended capability.
 
-| VSR_020  | SoC must not require hypervisors and/or operating system
+| VSR_020  | SoC must not require hypervisor and/or operating system
              interaction with vendor specific registers not defined by industry
              standards. Non-standard vendor specific registers, if supported,
              must only be used by the SoC firmware.
@@ -943,11 +945,11 @@ mechanism in PCIe.
 | SID_050  | SoC integrated PCIe devices MAY support the PASID capability. When
              PASID capability is supported, the devices SHOULD support a
              20-bit wide PASID.
-2+| _Endpoints are recommended to support 20-bit wide PASID to ensure
+2+| _Endpoints are recommended to support a 20-bit wide PASID to ensure
      interoperability with system software. See also the implementation note on
      PASID width homogeneity in the PCIe specification 6.0 section 6.20.2.2._
 
-| SID_060 a| SoC integrated PCIe devices (a multi-function device or a SR-IOV
+| SID_060 a| SoC integrated PCIe devices (a multi-function device or an SR-IOV
              capable device) that support P2P traffic among functions (including
              among SR-IOV virtual functions) of the device MUST support the
              following PCIe ACS controls:
@@ -1097,7 +1099,7 @@ mechanism in PCIe.
      Error record injection provides a convenient method for carrying out such
      verification by allowing a variety of error signatures to be injected and
      signaled. While such verification may also be performed by using hardware
-     error injection techniques (e.g., providing methods to corrupt an data
+     error injection techniques (e.g., providing methods to corrupt a data
      location protected by an error detection code), it may not be desirable
      from a security and stability perspective to open these capabilities
      generally for use by software._
@@ -1180,9 +1182,9 @@ usage, etc.
 | QOS_100  | If CBQRI is supported, the monitoring counters in the capacity and
              bandwidth controllers MUST be wide enough to not overflow when
              sampling at a rate of 1 Hz.
-2+| _For example, a HBM3 memory interface may support data transfers at rate up
-     to 1 TB/s and thus require a 34-bit counter to not cause an overflow when
-     sampled at 1 Hz._
+2+| _For example, an HBM3 memory interface may support data transfers at a rate
+     up to 1 TB/s and thus require a 34-bit counter to not cause an overflow
+     when sampled at 1 Hz._
 |===
 
 === Manageability
@@ -1278,17 +1280,17 @@ used by data centers and enterprises
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| DBG_010  | The SoC MUST support at least one RISC-V debug modules as specified
+| DBG_010  | The SoC MUST support at least one RISC-V debug module as specified
              by the RISC-V debug specification.
 
 | DBG_020 a| The debug modules MUST support the following capabilities:
 
              * Program buffer to execute instructions in debug mode.
-             * Support at least one halt group and at least one resume group.
-               besides group 0
+             * Support at least one halt group and at least one resume group,
+               besides group 0.
              * Support debugging harts immediately out of reset.
-             * Always perform program buffer and abstract memory access with
-               exact and full set of permissions (i.e., hardwire `relaxedpriv`
+             * Always perform program buffer and abstract memory access with a
+               full and exact set of permissions (i.e., hardwire `relaxedpriv`
                to 0).
              * Freezing hart local counters using `stopcount` control.
 
@@ -1336,7 +1338,7 @@ used by data centers and enterprises
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| SPM_010 a| Significant caches in the SoC SHOULD support a HPM capable of
+| SPM_010 a| Significant caches in the SoC SHOULD support an HPM capable of
              counting:
 
              * Cache lookup
@@ -1346,7 +1348,7 @@ used by data centers and enterprises
              support filtering the counting based on whether the request
              originated in a local node or in a remote node.
 
-| SPM_020 a| The memory controllers in the SoC SHOULD support a HPM capable of
+| SPM_020 a| The memory controllers in the SoC SHOULD support an HPM capable of
              counting:
 
              * Read bandwidth
@@ -1356,12 +1358,12 @@ used by data centers and enterprises
              support filtering the counting based on whether the request
              originated in a local node or in a remote node.
 
-| SPM_030 a| The PCIe ports in the SoC SHOULD support a HPM capable of counting:
+| SPM_030 a| The PCIe ports in the SoC SHOULD support an HPM capable of counting:
 
              * Read bandwidth (from system memory)
              * Write bandwidth (to system memory)
 
-| SPM_040 a| The SoC SHOULD support a HPM capable of counting the average
+| SPM_040 a| The SoC SHOULD support an HPM capable of counting the average
              latency of a read request from a memory requester (e.g., a hart,
              a PCIe host bridge, etc.) in the SoC.                             +
                                                                                +
