@@ -336,9 +336,9 @@ deliver external interrupts to the RISC-V application processor harts.
 | IOM_290  | The determination of device_id input to an IOMMU for requests
              originating from non-PCIe devices is `UNSPECIFIED`. If PCIe and
              non-PCIe endpoints/RCiEP are governed by the same IOMMU, the SoC
-             MUST ensure that there is no overlap between device_id associated
-             with non-PCIe devices with the device_id formed using the PCIe
-             RID (and if applicable the segment ID).
+             MUST ensure that there is no overlap between any device_id
+             associated with non-PCIe devices with any device_id formed using
+             the PCIe RID (and if applicable the segment ID).
 |===
 
 === PCIe Subsystem Integration
