@@ -420,8 +420,9 @@ hierarchy domain originating at each PCIe root port.
              completion is received from the function hosting the accessed
              configuration register. 
 2+| _Besides performing a write, software executing on a hart must not
-     require any additional actions to achieve this property.                  +
-     This requirement satisfies the processor and host bridge implementation
+     require any additional actions to achieve this property._                 +
+                                                                               +
+    _This requirement satisfies the processor and host bridge implementation
      requirement mentioned in the “Ordering Considerations for the Enhanced
      Configuration Access Mechanism” implementation note of the PCIe 6.0
      specification._
@@ -444,7 +445,7 @@ hierarchy domain originating at each PCIe root port.
      that PCIe root port._
 
 | ECM_060 | The configuration space of functions on the primary bus must be
-            accessible irrespective of the state of the PCIe link.
+            accessible irrespective of the state of the corresponding PCIe link.
 2+| _Discovery and activation of the PCIe link requires accessing the
      configuration space registers of the PCIe root port itself and the PCIe
      root port is a PCI-PCI bridge device on the primary bus._
@@ -453,42 +454,42 @@ hierarchy domain originating at each PCIe root port.
             and comply with the rules specified for PCIe root ports in PCIe
             specification 6.0.
 
-| ECM_080 | The PCIe root port MUST support PCIe Configuration RRS software
-            (CRS) visibility capability. The number of times a configuration
-            request is retried on an RRS response is `UNSPECIFIED`.
+| ECM_080 | The PCIe root port MUST support the PCIe Configuration RRS software
+            (CRS) visibility enable control.
+2+| _The number of times a configuration request is retried on an RRS response
+     is `UNSPECIFIED`._
 
 | ECM_090 | Read and/or write to the ECAM range of the hierarchy domain
             originating at a root port MUST generate PCIe configuration
             transactions as type 0 or type 1 configuration transactions
             following the rules specified for ECAM in PCIe specification 6.0.
 
-| ECM_100 | Read access to ECAM address range from a RISC-V hart MUST be
-            responded with all 1s data if any of the following conditions are
-            TRUE:
+| ECM_100 a| Read access to ECAM address range from a RISC-V hart MUST be
+             responded with all 1s data if any of the following conditions are
+             TRUE:
 
-            . Access is to non-existent functions on the primary bus of a
+            * Access is to non-existent functions on the primary bus of a
               hierarchy domain.
-            . Accessed bus is not within any of the hierarchy domains.
-            . An Unsupported Request or Completer Abort response was received.
-            . A completion timeout occurs.
-            . Access targets a function downstream of a root port whose link
+            * Accessed bus is not part of any of the hierarchy domains.
+            * An Unsupported Request or Completer Abort response was received.
+            * A completion timeout occurs.
+            * Access targets a function downstream of a root port whose link
               is not in DL_Active state.
-            . A PCIe RRS response was received and CRS software visibility is
+            * A PCIe RRS response was received and CRS software visibility is
               not enabled.
-            . PCIe CRS software visibility is enabled, but the access does not
+            * PCIe CRS software visibility is enabled, but the access does not
               target the vendor ID register, and a RRS response was received on
               each retry of the configuration read. 
 
 2+| _The data response to the Vendor ID register on receipt of a RRS response
      must follow the PCIe defined rules._                                      +
                                                                                +
-    _See also recommendations in the PCIe specification 6.0 section 2.3.2._
+    _See also the recommendations in PCIe specification 6.0 section 2.3.2._
 
 | ECM_110 | Write access from a RISC-V hart to configuration registers of
-            non-existent functions on the primary bus MUST be ignored by the
-            host bridge and the root port and the write completed without
-            causing any errors. Such accesses MUST not lead to unexpected
-            system behavior such as a hang, deadlock, etc.
+            non-existent functions on the primary bus MUST be dropped (silently
+            ignored or discarded) and the write completed. Such accesses MUST
+            not lead to any other behavior (e.g., hangs, deadlocks, etc.).
 
 | ECM_120 | Poisoned data received from completers (EP=1) MUST be forwarded to
             the requesting RISC-V hart as poisoned data unless such forwarding
@@ -535,44 +536,46 @@ hierarchy domain originating at each PCIe root port.
     _See also the implementation note on optimizations based on restricted
      programming mode in section 2.3.1 of PCIe specification 6.0._
 
-| MMS_040  | A load from a RISC-V application processor hart to memory ranges
+| MMS_040 a| A load from a RISC-V application processor hart to memory ranges
              designated for mapping memory space of endpoints or RCiEP MUST
-             complete with all 1s response and MUST not lead to lead to any
-             other behavior (e.g., hangs, deadlocks, etc.) if any of the
-             following are TRUE:
+             complete with all 1s response and MUST not lead to any other
+             behavior (e.g., hangs, deadlocks, etc.) if any of the following are
+             TRUE:
 
-             . Address is not within the any of the following
-               .. Memory base/limit or prefetchable memory base/limit of any
+             * Address is not within the any of the following:
+               ** Memory base/limit or prefetchable memory base/limit of any
                   root port.
-               .. BAR (including when EA capability is used) mapped range of
+               ** BAR (including when EA capability is used) mapped range of
                   any RCiEP.
-               .. BAR (including when EA capability is used) mapped range any
-                  root port.
-             . The PCIe link of the root port to which the access is routed
+               ** BAR (including when EA capability is used) mapped range of
+                  any root port.
+             * The PCIe link of the root port to which the access is routed
                is not active.
-               .. Including due to root port entering downstream port
+               ** Including due to root port entering downstream port
                   containment state.
-             . A UR or a CA response is received from the completer.
-             . A completion timeout occurs.
-             . Access violates the PMA.
+             * A UR or a CA response is received from the completer.
+             * A completion timeout occurs.
 
-| MMS_050  | A store from a RISC-V application processor hart to memory ranges
+| MMS_050 a| A store from a RISC-V application processor hart to memory ranges
              designated for mapping to memory space of endpoints or RCiEP MUST
              be dropped (silently ignored or discarded) and MUST not lead to any
              other behavior (e.g., hangs, deadlocks, etc.) if any of the
              following are TRUE:
 
-             . Address is not within the the memory base/limit or prefetchable
-               memory base/limit of any root port or is not within the BAR
-               (including when EA capability is used) of any RCiEP or any
-               root port.
-             . The PCIe link of the PCie root port to which the access is
+             * Address is not within the any of the following:
+               ** Memory base/limit or prefetchable memory base/limit of any
+                  root port.
+               ** BAR (including when EA capability is used) mapped range of
+                  any RCiEP.
+               ** BAR (including when EA capability is used) mapped range of
+                  any root port.
+             * The PCIe link of the PCie root port to which the access is
                routed is not active
-               .. Including due to root port entering downstream port
+               ** Including due to root port entering downstream port
                   containment state.
 
 | MMS_060  | Poisoned data received from completers (EP=1) MUST be forwarded to
-             a requester PCIe device (a RCiEP or an endpoint) as poisoned data
+             the requester PCIe device (a RCiEP or an endpoint) as poisoned data
              unless such forwarding is disallowed (e.g., poisoned TLP egress
              blocking).
 
@@ -582,8 +585,8 @@ hierarchy domain originating at each PCIe root port.
              forwarding is disallowed then the poisoned data MUST be replaced
              with all 1s data.
 
-| MMS_080  | SoC MUST not use EA capability for assigning memory resources to
-             PCIe root ports.
+| MMS_080  | SoC MUST not use EA capability to indicate memory for allocation
+             to endpoints downstream of a PCIe root port.
 |===
 
 ==== Access Control Services (ACS)
@@ -639,7 +642,7 @@ devices, and SR-IOV capable devices.
 ==== Address Routed Transactions
 
 The rules in this section apply to treatment in the root complex of TLPs that
-are routed by address. Such address carried in such transactions may be the
+are routed by address. Addresses carried in such transactions may be the
 address of a host memory location or the address of a location in the memory
 space of a peer endpoint or RCiEP.
 
@@ -649,7 +652,7 @@ space of a peer endpoint or RCiEP.
 | ID#     ^| Requirement
 | ADR_010  | The host bridge MUST request IOMMU translations for addresses
              (Translated, Untranslated, or a PCIe ATS address translation
-             request) used in the requests by endpoints and RCIePs.
+             request) used in the request by endpoints and RCiEPs.
 2+| _The IOMMU must be invoked even for Translated requests to allow
      determination of whether the requester is configured by software to use
      Translated requests._                                                     +
@@ -667,17 +670,16 @@ space of a peer endpoint or RCiEP.
 
 | ADR_020  | The host bridge MUST enforce PMA and PMP checks on the translated
              address provided by the IOMMU and MUST treat violating requests as
-             Unsupported Requests and MUST not allow memory access by such
-             requests or transmit them to peer endpoints/RCiEP.
+             Unsupported Requests.
 
-| ADR_030  | For translated and untranslated requests, the host bridge must use
+| ADR_030  | For Translated and Untranslated requests, the host bridge must use
              the translated addresses provided by the IOMMU to determine
              whether the transaction is targeting host memory or peer device
              memory.
 
 | ADR_040  | The host bridge MAY support access to peer device memory. If peer
-             device access is not enabled (by design or by configuration) then
-             such accesses MUST be responded to with an UR/CA response. The
+             device memory access is not enabled (by design or by configuration)
+             then such accesses MUST be responded to with an UR/CA response. The
              host bridge must not cause any other error (e.g., hang, deadlock,
              etc.) when rejecting access to peer device memory.
 2+| _A virtual machine may violate the peer to peer policies and/or
@@ -692,8 +694,9 @@ space of a peer endpoint or RCiEP.
              poisoned data unless such forwarding is disallowed (e.g., poisoned
              TLP egress blocking, data poisoning is not supported by SoC).
 
-| ADR_060  | Host memory writes caused by posted requests with poisoned data
-             (EP=1) must mark the data as poisoned.
+| ADR_060  | Host memory writes caused by posted or non-posted-with-data requests
+             with poisoned data (EP=1) must mark the data in host host memory as
+             poisoned.
 
 | ADR_070  | Host memory reads that have uncorrectable data errors detected
              within the SoC must cause a response with poisoned data (EP=1) if
@@ -1058,8 +1061,8 @@ mechanism in PCIe.
 2+| _Note RERI is still under construction._
 
 | RAS_050  | If RERI is supported then the RAS error records MUST support
-             individually disabling error signals for each error severity (UUE,
-             UDE, or CE) or errors that may be logged in the error record.
+             individually enabling error signals for each error severity (UUE,
+             UDE, or CE) of errors that may be logged in the error record.
 2+| _Disabling error signaling enables software flexibility of using an event
      based or polling based error logging for corrected errors and deferred
      errors. Software may typically operate in event based mode for urgent
@@ -1377,3 +1380,26 @@ used by data centers and enterprises
 |===
 
 === Security Requirements
+
+[width=100%]
+[%header, cols="5,25"]
+|===
+| ID#     ^| Requirement
+| SEC_010  | The PCIe root ports in the SoC SHOULD support PCIe Integrity and
+             Data Encryption (IDE) capability.
+
+| SEC_020  | The SoC SHOULD support encryption of off-chip DRAM using a
+             transient memory encryption key that has at least 192-bit key
+             lengths.
+2+| _Off-chip memory encryption provides protection to critical assets in memory
+     such as credentials, data encryption keys, and other secrets._
+
+| SEC_030  | The cryptographic modules used to implement PCIe and off-chip DRAM
+             encryption SHOULD comply with security requirements specified by
+             standards such as FIPS 140-3.
+|===
+
+
+
+
+
