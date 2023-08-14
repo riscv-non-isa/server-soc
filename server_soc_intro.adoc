@@ -145,9 +145,9 @@ if they are not in this table).
 | Hierarchy ID or
   Segment ID       | Follows PCI Express. An identifier of a PCIe Hierarchy
                      within which the Requester IDs are unique.
-| Host bridge      | Part of a SoC that connects host CPUs and memory to PCIe
+| Host Bridge      | Part of a SoC that connects host CPUs and memory to PCIe
                      root ports, RCiEP, and non-PCIe devices integrated in the
-                     SoC. The host Bridge is placed between the device(s) and
+                     SoC. The host bridge is placed between the device(s) and
                      the platform interconnect to process DMA transactions. IO
                      Devices may perform DMA transactions using IO Virtual
                      Addresses (VA, GVA or GPA). The host bridge invokes the

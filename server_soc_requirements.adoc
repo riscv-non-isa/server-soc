@@ -384,7 +384,7 @@ standardized PCIe frameworks for memory and interrupt resource allocation,
 virtualization (SR-IOV), ATS/PRI for shared virtual addressing, trusted IO using
 SPDM/TDISP, RAS frameworks like data poisoning and AER, power management, etc.
 
-The host Bridge is placed between the device(s) and the system interconnect to
+The host bridge is placed between the device(s) and the system interconnect to
 process DMA transactions. Devices perform DMA transactions using IO Virtual
 Addresses (VA, GVA or GPA). The host bridge invokes the associated IOMMU to
 translate the IOVA to Supervisor Physical Addresses (SPA).
