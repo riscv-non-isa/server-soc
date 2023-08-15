@@ -781,7 +781,7 @@ messages or completions.
      PMA to NC/IO to implement the guarantee required by the PCIe specification
      with use of “No Snoop” attribute set to 1. If Svpbmt was used to override
      the PMA then use of cache management operations defined by Zicbom may be
-     required following to flush data that may be already cached._             +
+     required to flush data that may already be cached._             +
                                                                                +
     _See also section 7.5.3.4 of PCIe specification 6.0._
 
