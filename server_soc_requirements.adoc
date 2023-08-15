@@ -570,8 +570,8 @@ hierarchy domain originating at each PCIe root port.
                   any RCiEP.
                ** BAR (including when EA capability is used) mapped range of
                   any root port.
-             * The PCIe link of the PCie root port to which the access is
-               routed is not active
+             * The PCIe link of the root port to which the access is routed
+               is not active.
                ** Including due to root port entering downstream port
                   containment state.
 
