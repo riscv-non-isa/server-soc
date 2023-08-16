@@ -803,21 +803,18 @@ mechanism in PCIe.
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| MSI_010  | Message Signaled Interrupts (MSI/MSI-X) MUST be supported.
+| MSI_010  | Message Signaled Interrupts MUST be supported.
 
-| MSI_020  | SoC MUST not require any further action from system software
-             besides configuring the MSI address register in devices with
-             the address of an IMSIC interrupt register file (or a virtual
-             interrupt file) and the MSI data register in devices with an
-             external interrupt identity to enable use of MSI/MSI-X.
+| MSI_020  | SoC MUST not require any further action from the operating system
+             besides configuring the MSI address register in devices with the
+             address of an IMSIC interrupt register file (or a virtual interrupt
+             file) and the MSI data register in devices with an external
+             interrupt identity to enable the use of MSI or MSI-X.
 
 | MSI_030  | SoC MUST not support INTx virtual wire based interrupt signaling.
 2+| _PCIe supports INTx emulation to support legacy PCI interrupt mechanisms.
-     Modern SoC and devices should not be limited by this emulation mode being
-     not supported._
-
-| MSI_040  | PCIe RCiEP, host bridge, RCRB, and root ports MUST support MSI/MSI-X
-             and MUST not use INTx virtual wire interrupt signaling.
+     Modern SoC and devices are not expected be limited by the lack of this
+     emulation mode._
 
 |===
 
@@ -827,15 +824,18 @@ mechanism in PCIe.
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| PTM_010  | PCIe root ports SHOULD support PCIe PTM capability.
+| PTM_010  | PCIe root ports MAY support PCIe PTM capability.
 2+| _Several applications such as instrumentation, media servers, telecom
      servers, etc. require high precision monitoring and tracking of time. The
      PCIe PTM protocol supports synchronization of multiple devices/functions to
      a common shared PTM master time provided by the PTM root._
 
 | PTM_020  | When PCIe PTM capability is supported, the SoC MUST make the PTM
-             master time available to software.
-2+| _Making PTM master time available to software enables software to translate
+             master time available to the operating system.
+2+| _The mechanism to make the master time available to the operating  system
+     is implementation specific._                                              +
+                                                                               +
+    _Making PTM master time available to software enables software to translate
      timing information between local time and PTM master time and thereby
      enable coordination of events across multiple PCIe devices._
 
@@ -860,24 +860,24 @@ mechanism in PCIe.
 | AER_020  | PCIe root ports MUST support the downstream port containment
              (DPC) capability.
 
-| AER_030  | PCIe root ports MUST support the RP-PIO controls.
+| AER_030  | PCIe root ports MUST support the RP PIO controls.
 2+| _The root port programmed I/O (PIO) controls enable fine-grained control
      over handling of non-posted requests that encounter errors and allows
      handling of such errors as either uncorrectable or advisory based on
-     policies established by system software._
+     policies established by the operating system._
 
-| AER_040  | RCiEP in the SoC SHOULD support the AER capability if it 
+| AER_040  | A RCiEP in the SoC SHOULD support the AER capability if it 
              detects any of the errors defined by PCIe specification 6.0
              (See section 6.2.7). 
 
-| AER_050  | RCiEP in the SoC MUST support the AER capability if the ACS
-             capability is supported.
+| AER_050  | A RCiEP in the SoC MUST support the AER capability if it supports
+             the  ACS capability.
 
 | AER_060  | SoC MUST implement one or more PCIe RCEC in the root complex if
              any of the RCiEP implement the AER capability or implement PME
              signaling.
 
-| AER_070  | Each PCIe RCEC implemented in the SoC MUST implement the RCEC
+| AER_070  | The PCIe RCEC implemented in an SoC MUST implement the RCEC
              endpoint association extended capability.
 |===
 
@@ -895,10 +895,10 @@ mechanism in PCIe.
              * Designated Vendor Specific extended capability.
 
 | VSR_020  | SoC must not require hypervisors and/or operating system
-             interaction with vendor specific registers not defined by industry
-             standards. Non-standard vendor specific registers, if supported,
-             must only be used by the SoC firmware.
-2+| _Some Industry standards such a CXL may define standard DVSEC structures in
+             interaction with configuration space registers not defined by an
+             industry standards. Non-standard vendor specific registers, if
+             supported, must only be used by the SoC firmware.
+2+| _Some industry standards such a CXL may define standard DVSEC structures in
      the configuration space._                                                 +
                                                                                +
     _The preferred way to implement device/SoC vendor specific registers that
@@ -982,37 +982,19 @@ mechanism in PCIe.
 | RAS_010  | The level of RAS implemented by the SoC is `UNSPECIFIED`.
 2+| _The level of RAS implemented by a SoC depends on the reliability goals of
      the SoC measured using metrics such as failure-in-time (FIT) and
-     defects-per-million (DPM).                                                +
+     defects-per-million (DPM). A combination of fault prevention, error
+     detection and correction techniques may be employed to acheive these
+     goals._                                                                   +
                                                                                +
-    _A combination of fault prevention, error detection and correction
-     techniques may be employed. Fault prevention involves use of techniques
-     that reduce or prevent errors, measured through metrics such as
-     defects-per-million (DPM), that may occur after the product has been
-     shipped. These may be accomplished through the use of high quality in
-     product design, technology selection, materials selection, and
-     manufacturing time screening for defects. Through the use of systematic
-     design, technology selection, and manufacturing tests many errors such as
-     those induced by electric fields, temperature stress, switching/coupling
-     noise (e.g. DRAM RowHammer effect), incorrect V/F operating points,
-     insufficient guard bands, metastability, etc. can be prevented._          +
+    _This specification recommends implementation of error detection and
+     correction codes for storage elements such as significant caches and
+     memories.                                                                 +
                                                                                +
-    _The FIT goals may be further expressed in terms of failures attributed to
-     silent data errors (SDE) and those attributed to detected errors that
-     could not be corrected. A SoC compliant with this specification is
-     expected to implement RAS methods to minimize SDE. A reliable SoC should
-     fail instead of silently producing an incorrect result. Insufficient error
-     correction capabilities, while minimizing SDE, contribute to lowered
-     availability as measured by metrics like mean-time-to-failure (MTTF). A SoC
-     should define its FIT targets to minimize SDE and maximize availability to
-     meet its targets._                                                        +
-                                                                               +
-   _This specification recommends implementation of error detection and
-    correction codes for storage elements such as large caches and memories.
-    This specification recommends implementing mechanisms such as periodic
-    scrubbing (also known as patrol scrubbing) to proactively detect and correct
-    errors before such errors accumulate beyond the capability of the
-    implemented error correction codes (e.g., become double bit errors when the
-    code can only correct a single bit error)._
+    _This specification recommends implementing mechanisms such as
+     periodic scrubbing (also known as patrol scrubbing) to proactively detect
+     and correct errors before such errors accumulate beyond the capability of
+     the implemented error correction codes (e.g., become double bit errors when
+     the code can only correct a single bit error)._
 
 | RAS_020  | SoC SHOULD support generating, storing, and forwarding poisoned
              data. The granularity at which data is poisoned is `UNSPECIFIED`
@@ -1037,7 +1019,7 @@ mechanism in PCIe.
      data._                                                                    +
                                                                                +
     _Support for data poisoning enables support for error containment features
-     implemented by other standards such as PCIe and CXL._                     +
+     implemented by industry standards such as PCIe and CXL._                  +
                                                                                +
     _See also the RISC-V RERI specification for more detailed discussions on
      treatment of faults and errors._
@@ -1049,12 +1031,13 @@ mechanism in PCIe.
 2+| _Some components act as an intermediary through which the data passes
      through. For example, a PCIe/CXL port is an intermediary component that by
      itself does not consume the data it receives from memory but forwards the
-     data to the endpoint. In such cases the component may receive the data with
-     a deferred error. Such a component may propagate the error and not log an
-     error by itself. However, if the component to which the data is being
-     propagated (e.g. a PCIe endpoint) is not capable of handling poison then
-     the former component must signal an urgent error instead of propagating the
-     corrupted data, as the act of propagation breaks containment of the error._
+     data to the endpoint. In such cases the component may receive poisoned data.
+     Such a component may propagate the error and not log an error by itself.
+     However, if the component to which the data is being propagated (e.g. a
+     PCIe endpoint) is not capable of handling poison then the former component
+     must signal an urgent error instead of propagating the poisoned data
+     without the poison indicator, as such propagation breaks containment of the
+     corrupted data._
 
 | RAS_040  | The SoC SHOULD support the RISC-V RAS error record register
              interface (RERI) cite:[RERI] for error logging and signaling.
