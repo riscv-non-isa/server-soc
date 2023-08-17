@@ -53,7 +53,7 @@ this section only apply to harts in the application processors of the SoC.
      tasks among the harts without constraints._
 
 | RVA_040  | The RISC-V application processor harts in the SoC MAY support
-             different power and performance characteristics but must be
+             different power and performance characteristics but MUST be
              otherwise indistinguishable from each other from a software
              execution viewpoint.
 2+| _All harts in the SoC being indistinguishable from a software execution
@@ -90,7 +90,7 @@ this section only apply to harts in the application processors of the SoC.
 | ID#     ^| Requirement
 | CTI_010  | The `time` CSR MUST increment at a constant frequency and the count
              MUST be in units of 1 ns. The frequency at which the CSR provides
-             an updated time value must be at least 100 MHz.
+             an updated time value MUST be at least 100 MHz.
 
 | CTI_020  | The `time` counter MUST appear to be always on and MUST appear to
              not lose its count across power states including when the hart is
@@ -189,7 +189,7 @@ deliver external interrupts to the RISC-V application processor harts.
              wide device IDs.
 
 | IOM_040  | An IOMMU that does not govern a PCIe root port MUST support a
-             device ID width required to support all requester IDs originated by
+             device ID width REQUIRED to support all requester IDs originated by
              the devices governed by that IOMMU.
 
 | IOM_050  | The IOMMU MUST implement all the page based virtual memory system
@@ -428,12 +428,12 @@ hierarchy domain originating at each PCIe root port.
      specification._
 
 | ECM_030 | The ECAM address range for a hierarchy MUST be contiguous and the
-            base address of the range must be naturally aligned to the size of
+            base address of the range MUST be naturally aligned to the size of
             the ECAM address range associated with the hierarchy.
 
 | ECM_040 | A SoC MAY support multiple hierarchies. When multiple hierarchies
-            are supported, the ECAM address range of the hierarchies MUST not
-            overlap, but they are not required to be contiguous.
+            are supported, the ECAM address range of the hierarchies MUST NOT
+            overlap, but they are NOT REQUIRED to be contiguous.
 
 | ECM_050 | The configuration space of the PCIe root ports MUST be associated
             with the primary bus number of the hierarchy associated with the
@@ -444,7 +444,7 @@ hierarchy domain originating at each PCIe root port.
      subordinate buses are part of a single hierarchy domain that originates at
      that PCIe root port._
 
-| ECM_060 | The configuration space of functions on the primary bus must be
+| ECM_060 | The configuration space of functions on the primary bus MUST be
             accessible irrespective of the state of the corresponding PCIe link.
 2+| _Discovery and activation of the PCIe link requires accessing the
      configuration space registers of the PCIe root port itself and the PCIe
@@ -489,7 +489,7 @@ hierarchy domain originating at each PCIe root port.
 | ECM_110 | Write access from a RISC-V hart to configuration registers of
             non-existent functions on the primary bus MUST be dropped (silently
             ignored or discarded) and the write completed. Such accesses MUST
-            not lead to any other behavior (e.g., hangs, deadlocks, etc.).
+            NOT lead to any other behavior (e.g., hangs, deadlocks, etc.).
 
 | ECM_120 | Poisoned data received from completers (EP=1) MUST be forwarded to
             the requesting RISC-V hart as poisoned data unless such forwarding
@@ -540,7 +540,7 @@ hierarchy domain originating at each PCIe root port.
 
 | MMS_040 a| A load from a RISC-V application processor hart to memory ranges
              designated for the mapped memory space of endpoints or RCiEP MUST
-             complete with an all 1s response and MUST not lead to any other
+             complete with an all 1s response and MUST NOT lead to any other
              behavior (e.g., hangs, deadlocks, etc.) if any of the following are
              TRUE:
 
@@ -560,7 +560,7 @@ hierarchy domain originating at each PCIe root port.
 
 | MMS_050 a| A store from a RISC-V application processor hart to memory ranges
              designated for the mapped memory space of endpoints or RCiEP MUST
-             be dropped (silently ignored or discarded) and MUST not lead to any
+             be dropped (silently ignored or discarded) and MUST NOT lead to any
              other behavior (e.g., hangs, deadlocks, etc.) if any of the
              following are TRUE:
 
@@ -587,7 +587,7 @@ hierarchy domain originating at each PCIe root port.
              forwarding is disallowed then the poisoned data MUST be replaced
              with all 1s data.
 
-| MMS_080  | SoC MUST not use EA capability to indicate memory for allocation
+| MMS_080  | SoC MUST NOT use EA capability to indicate memory for allocation
              to endpoints downstream of a PCIe root port.
 |===
 
@@ -674,7 +674,7 @@ space of a peer endpoint or RCiEP.
              address provided by the IOMMU and MUST treat violating requests as
              Unsupported Requests.
 
-| ADR_030  | For Translated and Untranslated requests, the host bridge must use
+| ADR_030  | For Translated and Untranslated requests, the host bridge MUST use
              the translated addresses provided by the IOMMU to determine
              whether the transaction is targeting host memory or peer device
              memory.
@@ -682,7 +682,7 @@ space of a peer endpoint or RCiEP.
 | ADR_040  | The host bridge MAY support access to peer device memory. If peer
              device memory access is not enabled (by design or by configuration)
              then such accesses MUST be responded to with a UR/CA response. The
-             host bridge must not cause any other error (e.g., hang, deadlock,
+             host bridge MUST NOT cause any other error (e.g., hang, deadlock,
              etc.) when rejecting access to peer device memory.
 2+| _A virtual machine may violate the peer to peer policies and/or
      configurations established by the hypervisor and/or SoC firmware to
@@ -692,17 +692,17 @@ space of a peer endpoint or RCiEP.
      lead to system instabilities (e.g., hangs, deadlocks, etc.) or errors._
 
 | ADR_050  | When a posted or non-posted-with-data request is allowed to access
-             peer device memory, then the poisoned data (EP=1) must be forwarded
+             peer device memory, then the poisoned data (EP=1) MUST be forwarded
              as poisoned data unless such forwarding is disallowed (e.g.,
              poisoned TLP egress blocking, data poisoning is not supported by
              SoC).
 
 | ADR_060  | Host memory writes caused by posted or non-posted-with-data requests
-             with poisoned data (EP=1) must mark the data in the host memory as
+             with poisoned data (EP=1) MUST mark the data in the host memory as
              poisoned.
 
 | ADR_070  | Host memory reads that have uncorrectable data errors detected
-             within the SoC must cause a response with poisoned data (EP=1) if
+             within the SoC MUST cause a response with poisoned data (EP=1) if
              transmission of poisoned TLPs is not blocked (see also section
              2.7.2.1 of PCIe specification 6.0).
 |===
@@ -787,7 +787,7 @@ messages or completions.
                                                                                +
     _See also section 7.5.3.4 of PCIe specification 6.0._
 
-| CCS_050  | The host bridge MUST not violate the coherence PMA if the
+| CCS_050  | The host bridge MUST NOT violate the coherence PMA if the
              “No Snoop” attribute in the TLP is 0.
 
 | CCS_060  | The interpretation of the TLP processing hints (TPH) by the SoC is
@@ -808,19 +808,19 @@ mechanism in PCIe.
 | ID#     ^| Requirement
 | MSI_010  | Message Signaled Interrupts (MSI/MSI-X) MUST be supported.
 
-| MSI_020  | SoC MUST not require any further action from system software
+| MSI_020  | SoC MUST NOT require any further action from system software
              besides configuring the MSI address register in devices with
              the address of an IMSIC interrupt register file (or a virtual
              interrupt file) and the MSI data register in devices with an
              external interrupt identity to enable use of MSI/MSI-X.
 
-| MSI_030  | SoC MUST not support INTx virtual wire based interrupt signaling.
+| MSI_030  | SoC MUST NOT support INTx virtual wire based interrupt signaling.
 2+| _PCIe supports INTx emulation to support legacy PCI interrupt mechanisms.
      Modern SoC and devices should not be limited by this emulation mode not
      being supported._
 
 | MSI_040  | PCIe RCiEP, host bridge, RCRB, and root ports MUST support MSI/MSI-X
-             and MUST not use INTx virtual wire interrupt signaling.
+             and MUST NOT use INTx virtual wire interrupt signaling.
 
 |===
 
@@ -897,10 +897,10 @@ mechanism in PCIe.
              * Vendor specific extended capability.
              * Designated Vendor Specific extended capability.
 
-| VSR_020  | SoC must not require hypervisor and/or operating system
+| VSR_020  | SoC MUST NOT require hypervisor and/or operating system
              interaction with vendor specific registers not defined by industry
              standards. Non-standard vendor specific registers, if supported,
-             must only be used by the SoC firmware.
+             MUST only be used by the SoC firmware.
 2+| _Some Industry standards such a CXL may define standard DVSEC structures in
      the configuration space._                                                 +
                                                                                +
@@ -927,7 +927,7 @@ mechanism in PCIe.
      participate in RAS frameworks like data poisoning and AER, power management,
      etc._
 
-| SID_020  | SoC integrated PCIe devices MUST not be legacy devices and MUST not
+| SID_020  | SoC integrated PCIe devices MUST NOT be legacy devices and MUST NOT
              require use of I/O space, I/O transactions, and INTx virtual wire
              interrupt signaling mechanism.
 
@@ -972,7 +972,7 @@ mechanism in PCIe.
              PCIe Advanced Error Reporting capability MUST be supported.
 2+| _See PCIe specification 6.0 section 7.5.1.1.14._
 
-| SID_100  | A RCiEP that supports PCIe Advanced Error Reporting must be
+| SID_100  | A RCiEP that supports PCIe Advanced Error Reporting MUST be
              associated with a Root Complex Event Collector.
 |===
 
@@ -1145,7 +1145,7 @@ usage, etc.
              allocation in significant shared caches and memory controllers.
 
 | QOS_030  | If CBQRI is supported, RISC-V harts of application processors in
-             the SoC MUST support the `sqoscfg` CSR and the CSR must support at
+             the SoC MUST support the `sqoscfg` CSR and the CSR MUST support at
              least 16 RCIDs and at least 32 MCIDs
 2+| _The number of RCID and MCID should scale with the number of RISC-V harts
      in the SoC._
