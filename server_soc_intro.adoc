@@ -40,7 +40,7 @@ computing among others.
 The platform firmware, typically operating at privilege level M, is
 considered part of the platform and is typically expected to be customized and
 tailored to cater to the requirements of the SoC hardware (e.g., initialization
-of address decoders, memory controllers, RAS, etc.). 
+of address decoders, memory controllers, RAS, etc.).
 
 This specification standardizes the requirements for the hardware interfaces and
 capabilities (e.g., harts, timers,  interrupt controllers, PCIe root complexes,
@@ -70,8 +70,8 @@ The requirements in this specification use the following format:
              requirements and is followed by 3 digits - `NNN` - assigning a
              numeric ID to the requirement.                                   +
                                                                               +
-             The requirements use the key words "MUST", "MUST NOT", 
-             "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", 
+             The requirements use the key words "MUST", "MUST NOT",
+             "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT",
              "RECOMMENDED",  "MAY", and "OPTIONAL" that are to be interpreted
              as described in RFC 2119 cite:[RFC_2119].
 2+| _A requirement or a group of requirements may be followed with non-normative
@@ -100,7 +100,7 @@ This specification groups the requirements in the following broad categories:
 Most terminology has the standard RISC-V meaning. This table captures other
 terms used in the document. Terms in the document prefixed by “PCIe” have the
 meaning defined in the PCI Express (PCIe) Base Specification cite:[PCI} (even
-if they are not in this table). 
+if they are not in this table).
 
 .Terms and definitions
 [width=90%]
@@ -145,9 +145,9 @@ if they are not in this table).
 | Hierarchy ID or
   Segment ID       | Follows PCI Express. An identifier of a PCIe Hierarchy
                      within which the Requester IDs are unique.
-| Host bridge      | Part of a SoC that connects host CPUs and memory to PCIe
+| Host Bridge      | Part of a SoC that connects host CPUs and memory to PCIe
                      root ports, RCiEP, and non-PCIe devices integrated in the
-                     SoC. The host Bridge is placed between the device(s) and
+                     SoC. The host bridge is placed between the device(s) and
                      the platform interconnect to process DMA transactions. IO
                      Devices may perform DMA transactions using IO Virtual
                      Addresses (VA, GVA or GPA). The host bridge invokes the
@@ -178,7 +178,7 @@ if they are not in this table).
 | RCEC             | Follows PCI Express. Root Complex Event Collector. A block
                      for collecting errors and PME messages in a standard way
                      from various internal peripherals.
-| RID or            
+| RID or
   Requester ID     | Follows PCI Express. An identifier that uniquely identifies
                      the requester within a PCIe Hierarchy. Needs to be extended
                      with a Hierarchy ID to ensure it is unique across the
@@ -187,15 +187,15 @@ if they are not in this table).
                      Bridge, Root Port, and RCiEP.
 | Root Port, RP    | Follows PCI Express. A PCIe port in a Root Complex used to
                      map a Hierarchy Domain using a PCI-PCI bridge.
-| P2P or 
+| P2P or
   peer-to-peer     | Follows PCI Express. Transfer of data directly from one
                      device to another. If the devices are under different PCIe
                      Root Ports or are internal to the SoC this may involve data
                      movement across the SoC internal interconnect.
-| PLDM             | Follows DMTF standard. Platform Level Data Model. 
+| PLDM             | Follows DMTF standard. Platform Level Data Model.
 | PMA              | Physical Memory Attributes.
 | PMP              | Physical Memory Protection.
-| Prefetchable 
+| Prefetchable
   Non-prefetchable | Follows PCI Express. Defines the property of the memory
                      space used by a device. For details see the PCIe Base
                      Specification. Broadly, non-prefetchable space covers any
