@@ -5,7 +5,7 @@
 A RISC-V SoC includes a RISC-V application processor and may include one or
 more service processors. The service processors may provide services such as
 security and power management to software executing on the application
-processors and may themself implement the RISC-V ISA. The requirements in 
+processors and may themself implement the RISC-V ISA. The requirements in
 this section only apply to harts in the application processors of the SoC.
 
 [width=100%]
@@ -42,7 +42,7 @@ this section only apply to harts in the application processors of the SoC.
      profile spec._
 
 | RVA_030  | The ISA extensions and associated CSR field widths implemented by
-             any of the  RISC-V application processor harts in the SoC MUST be
+             any of the RISC-V application processor harts in the SoC MUST be
              identical.
 2+| _The RVA23 profile supports a set of optional extensions. The set of
      optional extensions implemented by the harts must be identical. Where the
@@ -62,7 +62,7 @@ this section only apply to harts in the application processors of the SoC.
 
 | RVA_050 a| The RISC-V application processor hart MUST support:
 
-             * Single stepping using the step bit in  `dcsr` 
+             * Single stepping using the step bit in  `dcsr`
              * Debug scratch register 0 (`dscratch0`)
 
 | RVA_060 a| The RISC-V application processor hart MUST support:
@@ -186,14 +186,14 @@ deliver external interrupts to the RISC-V application processor harts.
      virtual machines, shared virtual addressing, etc._
 
 | IOM_030  | The IOMMU governing a PCIe root port MUST support at least 16-bit
-             wide device IDs. 
+             wide device IDs.
 
 | IOM_040  | An IOMMU that does not govern a PCIe root port MUST support a
              device ID width required to support all requester IDs originated by
              the devices governed by that IOMMU.
 
 | IOM_050  | The IOMMU MUST implement all the page based virtual memory system
-             modes and extensions that are supported by the IOMMU and are also 
+             modes and extensions that are supported by the IOMMU and are also
              implemented by the RISC-V application processor harts in the SoC.
 2+| _The page based virtual memory system modes that may be optionally supported
      by the IOMMU are defined in the IOMMU capabilities register._
@@ -213,8 +213,8 @@ deliver external interrupts to the RISC-V application processor harts.
              support atomic updates to the MRIF (enumerated by 1 setting of
              `capabilities.AMO_MRIF`).
 
-| IOM_090  | IOMMU governing PCIe root ports SHOULD support PCIe address 
-             translation services (ATS). 
+| IOM_090  | IOMMU governing PCIe root ports SHOULD support PCIe address
+             translation services (ATS).
 2+| _High performance devices such as DPU/SmartNICs, GPUs, and FPGAs used in
      server platforms rely on ATS and Page Request services to deliver high
      throughput and low latency I/O.                                           +
@@ -237,7 +237,7 @@ deliver external interrupts to the RISC-V application processor harts.
      hypervisor may establish a trust relationship with the device if
      authentication protocols are supported by the device. For PCIe, for
      example, the PCIe component measurement and authentication (CMA) capability
-     provides a mechanism to verify the device’s configuration and 
+     provides a mechanism to verify the device’s configuration and
      firmware/executable (Measurement) and hardware identities (Authentication)
      to establish such a trust relationship and the PCIe link may be integrity
      protected using PCIe integrity and data encryption (IDE)._
@@ -273,7 +273,7 @@ deliver external interrupts to the RISC-V application processor harts.
      HPM._
 
 | IOM_190  | IOMMU that supports an HPM, MUST support the cycles counter and at
-             least 4 event counters. 
+             least 4 event counters.
 
 | IOM_200  | The cycles counter and the event counters MUST be at least 40 bits
              wide.
@@ -331,7 +331,7 @@ deliver external interrupts to the RISC-V application processor harts.
 | IOM_280  | When the IOMMU supports 24-bit device IDs, the host bridge MUST
              specify the segment number associated with the PCIe hierarchy from
              which requests were received as the bits 23:16 of the device_id to
-             the IOMMU. 
+             the IOMMU.
 
 | IOM_290  | The determination of device_id input to an IOMMU for requests
              originating from non-PCIe devices is `UNSPECIFIED`. If PCIe and
@@ -363,7 +363,7 @@ Segment, and in Flit Mode, the Segment number is sometimes also included in the
 ID of a Function. Each root port in a hierarchy originates a hierarchy domain
 i.e. a part of a Hierarchy originating from a single Root Port. The root ports
 are PCI-PCI bridges that bridge a primary PCIe bus to a range of secondary and
-subordinate buses. 
+subordinate buses.
 
 In some SoCs, PCIe devices may be integrated in the same package/die as the root
 complex. Examples of such devices are network controllers, USB host controllers,
@@ -372,12 +372,12 @@ presented to software using one of the following options:
 
 . Presented to software as a PCIe endpoint (EP; See section 1.3.2.2 of the PCIe
   6.0 specification) connected to a PCIe root port (See example of such an
-  endpoint connected to root port 3 in <<RISC-V-Server-RC>>). Such PCIe 
-  endpoints must comply with the PCIe specified rules for endpoints. 
+  endpoint connected to root port 3 in <<RISC-V-Server-RC>>). Such PCIe
+  endpoints must comply with the PCIe specified rules for endpoints.
 
 . Presented to software as a root complex integrated endpoint (RCiEP; See
   section 1.3.2.3 of the PCIe 6.0 specification). Such PCIe endpoints must
-  comply with the PCIe specified rules for RCiEP. 
+  comply with the PCIe specified rules for RCiEP.
 
 Implementing integrated devices that perform as RCiEP or EP allows the use of
 standardized PCIe frameworks for memory and interrupt resource allocation,
@@ -413,12 +413,12 @@ hierarchy domain originating at each PCIe root port.
              * Not cacheable, non-idempotent, coherent, strongly-ordered
                (I/O ordering) I/O region
              * One, two, and four byte naturally aligned read and write MUST
-               be supported. 
+               be supported.
 
-| ECM_020  | Writes to the ECAM address range from a RISC-V hart MUST be 
+| ECM_020  | Writes to the ECAM address range from a RISC-V hart MUST be
              non-posted and the write MUST complete at the hart only after a
              completion is received from the function hosting the accessed
-             configuration register. 
+             configuration register.
 2+| _Besides performing a write, software executing on a hart must not
      require any additional actions to achieve this property._                 +
                                                                                +
@@ -479,7 +479,7 @@ hierarchy domain originating at each PCIe root port.
               not enabled.
             * PCIe CRS software visibility is enabled, but the access does not
               target the vendor ID register, and a RRS response was received on
-              each retry of the configuration read. 
+              each retry of the configuration read.
 
 2+| _The data response to the Vendor ID register on receipt of an RRS response
      must follow the PCIe defined rules._                                      +
@@ -517,7 +517,7 @@ hierarchy domain originating at each PCIe root port.
 
 2+| _The ranges suitable for mapping using 32-bit BARs are also sometimes termed
      as the low MMIO ranges and those suitable for use with 64-bit BARs termed
-     as high MMIO ranges._ 
+     as high MMIO ranges._
 
 | MMS_030 a| The system physical address ranges designated for mapping
              endpoint memory spaces MUST have the following physical memory
@@ -606,7 +606,7 @@ devices, and SR-IOV capable devices.
              support the following PCIe access control services (ACS) controls
 
              * ACS source validation
-             * ACS translation blocking        
+             * ACS translation blocking
              * ACS I/O request blocking
 
 | ACS_020  | If a PCIe root port or a SoC integrated downstream switch port
@@ -637,7 +637,7 @@ devices, and SR-IOV capable devices.
      the section 1.3.1 of PCIe specification 6.0._
 
 | ACS_050  | The ACS features including detection, logging, and reporting of ACS
-             violations MUST comply with the rules in the PCIe 
+             violations MUST comply with the rules in the PCIe
              specifications 6.0.
 |===
 
@@ -688,7 +688,7 @@ space of a peer endpoint or RCiEP.
      configurations established by the hypervisor and/or SoC firmware to
      disallow peer device memory accesses. Such a VM may attempt to program
      devices passed through to the virtual machine to perform peer memory
-     accesses. Such attempts to violate the peer to peer policies  must not
+     accesses. Such attempts to violate the peer to peer policies must not
      lead to system instabilities (e.g., hangs, deadlocks, etc.) or errors._
 
 | ADR_050  | When a posted or non-posted-with-data request is allowed to access
@@ -750,7 +750,7 @@ messages or completions.
              host bridge such that all previous writes are globally observed
              before the RO=0 write is globally observed.
 
-| CCS_030  | The host bridge MUST enforce the idempotency, coherence, 
+| CCS_030  | The host bridge MUST enforce the idempotency, coherence,
              cacheability, and access type PMA of the accessed memory and
              perform any reordering or combining of PCIe transactions only if
              the combination of PMA and TLP specified memory ordering attributes
@@ -774,7 +774,7 @@ messages or completions.
      that instructs a device to perform “No Snoop” transactions must only do so
      when it can provide this guarantee._                                      +
                                                                                +
-    _Some caches in a SoC may perform clean evictions to memory. In such SoCs, 
+    _Some caches in a SoC may perform clean evictions to memory. In such SoCs,
      if the addresses used by the non-snooped transactions may be cached (e.g.,
      due to speculative accesses from a hart) then such clean evictions may
      cause data corruption even if the caches were explicitly cleaned by
@@ -854,7 +854,7 @@ mechanism in PCIe.
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| AER_010  | PCIe root ports MUST support advanced error reporting (AER) 
+| AER_010  | PCIe root ports MUST support advanced error reporting (AER)
              capability for reporting errors from connected devices or the
              errors detected by the root port itself.
 2+| _AER capability defines more robust error reporting as compared to the
@@ -869,9 +869,9 @@ mechanism in PCIe.
      handling of such errors as either uncorrectable or advisory based on
      policies established by system software._
 
-| AER_040  | RCiEP in the SoC SHOULD support the AER capability if it 
+| AER_040  | RCiEP in the SoC SHOULD support the AER capability if it
              detects any of the errors defined by PCIe specification 6.0
-             (See section 6.2.7). 
+             (See section 6.2.7).
 
 | AER_050  | RCiEP in the SoC MUST support the AER capability if the ACS
              capability is supported.
@@ -1203,7 +1203,7 @@ used by data centers and enterprises
              (DC-SCM) specified by the Open Compute Project for server
              management, security, and control features.
 
-| MNG_020  | The SoC SHOULD support a x1 PCIe lane (at least Gen 2; 
+| MNG_020  | The SoC SHOULD support a x1 PCIe lane (at least Gen 2;
              preferably Gen 5) connection to the DC-SCM.
 2+| _This interface is typically connected to a BMC as a PCIe endpoint for
      usages including enabling host to BMC communication for functions such as
@@ -1221,7 +1221,7 @@ used by data centers and enterprises
              baseboard management controller (BMC) and the SoC manageability
              controller.
 
-             * I3C as specified  by DSP0233 MCTP I3C transport binding 1.0.0.
+             * I3C as specified by DSP0233 MCTP I3C transport binding 1.0.0.
                 cite:[DSP0233]
              * PCIe VDM as specified by DSP0238 MCTP PCIe VDM transport
                binding 1.2.0. cite:[DSP0238]
@@ -1300,7 +1300,7 @@ used by data centers and enterprises
     _Program buffer provides more flexibility and ease of use compared to
      abstract access._                                                         +
                                                                                +
-    _Enforcing a full and exact set of permissions on abstract and program 
+    _Enforcing a full and exact set of permissions on abstract and program
      buffer memory access avoids security concerns._
 
 | DBG_030  | The SoC MUST support a JTAG debug transport module as specified by
