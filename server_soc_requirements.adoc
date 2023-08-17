@@ -990,11 +990,15 @@ mechanism in PCIe.
      correction codes for storage elements such as significant caches and
      memories.                                                                 +
                                                                                +
-    _This specification recommends implementing mechanisms such as
-     periodic scrubbing (also known as patrol scrubbing) to proactively detect
-     and correct errors before such errors accumulate beyond the capability of
-     the implemented error correction codes (e.g., become double bit errors when
-     the code can only correct a single bit error)._
+    _This specification recommends mechanisms such as single-symbol (SSC) ECC
+     in DRAM controllers to address failure modes such as all bits in a single
+     DRAM device failing._                                                     +
+                                                                               +
+    _This specification recommends implementing mechanisms such as periodic 
+     scrubbing (also known as patrol scrubbing) to proactively detect and
+     correct errors before such errors accumulate beyond the capability of the
+     implemented error correction codes (e.g., become double bit errors when
+     the code can only correct a single bit error)._                           +
 
 | RAS_020  | SoC SHOULD support generating, storing, and forwarding poisoned
              data. The granularity at which data is poisoned is `UNSPECIFIED`
@@ -1087,10 +1091,11 @@ mechanism in PCIe.
 | RAS_080  | If RERI is supported then the hardware components in the SoC that
              support error correction MUST implement a corrected error counter
              in their error records and MUST support signaling counter overflows.
-2+| _Signaling on counter overflow allows software to establish a convenient
-     threshold for when such corrected errors are signaled for logging and
-     analysis._                                                               +
-                                                                              +
+2+| _Counting corrected errors provides a more accurate picture of the system
+     reliability. Signaling on counter overflow allows software to establish a
+     convenient threshold for when such corrected errors are signaled for
+     logging and analysis._                                                    +
+                                                                               +
     _Some hardware units may maintain a history of corrected errors and may
      report a corrected error and may increment the corrected error counter
      only if the error is not identical to a previously reported corrected
