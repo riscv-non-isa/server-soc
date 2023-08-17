@@ -72,8 +72,11 @@ The requirements in this specification use the following format:
                                                                               +
              The requirements use the key words "MUST", "MUST NOT",
              "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT",
-             "RECOMMENDED",  "MAY", and "OPTIONAL" that are to be interpreted
-             as described in RFC 2119 cite:[RFC_2119].
+             "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" that are
+             to be interpreted as described in RFC 2119 cite:[RFC_2119] when,
+             and only when, they appear in all capitals, as shown here. When
+             these words are not capitalized, they have their normal English
+             meanings.
 2+| _A requirement or a group of requirements may be followed with non-normative
     text providing context or justification for the requirement. The
     non-normative text may also be used to point to references that are the
