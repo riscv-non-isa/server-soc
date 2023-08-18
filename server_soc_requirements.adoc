@@ -835,7 +835,7 @@ mechanism in PCIe.
 
 | PTM_020  | When PCIe PTM capability is supported, the SoC MUST make the PTM
              master time available to the operating system.
-2+| _The mechanism to make the master time available to the operating  system
+2+| _The mechanism to make the master time available to the operating system
      is implementation specific._                                              +
                                                                                +
     _Making PTM master time available to software enables software to translate
@@ -870,18 +870,18 @@ mechanism in PCIe.
      policies established by the operating system._
 
 
-| AER_040  | A RCiEP in the SoC SHOULD support the AER capability if it 
+| AER_040  | A RCiEP in the SoC SHOULD support the AER capability if it
              detects any of the errors defined by PCIe specification 6.0
              (See section 6.2.7).
 
 | AER_050  | A RCiEP in the SoC MUST support the AER capability if it supports
-             the  ACS capability.
+             the ACS capability.
 
 | AER_060  | SoC MUST implement one or more PCIe RCEC in the root complex if
              any of the RCiEP implement the AER capability or implement PME
              signaling.
 
-| AER_070  | The PCIe RCEC implemented in an SoC MUST implement the RCEC
+| AER_070  | The PCIe RCEC implemented in a SoC MUST implement the RCEC
              endpoint association extended capability.
 |===
 
@@ -993,13 +993,13 @@ mechanism in PCIe.
                                                                                +
     _This specification recommends implementation of error detection and
      correction codes for storage elements such as significant caches and
-     memories.                                                                 +
+     memories._                                                                +
                                                                                +
     _This specification recommends mechanisms such as single-symbol (SSC) ECC
      in DRAM controllers to address failure modes such as all bits in a single
      DRAM device failing._                                                     +
                                                                                +
-    _This specification recommends implementing mechanisms such as periodic 
+    _This specification recommends implementing mechanisms such as periodic
      scrubbing (also known as patrol scrubbing) to proactively detect and
      correct errors before such errors accumulate beyond the capability of the
      implemented error correction codes (e.g., become double bit errors when
