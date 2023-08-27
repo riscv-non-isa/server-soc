@@ -1210,28 +1210,27 @@ Management Component Transport Protocol (MCTP) cite:[DSP0236]) protocols for
 in-band and out-of-band server management.
 
 This specification strongly recommends the use of DMTF specified Security
-Protocol and Data Model (SPDM) for device attestation (See DSP0274
-cite:[DS0274]) and secure communication using SPDM encrypted messages (See
-DSP0277 cite:[DSP0277]) for in-band and out-of-band communication with the BMC.
-SPDM authentication protocols support establishing a trust relationship between
-the in-band and out-of-band manageability agents in the SoC and the BMC. Use of
-SPDM secured messages enables preserving the confidentiality and integrity of
+Protocol and Data Model (SPDM) cite:[DSP0274] for device attestation and
+using SPDM encrypted messages cite:[DSP0277] for secure in-band and out-of-band
+communication with the BMC. SPDM authentication protocols support establishing a
+trust relationship between the manageability agents in the SoC and the BMC. Use
+of SPDM secured messages enables preserving the confidentiality and integrity of
 data exchanged between the BMC and the manageability agents in the SoC.
 
 The specification recommends supporting Intelligent Platform Management
-Interface (IPMI) for cite:[IPMI20] due to the widespread use of this protocol
+Interface (IPMI) cite:[IPMI20] due to the widespread use of this protocol
 for server management functions such as credentials provisioning and remote
 power control.
 
 This specification recommends the RISC-V server SoC to support open standards
 for server management through supporting integration with technologies such as
-the datacenter-ready secure control module (DC-SCM) specified by the Open
-Compute Project for server management, security, and control features.
+the datacenter-ready secure control module (DC-SCM) cite:[DC-SCM] specified by
+the Open Compute Project for server management, security, and control features.
 
 Adhering to the industry standard management protocols such as those specified
-by DMTF allows server platforms built with RISC-V server SoCs to seamlessly
-integrate into the server management frameworks and tools employed by data
-centers and enterprises.
+by DMTF and OCP allows server platforms built with RISC-V server SoCs to
+seamlessly integrate into the server management frameworks and tools employed by
+data centers and enterprises.
 
 [width=100%]
 [%header, cols="5,25"]
