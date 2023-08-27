@@ -1020,21 +1020,21 @@ mechanism in PCIe.
     the poisoned data gets consumed. If a component (such as a hart, an IOMMU, a
     device, etc.) consumes the poisoned data, it triggers an uncorrected urgent
     error (UUE), leading to the invocation of a recovery handler for immediate
-    remedial actions, as further deferral of the error is not feasible.        +
+    remedial actions, as further deferral of the error is not feasible._       +
                                                                                +
    _The technique of data poisoning facilitates delaying the handling of
     uncorrected errors until the moment the corrupted data is actually consumed.
     Data poisoning offers a more precise identification of the software and/or
     hardware component affected by the data corruption. This specificity allows
-    for targeted recovery actions that impact only the affected components.    +
+    for targeted recovery actions that impact only the affected components._   +
                                                                                +
    _To ensure the integrity of the poisoned data indicator when stored, error
     detection and correction codes should be applied. This practice prevents
     subsequent errors from leading to the silent consumption of the corrupted
-    data.                                                                      +
+    data._                                                                     +
                                                                                +
    _Data poisoning also empowers the implementation of error containment
-    features supported by industry standards like PCIe and CXL.                +
+    features supported by industry standards like PCIe and CXL._               +
 
    _For more detailed discussions on the treatment of faults and errors, refer
     to the RISC-V RERI specification._
