@@ -171,7 +171,7 @@ deliver external interrupts to the RISC-V application processor harts.
 | ID#     ^| Requirement
 | IOM_010  | All IOMMUs in the SoC MUST support the RISC-V IOMMU specification
              cite:[IOMMU].
-2+| _The number of IOMMUs implemented in the SoC is UNSPECIFIED._
+2+| _The number of IOMMUs implemented in the SoC is `UNSPECIFIED`._
 
 | IOM_020  | All DMA capable peripherals (RCiEP and non-PCIe devices) and all
              PCIe root ports that are made available to software on the RISC-V
@@ -217,10 +217,10 @@ deliver external interrupts to the RISC-V application processor harts.
 
 | IOM_090  | IOMMU governing PCIe root ports SHOULD support PCIe address
              translation services (ATS).
-2+| _High performance devices such as DPU/SmartNICs, GPUs, and FPGAs used in
-     server platforms rely on ATS and Page Request services to deliver high
-     throughput and low latency I/O.                                           +
-     Supporting ATS is also required for efficiently supporting usage models
+2+| _High performance devices such as DPU/SmartNICs, GPUs, and FPGAs, utilized
+     in server platforms rely on ATS and Page Request services to achieve high
+     throughput and low-latency I/O.                                           +
+     Supporting ATS is also required for efficiently accommodating usage models
      such as Shared Virtual Addressing and direct work submission from user
      mode._
 
@@ -228,21 +228,22 @@ deliver external interrupts to the RISC-V application processor harts.
              operation with ATS if ATS is supported.
 
 | IOM_110  | IOMMU governing RCiEP MUST support PCIe address translation
-             services (ATS) if any of the RCiEP governed by the IOMMU support
+             services (ATS) if any of the RCiEPs governed by the IOMMU support
              the ATS capability.
-2+| _The T2GPA control enables a hypervisor to contain DMA from a device, even
+2+| _The T2GPA control enables a hypervisor to prevent DMA from a device, even
      if the device misuses the ATS capability and attempts to access memory that
-     is not explicitly authorized by the page tables governing that devices
-     memory accesses. The threat model may also include a man-in-the-middle on
-     the PCIe link inserting ATS translated requests to access memory that was
-     not previously authorized.  As an alternative to setting T2GPA to 1, the
-     hypervisor may establish a trust relationship with the device if
-     authentication protocols are supported by the device. For PCIe, for
-     example, the PCIe component measurement and authentication (CMA) capability
-     provides a mechanism to verify the device’s configuration and
-     firmware/executable (Measurement) and hardware identities (Authentication)
-     to establish such a trust relationship and the PCIe link may be integrity
-     protected using PCIe integrity and data encryption (IDE)._
+     is not explicitly authorized by the page tables governing that device's
+     memory accesses. The threat model could also include a man-in-the-middle on
+     the PCIe link inserting ATS-translated requests to access memory that was
+     not previously authorized. As an alternative to setting T2GPA to 1, the
+     hypervisor might establish a trust relationship with the device if
+     authentication protocols such as SPDM are supported by the device. For
+     PCIe, for example, the PCIe Component Measurement and Authentication (CMA)
+     capability provides a mechanism to verify the device’s configuration and
+     firmware/executable (Measurement) and hardware identities (Authentication).
+     This mechanism establishes such a trust relationship, and the PCIe link may
+     be integrity-protected using PCIe integrity and data encryption (IDE) to
+     defend against a man-in-the-middle adversary._
 
 | IOM_120  | IOMMU governing RCiEP MAY support the T2GPA mode of operation with
              ATS if ATS is supported.
@@ -260,10 +261,10 @@ deliver external interrupts to the RISC-V application processor harts.
              data structures.
 2+| _The IOMMU memory-mapped registers always have a little-endian byte order._
 
-| IOM_160  | IOMMU MAY support the PASID capability.
+| IOM_160  | IOMMU MAY support the PCIe PASID capability.
 
 | IOM_170  | IOMMU that supports PASID capability MUST support 20-bit PASID
-             width and MAY support 8 and 17 bit PASID widths.
+             width and MAY support 8-bit and 17-bit PASID widths.
 2+| _PCIe specification strongly recommends that hardware implement the maximum
      width of 20 bits to ensure interoperability with system software. See also
      the implementation note on PASID width homogeneity in the PCIe
@@ -274,8 +275,8 @@ deliver external interrupts to the RISC-V application processor harts.
      monitoring and optimizations. An IOMMU is highly recommended to provide an
      HPM._
 
-| IOM_190  | IOMMU that supports an HPM, MUST support the cycles counter and at
-             least 4 event counters.
+| IOM_190  | An IOMMU that supports an HPM MUST support the cycles counter and
+             MUST incorporate at least 4 event counters.
 
 | IOM_200  | The cycles counter and the event counters MUST be at least 40 bits
              wide.
@@ -286,9 +287,10 @@ deliver external interrupts to the RISC-V application processor harts.
 | IOM_220  | The physical address width supported by the IOMMU MUST be greater
              than or equal to the physical address width supported by the RISC-V
              application processor harts in the SoC.
-2+| _The physical address width being greater than or equal to the width
+2+| _Having the physical address width greater than or equal to the width
      supported the harts in the SoC enables use of all addressable memory for
-     I/O and enables sharing of page tables between the hart MMU and the IOMMU._
+     I/O and facilitates the sharing of page tables between the hart MMU and the
+     IOMMU._
 
 | IOM_230  | The reset default of the `iommu_mode` MUST be `Off`.
 2+| _The IOMMU disallowing DMA unconditionally following reset due to the mode
@@ -299,7 +301,7 @@ deliver external interrupts to the RISC-V application processor harts.
      program the mode in the appropriate IOMMU prior to programming the
      peripheral governed by that IOMMU to perform a DMA._
 
-| IOM_240  | The IOMMU SHOULD be implemented as a RCiEP with base class 08H and
+| IOM_240  | The IOMMU SHOULD be implemented as an RCiEP with base class 08H and
              subclass 06H cite:[PCI-CLS].
 2+| _The base class 08H and sub-class 06H are designated by PCIe for use by an
      IOMMU. Implementing the IOMMU as a PCIe device allows an operating system
@@ -484,7 +486,7 @@ hierarchy domain originating at each PCIe root port.
               each retry of the configuration read.
 
 2+| _The data response to the Vendor ID register on receipt of an RRS response
-     must follow the PCIe defined rules._                                      +
+     MUST follow the PCIe defined rules._                                      +
                                                                                +
     _See also the recommendations in PCIe specification 6.0 section 2.3.2._
 
@@ -535,8 +537,8 @@ hierarchy domain originating at each PCIe root port.
 
 2+| _Software may use the Svpbmt extension to override the PMA to NC if such an
      override is compatible with the restricted programming model of the
-     device._ +
-              +
+     device._                                                                  +
+                                                                               +
     _See also the implementation note on optimizations based on restricted
      programming mode in section 2.3.1 of PCIe specification 6.0._
 
