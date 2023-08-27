@@ -3,59 +3,58 @@
 == Introduction
 
 The RISC-V server SoC specification defines a standardized set of capabilities
-that portable system software such as operating systems and hypervisors can
+that portable system software such as operating systems and hypervisors, can
 rely on being present in a RISC-V server SoC.
 
-A server is a computing system that is designed to manage and distribute
-resources, services, and data to other computers or devices on a network. It is
-often referred to as a "server" because it serves or provides information or
+A server is a computing system designed to manage and distribute resources,
+services, and data to other computers or devices on a network. It is often
+referred to as a 'server' because it serves or provides information and
 resources upon request. Such computing systems are designed to operate
-continually and have a higher degree of requirements on capabilities such as
-RAS, security, performance, and quality of service. Examples of servers include
-web servers, file servers, database servers, mail servers, game servers, etc.
-The focus of this specification is to define requirements for general purpose
-server computing systems that may be used for one or more of these purposes.
+continually and have higher requirements for capabilities such as RAS, security,
+performance, and quality of service. Examples of servers include web servers,
+file servers, database servers, mail servers, game servers, and more. This
+specification focuses on defining requirements for general-purpose server
+computing systems that may be used for one or more of these purposes.
 
 [[fig:RISC-V-Server-Platform]]
 .Components of a RISC-V Server Platform
 image::riscv-server-platform.png[width=800]
 
 The RISC-V server platform is defined as the collection of SoC hardware,
-platform firmware, and the boot/runtime services, and security services. The
-platform provides the hardware interfaces (e.g., harts, timers, interrupt
-controllers, PCIe root ports, etc.) to portable system software. The platform
-provides a set of standardized boot and runtime services based on the UEFI and
-ACPI standards. To support provisioning and management of the platform, it
-interfaces with a baseboard management controller (BMC) through in-band and
-out-of-band (OOB) management interfaces. The in-band management interfaces
-support use of standard manageability specifications like DMTF SPDM and DMTF
-Redfish for provisioning and management of the operating system executing on the
-platform. The OOB interface supports use of standard manageability
-specifications like DMTF Redfish and IPMI for functions such as
-power/management, telemetry, debug, and provisioning. The security model
-includes guidelines and requirements such as debug authorization,
-secure/measured boot, firmware updates, firmware resilience, and confidential
-computing among others.
+platform firmware, boot/runtime services, and security services. The platform
+provides hardware interfaces (e.g., harts, timers, interrupt controllers, PCIe
+root ports, etc.) to portable system software. It also offers a set of
+standardized boot and runtime services based on the UEFI and ACPI standards. To
+support provisioning and platform management, it interfaces with a baseboard
+management controller (BMC) through both in-band and out-of-band (OOB)
+management interfaces. The in-band management interfaces support the use of
+standard manageability specifications like MCTP, PLDM, IPMI, and Redfish for
+provisioning and management of the operating system executing on the platform.
+The OOB interface supports the use of standard manageability specifications like
+MCTP, PLDM, Redfish, and IPMI for functions such as power management, telemetry,
+debug, and provisioning. The security model includes guidelines and requirements
+for aspects such as debug authorization, secure/measured boot, firmware updates,
+firmware resilience, and confidential computing, among others.
 
 The platform firmware, typically operating at privilege level M, is
-considered part of the platform and is typically expected to be customized and
-tailored to cater to the requirements of the SoC hardware (e.g., initialization
+considered part of the platform and is usually expected to be customized and
+tailored to meet the requirements of the SoC hardware (e.g., initialization
 of address decoders, memory controllers, RAS, etc.).
 
 This specification standardizes the requirements for the hardware interfaces and
-capabilities (e.g., harts, timers,  interrupt controllers, PCIe root complexes,
+capabilities (e.g., harts, timers, interrupt controllers, PCIe root complexes,
 RAS, QoS, in-band management, out-of-band (OOB) management, etc.) provided by
 the SoC to software executing on the application processor harts at privilege
-level less than M, and enables OS and hypervisor vendors to support such SoCs
-with a single binary OS image distribution model. The requirements posed by this
-specification are a standard set of infrastructural capabilities i.e., areas
-where it is usually not required to be divergent and are not otherwise novel
-from one implementation to another.
+levels below M. It enables OS and hypervisor vendors to support such SoCs with a
+single binary OS image distribution model. The requirements posed by this
+specification represent a standard set of infrastructural capabilities,
+encompassing areas where divergence is typically unnecessary and where novelty
+is absent across implementations.
 
 To be compliant with this specification, the SoC MUST support all mandatory
 requirements and MUST support the listed versions of the specifications. This
 standard set of capabilities MAY be extended by a specific implementation with
-additional standard or custom capabilities; including compatible later
+additional standard or custom capabilities, including compatible later
 versions of listed standard specifications. Portable system software MUST
 support the specified mandatory capabilities to be compliant with this
 specification.
@@ -77,21 +76,20 @@ The requirements in this specification use the following format:
              and only when, they appear in all capitals, as shown here. When
              these words are not capitalized, they have their normal English
              meanings.
-2+| _A requirement or a group of requirements may be followed with non-normative
+2+| _A requirement or a group of requirements may be followed by non-normative
     text providing context or justification for the requirement. The
-    non-normative text may also be used to point to references that are the
-    source of the requirement._
+    non-normative text may also be used to reference sources that are the
+    origin of the requirement._
 |===
 
 This specification groups the requirements in the following broad categories:
 
 * Harts
-* Timers
-* Interrupts
+* Clocks and Timers
+* External Interrupt Controllers
 * IOMMU
-* SoC integrated devices
 * PCIe subsystem
-* RAS
+* Reliability, Availability, and Serviceability
 * Quality of Service
 * Debug
 * Trace
@@ -101,8 +99,8 @@ This specification groups the requirements in the following broad categories:
 === Glossary
 
 Most terminology has the standard RISC-V meaning. This table captures other
-terms used in the document. Terms in the document prefixed by “PCIe” have the
-meaning defined in the PCI Express (PCIe) Base Specification cite:[PCI} (even
+terms used in the document. Terms in the document prefixed by 'PCIe' have the
+meaning defined in the PCI Express (PCIe) Base Specification cite:[PCI] (even
 if they are not in this table).
 
 .Terms and definitions
