@@ -985,283 +985,292 @@ mechanism in PCIe.
 |===
 | ID#     ^| Requirement
 | RAS_010  | The level of RAS implemented by the SoC is `UNSPECIFIED`.
-2+| _The level of RAS implemented by a SoC depends on the reliability goals of
-     the SoC measured using metrics such as failure-in-time (FIT) and
-     defects-per-million (DPM). A combination of fault prevention, error
-     detection and correction techniques may be employed to acheive these
-     goals._                                                                   +
+2+| _The level of RAS implemented by an SoC depends on the reliability goals
+     established for the SoC, which are commonly measured using metrics such as
+     failure-in-time (FIT) and defects-per-million (DPM). Achieving these goals
+     requires a combination of fault prevention, error detection, and error
+     correction techniques._                                                   +
                                                                                +
-    _This specification recommends implementation of error detection and
-     correction codes for storage elements such as significant caches and
-     memories._                                                                +
+    _This specification strongly recommends the implementation of error
+     detection and correction codes for storage elements like significant
+     caches and memories. Furthermore, it suggests utilizing mechanisms such as
+     single-symbol (SSC) ECC in DRAM controllers to address failure scenarios,
+     such as when all bits in a single DRAM device experience a failure._      +
                                                                                +
-    _This specification recommends mechanisms such as single-symbol (SSC) ECC
-     in DRAM controllers to address failure modes such as all bits in a single
-     DRAM device failing._                                                     +
-                                                                               +
-    _This specification recommends implementing mechanisms such as periodic
-     scrubbing (also known as patrol scrubbing) to proactively detect and
-     correct errors before such errors accumulate beyond the capability of the
-     implemented error correction codes (e.g., become double bit errors when
-     the code can only correct a single bit error)._                           +
+    _Additionally, this specification encourages the adoption of mechanisms like
+     periodic scrubbing, also known as patrol scrubbing. These mechanisms
+     proactively identify and rectify errors before they accumulate to a
+     critical point, surpassing the capability of the implemented error
+     correction codes. For instance, this could involve addressing situations
+     where single bit errors escalate into double bit errors, surpassing the
+     correction code's capacity._
 
-| RAS_020  | SoC SHOULD support generating, storing, and forwarding poisoned
-             data. The granularity at which data is poisoned is `UNSPECIFIED`
-2+| _A component that detects an uncorrected data error may allow possibly
-     corrupted data to propagate to the requester of the data but associate a
-     poison indicator with the data. Such errors are said to be uncorrected
-     deferred errors (UDE) as they allow the component to continue operation
-     and defer dealing with the error to a later point in time if the data
-     corrupted by the error is consumed. If the poisoned data is consumed by
-     a component (e.g. a hart, an IOMMU, a device, etc.) then an uncorrected
-     urgent error (UUE) occurs and a recovery handler is invoked as immediate
-     remedial actions are required and further deferring of the error is not
-     possible._                                                                +
+| RAS_020  | SoC SHOULD support the generation, storage, and forwarding of
+             poisoned data. The granularity at which data is poisoned is
+             `UNSPECIFIED`.
+2+|_When an uncorrected data error is detected by a component, it might allow
+    potentially corrupted data to reach the data requester, but with an
+    associated poison indicator. These errors are referred to as uncorrected
+    deferred errors (UDE), as they enable the detecting component to continue
+    functioning and postpone addressing the error until a later time, assuming
+    the poisoned data gets consumed. If a component (such as a hart, an IOMMU, a
+    device, etc.) consumes the poisoned data, it triggers an uncorrected urgent
+    error (UUE), leading to the invocation of a recovery handler for immediate
+    remedial actions, as further deferral of the error is not feasible.        +
                                                                                +
-    _Data poisoning allows deferring the handling of uncorrected errors to
-     the point of consumption of the corrupted data. Data poisoning allows a
-     more precise determination of the software and/or hardware components
-     affected by the data corruption and thereby allows a recovery action that
-     impacts the smallest possible components. The poisoned data indicator must
-     itself be protected using error detection and correction codes when stored
-     to avoid subsequent errors from causing silent consumption of the corrupted
-     data._                                                                    +
+   _The technique of data poisoning facilitates delaying the handling of
+    uncorrected errors until the moment the corrupted data is actually consumed.
+    Data poisoning offers a more precise identification of the software and/or
+    hardware component affected by the data corruption. This specificity allows
+    for targeted recovery actions that impact only the affected components.    +
                                                                                +
-    _Support for data poisoning enables support for error containment features
-     implemented by industry standards such as PCIe and CXL._                  +
+   _To ensure the integrity of the poisoned data indicator when stored, error
+    detection and correction codes should be applied. This practice prevents
+    subsequent errors from leading to the silent consumption of the corrupted
+    data.                                                                      +
                                                                                +
-    _See also the RISC-V RERI specification for more detailed discussions on
-     treatment of faults and errors._
+   _Data poisoning also empowers the implementation of error containment
+    features supported by industry standards like PCIe and CXL.                +
 
-| RAS_030  | If poisoned data needs to be forwarded from a first component to a
-             second component that is not capable of handling poison then the
-             first component MUST report an uncorrected urgent error instead of
-             propagating the poisoned data.
-2+| _Some components act as an intermediary through which the data passes
-     through. For example, a PCIe/CXL port is an intermediary component that by
-     itself does not consume the data it receives from memory but forwards the
-     data to the endpoint. In such cases the component may receive poisoned data.
-     Such a component may propagate the error and not log an error by itself.
-     However, if the component to which the data is being propagated (e.g. a
-     PCIe endpoint) is not capable of handling poison then the former component
-     must signal an urgent error instead of propagating the poisoned data
-     without the poison indicator, as such propagation breaks containment of the
-     corrupted data._
+   _For more detailed discussions on the treatment of faults and errors, refer
+    to the RISC-V RERI specification._
+
+| RAS_030  | If poisoned data needs to be transmitted from a first component to
+             a second component that lacks the ability to manage poison, the
+             first component MUST trigger an uncorrected urgent error report
+             instead of silently transmitting the corrupted data.
+2+| _Some components serve as intermediaries through which data passes. For
+     instance, a PCIe/CXL port acts as an intermediary that receives data from
+     memory but doesn't consume it; rather, it forwards the data to an endpoint.
+     In such cases, the intermediary component might encounter poisoned data.
+     While this component can propagate the error and avoid logging an error, a
+     different scenario arises when the destination component (such as a PCIe
+     endpoint) cannot handle poison. In such situations, the originating
+     component must trigger an urgent error signal instead of transmitting the
+     poisoned data without the associated poison indicator. Failing to do so
+     would breach the containment of the corrupted data during propagation._
 
 | RAS_040  | The SoC SHOULD support the RISC-V RAS error record register
              interface (RERI) cite:[RERI] for error logging and signaling.
 2+| _Note RERI is still under construction._
 
-| RAS_050  | If RERI is supported then the RAS error records MUST support
-             individually enabling error signals for each error severity (UUE,
-             UDE, or CE) of errors that may be logged in the error record.
-2+| _Disabling error signaling enables software flexibility of using an event
-     based or polling based error logging for corrected errors and deferred
-     errors. Software may typically operate in event based mode for urgent
-     errors as these require urgent remedial action when they occur._
+| RAS_050  | When RERI is supported, the RAS error records MUST include the
+             capability to individually enable error signals for each severity
+             (UUE, UDE, or CE) of error that could be logged in that specific
+             error record.
+2+| _Configurable enables provide software with the flexibility of using an
+     event-based or polling-based error logging for both corrected errors and
+     deferred errors. Typically, software operates in an event-based mode for
+     urgent errors, as these errors necessiate immediate remedial action when
+     they arise._
 
-| RAS_060  | If RERI is supported then the RAS error records MUST retain their
-             state of logged error information (status, address, information,
-             supplemental information, and timestamp) across a RAS initiated
-             reset. The RAS error records MAY also retain their state across
-             other types of implementation defined reset. The state of the
-             control register across reset, including RAS initiated reset,
-             is `UNSPECIFIED`.
-2+| _Some errors may lead a hardware component to enter a failure mode where it
-     cannot service additional requests (colloquially termed as jammed or
-     wedged). In such cases the SoC may need to be reset to restore it to an
-     operational state (a RAS initiated reset). Preserving the RAS error records
-     across such resets allows the SoC firmware and system software to read out
-     these error records at boot following such a reset for logging and
-     analysis._                                                                +
+| RAS_060  | If RERI is supported, RAS error records MUST preserve the
+             state of logged error information (including status, address,
+             information, supplemental information, and timestamp) across a
+             RAS-initiated reset. The state of RAS error records MAY persist
+             across other types of implementation-defined resets. After a reset,
+             including a RAS-initiated reset, the state of the control register
+             is considered `UNSPECIFIED`.
+2+| _Some errors may lead a hardware component to enter a failure mode in which
+     it becomes incapable of servicing additional requests- colloquially termed
+     'jammed' or 'wedged'. In these situations, the SoC may require a reset to
+     restore it to an operational state (a RAS-initiated reset). Preserving the
+     RAS error records through such resets enables the SoC firmware and system
+     software to retrieve these error records during boot following such a reset,
+     facilitating logging and analysis._
+
+| RAS_070  | If RERI is supported, the RAS error records MAY support error
+             record injection, which is intended to facilitate RAS handler
+             verification.
+2+|_Verifying the correct implementation of RAS handlers presents a formidable
+    challenge, given the impracticality of deterministically inducing all
+    potential errors within the SoC to validate the RAS handler's adherence to
+    desired recovery protocols. An unverified RAS handler can lead to undesired
+    behavior during error occurrences, potentially reducing SoC availability or
+    affecting its serviceability._                                             +
                                                                                +
-    _Some types of reset, such as those initiated with some debug controls, may
-     also retain state of the RAS error records._
+   _To address this, error record injection offers a convenient method for
+    conducting such verification. It allows the introduction of a range of error
+    signatures, which can then be signaled and observed. While hardware error
+    injection techniques also offer a means of verification (e.g., methods to
+    intentionally corrupt a data location protected by an error detection code),
+    providing open access to these capabilities for software use might not align
+    with security and stability concerns._
 
-| RAS_070  | If RERI is supported then the RAS error records MAY support error
-             record injection to support RAS handler verification.
-2+| _Verifying correct implementation of RAS handlers is a challenging task as
-     it is not possible to deterministically cause all possible errors in the
-     SoC to verify that the RAS handler implements the desired recovery actions.
-     An unverified RAS handler may fail to perform as desired when the error
-     happens and reduce availability or impact the serviceability of the SoC.
-     Error record injection provides a convenient method for carrying out such
-     verification by allowing a variety of error signatures to be injected and
-     signaled. While such verification may also be performed by using hardware
-     error injection techniques (e.g., providing methods to corrupt a data
-     location protected by an error detection code), it may not be desirable
-     from a security and stability perspective to open these capabilities
-     generally for use by software._
-
-| RAS_080  | If RERI is supported then the hardware components in the SoC that
-             support error correction MUST implement a corrected error counter
-             in their error records and MUST support signaling counter overflows.
-2+| _Counting corrected errors provides a more accurate picture of the system
-     reliability. Signaling on counter overflow allows software to establish a
-     convenient threshold for when such corrected errors are signaled for
-     logging and analysis._                                                    +
+| RAS_080  | If RERI is supported, then the hardware components in the SoC that
+             support error correction MUST incorporate a corrected error counter
+             within their respective error records. Additionally, these
+             components MUST support the signaling of counter overflows.
+2+| _Counting corrected errors offers a more precise assessment of system
+     reliability. Enabling signaling upon counter overflow empowers software to
+     define a suitable threshold for logging and analysis of these corrected
+     errors._                                                                  +
                                                                                +
-    _Some hardware units may maintain a history of corrected errors and may
-     report a corrected error and may increment the corrected error counter
-     only if the error is not identical to a previously reported corrected
-     error. Some hardware units may implement low pass filters (e.g., leaky
-     buckets) that throttle the rate at which corrected errors are reported
-     and counted. This requirement applies to the corrected errors that are
-     counted by the error record after the hardware component has made the
-     determination to report and count the error based on such implementation
-     defined filtering rules._
+    _Certain hardware units might maintain a history of corrected errors and
+     increment the corrected error counter only if the error differs from a
+     previously reported one. Additionally, some hardware units could
+     incorporate low-pass filters like leaky buckets, which regulate the rate at
+     which corrected errors are reported and counted. This requirement pertains
+     to corrected errors tracked by the error record once the hardware component
+     determines reporting and counting based on its specific filtering rules._
 |===
 
 === Quality of Service
 
-Quality of Service (QoS) is the minimal end-to-end performance that is
-guaranteed in advance by a service level agreement (SLA) to an application. QoS
-capabilities in the SoC provide mechanisms that may be used by system software
-to control interference to an application and thereby reduce the variability in
-performance experienced by one application due to other application’s cache
-capacity usage, memory bandwidth usage, interconnect bandwidth usage, power
-usage, etc.
+Quality of Service (QoS) refers to the minimum end-to-end performance that a
+service level agreement (SLA) guarantees to an application in advance. QoS
+capabilities within the SoC offer mechanisms that system software can leverage
+to manage interference to an application, effectively diminishing performance
+variability caused by other applications' utilization of shared resources such
+as cache capacity, memory bandwidth, interconnect bandwidth, power consumption,
+and more.
 
 [width=100%]
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| QOS_010  | SoC SHOULD support QoS mechanisms to address undue performance
-             interference caused by one workload to another when they both
-             access a shared resource such as caches and system memory.
+| QOS_010  | The SoC SHOULD incorporate QoS mechanisms to mitigate unwarranted
+             performance interference that arises when multiple workloads access
+             shared resources like caches and system memory.
 
-| QOS_020  | SoC SHOULD support the RISC-V capacity and bandwidth controller
-             register interface (CBQRI) cite:[CBQRI] for capacity and bandwidth
-             allocation in significant shared caches and memory controllers.
+| QOS_020  | The SoC SHOULD integrate support for the RISC-V capacity and
+             bandwidth controller register interface (CBQRI) cite:[CBQRI] in
+             significant shared caches and the memory controllers.
 
-| QOS_030  | If CBQRI is supported, RISC-V harts of application processors in
-             the SoC MUST support the `sqoscfg` CSR and the CSR MUST support at
-             least 16 RCIDs and at least 32 MCIDs
-2+| _The number of RCID and MCID should scale with the number of RISC-V harts
-     in the SoC._
+| QOS_030  | If CBQRI is supported, RISC-V harts within the application
+             processors of the SoC MUST include support for the `sqoscfg` CSR.
+             Furthermore, this CSR MUST support a minimum of 16 RCIDs and at
+             least 32 MCIDs.
+2+| _The count of RCID and MCID that can be used in the SoC should scale with
+     the number of RISC-V harts in the SoC._
 
-| QOS_040  | If CBQRI is supported, the IOMMU in the SoC MUST support the CBQRI
-             defined extension for associating RCID and MCID with device and
-             IOMMU initiated requests.
+| QOS_040  | If CBQRI is supported, the IOMMU in the SoC SHOULD incorporate
+             support for the CBQRI-defined extension, enabling the association
+             of RCID and MCID with requests initiated by devices and the IOMMU.
 
-| QOS_050  | If CBQRI is supported, the last level cache in the SoC MUST support
-             cache capacity allocation.
+| QOS_050  | If CBQRI is supported, significant caches such as the last-level
+             cache in the SoC SHOULD support cache capacity allocation.
 
-| QOS_060  | If CBQRI is supported, the last level cache in the SoC MUST
-             support the cache capacity usage monitoring.
+| QOS_060  | If CBQRI is supported, significant caches such as the last-level
+             cache in the SoC SHOULD incorporate support for monitoring cache
+             capacity usage.
 
-| QOS_070  | If CBQRI is supported, the memory controllers in the SoC SHOULD
-             support bandwidth allocation.
+| QOS_070  | If CBQRI is supported, the memory controllers within the SoC SHOULD
+             include support for bandwidth allocation.
 
 | QOS_080  | If CBQRI is supported, the memory controllers in the SoC SHOULD
-             support bandwidth usage monitoring.
-2+| _The method implemented by the SoC for bandwidth throttling and control is
-     implementation specific. The implementation is recommended to implement a
-     scheme that leads to no more than +/- 10 % deviation from the target
-     established by system software through the CBQRI interface._
+             include support for monitoring bandwidth usage.
+2+| _The method employed by the SoC for bandwidth throttling and control is
+     specific to its implementation. It is advisable for the implementation to
+     utilize a scheme that results in a deviation of no more than +/- 10 % from
+     the target set by system software through the CBQRI interface._
 
-| QOS_090  | If CBQRI is supported, the number of RCID and MCID supported by
+| QOS_090  | If CBQRI is supported, the count of RCID and MCID supported by
              capacity controllers, bandwidth controllers, and all RISC-V
-             application processor harts in the SoC MUST be identical.
-2+| _Portable system software may restrict itself to supporting the smallest
-     number of RCID and MCID implemented by any of the controllers when the
-     number of RCID and MCID supported by the controllers is not identical to
-     avoid complex allocations and restrictions on workload placement that
-     would be otherwise required to support such asymmetry._
+             application processor harts in the SoC MUST be consistent.
+2+| _Portable system software could opt to limit itself to accommodating the
+     minimum count of RCID and MCID across the controllers. This approach avoids
+     the complexity of dealing with unequal numbers of RCID and MCID across
+     controllers, which would otherwise necessitate intricate allocations and
+     constraints on workload placement._
 
 | QOS_100  | If CBQRI is supported, the monitoring counters in the capacity and
-             bandwidth controllers MUST be wide enough to not overflow when
-             sampling at a rate of 1 Hz.
-2+| _For example, an HBM3 memory interface may support data transfers at a rate
-     up to 1 TB/s and thus require a 34-bit counter to not cause an overflow
-     when sampled at 1 Hz._
+             bandwidth controllers MUST be sufficiently wide to not overflow when
+             sampled at a rate of 1 Hz.
+2+| _As an illustration, consider an HBM3 memory interface that can facilitate
+     data transfers at a rate of up to 1 TB/s. This scenario would necessitate a
+     34-bit counter to prevent overflow when sampled at a frequency of 1 Hz._
 |===
 
 === Manageability
 
-This section defines the rules for RISC-V server SoC to support a common set of
-protocols and standards for server management. The use of industry standards
-specified in this section enables server platforms compliant with this
-specification to be integrated into the server management frameworks and tools
-used by data centers and enterprises
+This section outlines the guidelines for RISC-V server SoCs to incorporate a
+standardized set of protocols and standards for server management. The SOC
+interfaces with a baseboard management controller (BMC) through in-band and
+out-of-band (OOB) management agents. The in-band management agents execute on
+the RISC-V application processor harts and the out-of-band management agents
+execute on a management controller in the SoC.
+
+The out-of-band management interface facilitates the monitoring of sensors
+(e.g., temperature, power, etc.), parameter control (e.g., power limits,
+etc.), and logging (e.g., RAS error records, etc.) by the BMC without
+participation of software on the application processor harts. The in-band
+management interface facilitates system configuration (e.g., boot order, memory
+domains, secure boot, network, etc.), and event log collection through
+management agents in the OS and/or firmware that executes on the application
+processor harts.
+
+This specification strongly recommends the use of the DMTF Redfish
+cite:[DSP0266], DMTF Platform Level Data Model (PLDM) cite:[DSP0240], and DMTF
+Management Component Transport Protocol (MCTP) cite:[DSP0236]) protocols for
+in-band and out-of-band server management.
+
+This specification strongly recommends the use of DMTF specified Security
+Protocol and Data Model (SPDM) for device attestation (See DSP0274
+cite:[DS0274]) and secure communication using SPDM encrypted messages (See
+DSP0277 cite:[DSP0277]) for in-band and out-of-band communication with the BMC.
+SPDM authentication protocols support establishing a trust relationship between
+the in-band and out-of-band manageability agents in the SoC and the BMC. Use of
+SPDM secured messages enables preserving the confidentiality and integrity of
+data exchanged between the BMC and the manageability agents in the SoC.
+
+The specification recommends supporting Intelligent Platform Management
+Interface (IPMI) for cite:[IPMI20] due to the widespread use of this protocol
+for server management functions such as credentials provisioning and remote
+power control.
+
+This specification recommends the RISC-V server SoC to support open standards
+for server management through supporting integration with technologies such as
+the datacenter-ready secure control module (DC-SCM) specified by the Open
+Compute Project for server management, security, and control features.
+
+Adhering to the industry standard management protocols such as those specified
+by DMTF allows server platforms built with RISC-V server SoCs to seamlessly
+integrate into the server management frameworks and tools employed by data
+centers and enterprises.
 
 [width=100%]
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| MNG_010  | SoC SHOULD support the datacenter-ready secure control module
-             (DC-SCM) specified by the Open Compute Project for server
-             management, security, and control features.
-
-| MNG_020  | The SoC SHOULD support a x1 PCIe lane (at least Gen 2;
-             preferably Gen 5) connection to the DC-SCM.
-2+| _This interface is typically connected to a BMC as a PCIe endpoint for
-     usages including enabling host to BMC communication for functions such as
-     video, MCTP over PCIe VDM, memory mapped PCIe device and/or a USB
-     controller._                                                              +
+| MNG_010  | The SoC SHOULD incorporate support for an x1 PCIe lane, preferably
+             Gen 5, but at least Gen 3, to establish a connection with the BMC.
+2+| _This interface is commonly linked to a BMC as a PCIe endpoint, serving
+     various purposes. These include facilitating host-to-BMC communication for
+     tasks like video output (e.g., remote KVM support), MCTP transport over
+     PCIe VDM, and hosting a USB controller. The BMC might also support remote
+     presence capabilities, like remote media redirection and support for
+     keyboard and mouse functions through virtual USB._                        +
                                                                                +
-    _The in-band network interfaces are used by system software to communicate
-     with the BMC using protocols such as the Redfish host interface. The PCIe
-     interface to the BMC enables the BMC, through the use of SoC routed PCIe
-     VDMs, to use such VDMs to carry MCTP messages to manage platform devices
-     such as network controllers, NVMe controllers, FPGAs, GPUs, etc._
+    _The in-band network interfaces serve as communication channels for system
+     software to interact with the BMC. This interaction employs protocols like
+     the Redfish host interface._                                              +
+                                                                               +
+    _Furthermore, the PCIe interface to the BMC empowers the BMC, using
+     SoC-routed PCIe VDMs, to utilize these VDMs for transmitting MCTP messages.
+     These messages manage platform devices, including network controllers, NVMe
+     controllers, FPGAs, GPUs, and more._
 
-| MNG_030 a| The SoC MUST support one of the following transport bindings for
-             MCTP/PLDM protocol for out of band manageability between a
-             baseboard management controller (BMC) and the SoC manageability
-             controller.
+| MNG_020 a| The SoC SHOULD support the use of I2C based IPMI SSIF for in-band
+             management agents in the SoC to communicate with the BMC.
 
-             * I3C as specified by DSP0233 MCTP I3C transport binding 1.0.0.
-                cite:[DSP0233]
-             * PCIe VDM as specified by DSP0238 MCTP PCIe VDM transport
-               binding 1.2.0. cite:[DSP0238]
+| MNG_030 a| The SoC SHOULD incorporate support for utilizing a UART connection
+             to the BMC, enabling the provision of a host debug console.
 
-2+| _PCIe VDM and I3C interface supports high bandwidth communication between
-     the BMC and the management controllers in the SoC. MCTP provides a
-     standard transport protocol for manageability protocols such as PLDM and
-     Redfish. The out-of-band interface enables monitoring of sensors (e.g.,
-     temperature, power, etc.), control of parameters (e.g, power limits,
-     etc.), and logging (e.g., RAS error records, etc.) by the BMC._
-
-| MNG_040 a| The SoC SHOULD support Security protocol and data model (SPDM)
-             attestation and the use of SPDM encrypted secure messages for
-             in-band and out-of-band communication with the BMC as specified in:
-
-             * DSP0274 Security protocol and data model (SPDM)
-               specification 1.2.1. cite:[DSP0274]
-             * DSP0275 SPDM over MCTP binding specification 1.0.1. cite:[DSP0275]
-             * DSP0276 Secured messages using SPDM over
-               MCTP binding specification 1.1.0. cite:[DSP0276]
-             * DSP0277 Secured messages using SPDM
-               specification 1.1.0. cite:[DSP0277]
-
-2+| _SPDM authentication protocols support establishing a trust relationship
-     between the in-band and out-of-band manageability agents in the SoC and the
-     BMC. Use of SPDM secured messages enables preserving the confidentiality and
-     integrity of data exchanged between the BMC and manageability agents in the
-     SoC._
-
-| MNG_050  | The SoC MUST support remote debug using a JTAG interface with the
+| MNG_040  | The SoC SHOULD support remote debug using a JTAG interface with the
              BMC.
+2+| _The JTAG debug transport modules within the SoC can be utilized to access
+     the RISC-V debug modules in the SoC through the Debug Module Interface._
 
-| MNG_060 a| The SoC MUST provide the following interfaces to firmware/OS on the
-             RISC-V application processor for in-band server management.
+| MNG_050 a| The SoC SHOULD support the use of I3C for in-band and out-of-band
+             management agents in the SoC to communicate with the BMC.
+2+| _The out-of-band interface enables monitoring of sensors (e.g.,
+     temperature, power, etc.), control of parameters (e.g, power limits,
+     etc.), and logging (e.g., RAS error records, etc.) by the BMC._           +
+                                                                               +
+    _I3C supports high bandwidth communication with the BMC and is preferred
+     over I2C to minimize server boot times._
 
-             * Network
-             * UART
-
-| MNG_070 a| The SoC MUST support the following DMTF management protocols for
-             in-band and out-of-band manageability:
-
-             * DSP0236 MCTP base specification 1.3.1. cite:[DSP0236]
-             * DSP0240 PLDM base specification 1.1.0. cite:[DSP0240]
-             * DSP0266 Redfish specification 1.30. cite:[DSP0266]
-             * Intelligent Platform Management Interface (IPMI)
-               2.0. cite:[IPMI20]
-
-2+| _Use of DMTF specified manageability protocols enables simpler integration of
-     RISC-V based server platforms into cloud and enterprise manageability
-     infrastructure._
 |===
 
 === Debug
@@ -1284,14 +1293,14 @@ used by data centers and enterprises
                to 0).
              * Freezing hart local counters using `stopcount` control.
 
-2+| _Ability to halt harts as a group and ability to halt at reset allows ease
-     of debugging system software._                                            +
+2+| _The ability to halt harts as a group and the ability to halt at reset 
+     offers convenience in debugging system software._                         +
                                                                                +
-    _Program buffer provides more flexibility and ease of use compared to
-     abstract access._                                                         +
+    _The program buffer provides greater flexibility and ease of use in
+     comparison to abstract command access._                                   +
                                                                                +
-    _Enforcing a full and exact set of permissions on abstract and program
-     buffer memory access avoids security concerns._
+    _Enforcing a complete and precise set of permissions on abstract and program
+     buffer memory accesses mitigates security concerns._
 
 | DBG_030  | The SoC MUST support a JTAG debug transport module as specified by
              the RISC-V debug specification.
@@ -1302,24 +1311,23 @@ used by data centers and enterprises
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| TRC_010 a| The SoC MUST support instruction trace using one of the following
-             standard extensions:
-
-             * RISC-V E-trace. cite:[ETRACE]
-             * RISC-V N-trace. cite:[NTRACE]
+| TRC_010 a| The SoC MUST support either the RISC-V E-trace cite:[ETRACE] or the
+             RISC-V N-trace cite:[NTRACE] standard extension for instruction
+             trace.
 
 | TRC_020  | The SoC MUST support the RISC-V trace control interface
              specification.
-2+| _N-trace and the trace control interface specification are still under
-     construction._
+2+| _The RISC-V N-trace and the trace control interface specification are
+     currently under development._
 
 | TRC_030  | The trace control interface MUST support filtering by privilege
              levels.
 
-| TRC_040  | The SoC SHOULD support System Memory trace sink.
-2+| _System memory sink supports self hosted trace decoders for software debug
-     and profiling. The system memory sink also supports conveniently
-     transmitting the trace off-chip through a PCIe or USB port._
+| TRC_040  | The SoC SHOULD incorporate support for a System Memory trace sink.
+2+| _The system memory sink facilitates self-hosted trace decoders for software
+     debugging and profiling purposes. Additionally, the system memory sink
+     conveniently supports the off-chip transmission of trace data through a
+     PCIe or USB ports._
 |===
 
 === Performance Monitoring
@@ -1328,48 +1336,45 @@ used by data centers and enterprises
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| SPM_010 a| Significant caches in the SoC SHOULD support an HPM capable of
-             counting:
+| SPM_010 a| Significant caches within the SoC SHOULD incorporate an HPM capable
+             of counting:
 
              * Cache lookup
              * Cache miss                                                      +
                                                                                +
              If the SoC supports NUMA configurations, then the HPM SHOULD
              support filtering the counting based on whether the request
-             originated in a local node or in a remote node.
+             originated in a local node or a remote node.
 
-| SPM_020 a| The memory controllers in the SoC SHOULD support an HPM capable of
-             counting:
+| SPM_020 a| The memory controllers within the SoC SHOULD incorporate an HPM
+             capable of counting:
 
              * Read bandwidth
              * Write bandwidth                                                 +
                                                                                +
              If the SoC supports NUMA configurations, then the HPM SHOULD
              support filtering the counting based on whether the request
-             originated in a local node or in a remote node.
+             originated in a local node or a remote node.
 
-| SPM_030 a| The PCIe ports in the SoC SHOULD support an HPM capable of counting:
+| SPM_030 a| The PCIe ports within the SoC SHOULD incorporate an HPM capable of
+             counting:
 
              * Read bandwidth (from system memory)
              * Write bandwidth (to system memory)
 
-| SPM_040 a| The SoC SHOULD support an HPM capable of counting the average
+| SPM_040 a| The SoC SHOULD incorporate an HPM capable of counting the average
              latency of a read request from a memory requester (e.g., a hart,
              a PCIe host bridge, etc.) in the SoC.                             +
                                                                                +
              If the SoC supports NUMA configurations, then the HPM SHOULD
              support filtering the counting based on whether the request is to
              local memory or to remote memory.
-2+| _Bandwidth and latency are the most commonly used performance metrics used
-     to guide workload placement and tuning. Bandwidth may be computed as the
-     number of bytes transferred passed the monitoring point over an interval._ +
-                                                                                +
-    _The average latency may be computed by summing the number of transactions
-     in a queue on each cycle and dividing by the total number of requests
-     allocated into the queue._
+2+| _Bandwidth and latency are the most commonly used performance metrics to
+     guide workload placement and tuning._
 
-| SPM_050  | The PCIe ports in the SoC SHOULD support the Flit performance
-             measurement extended capability defined by PCIe specification 6.0.
+| SPM_050  | The PCIe Gen6 ports within the SoC SHOULD incorporate support for
+             the Flit performance measurement extended capability defined by
+             PCIe specification 6.0.
 |===
 
 === Security Requirements
@@ -1378,8 +1383,12 @@ used by data centers and enterprises
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| SEC_010  | The PCIe root ports in the SoC SHOULD support PCIe Integrity and
+| SEC_010  | The PCIe root ports within the SoC SHOULD support PCIe Integrity and
              Data Encryption (IDE) capability.
+2+| _The IDE extension adds optional capabilities to perform hardware encryption
+     and integrity checks on packets transferred across PCIe links. This addition
+     provides confidentiality, integrity, and replay protection against
+     hardware-level attacks._
 
 | SEC_020  | The SoC SHOULD support encryption of off-chip DRAM using a
              transient memory encryption key that has at least 192-bit key
@@ -1390,6 +1399,14 @@ used by data centers and enterprises
 | SEC_030  | The cryptographic modules used to implement PCIe and off-chip DRAM
              encryption SHOULD comply with security requirements specified by
              standards such as FIPS 140-3.
+
+| SEC_040  | The SoC should have the capability interfacing with a Trusted
+             Platform Module (TPM) that adheres to the TPM 2.0 Library
+             specification cite:[TPM20].
+2+| _A TPM enhances security by providing secure storage for sensitive
+     information such as credentials and passwords, cryptographic operations and
+     protection against tampering or unauthorized access._
+
 |===
 
 
