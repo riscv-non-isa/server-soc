@@ -588,7 +588,7 @@ hierarchy domain originating at each PCIe root port.
 | MMS_070  | Poisoned data received from completers (EP=1) MUST be forwarded to
              a requester RISC-V hart as poisoned data unless such forwarding is
              disallowed through implementation defined means. When such
-             forwarding is disallowed then the poisoned data MUST be replaced
+             forwarding is disallowed, then the poisoned data MUST be replaced
              with all 1s data.
 
 | MMS_080  | SoC MUST NOT use EA capability to indicate memory for allocation
@@ -609,39 +609,38 @@ devices, and SR-IOV capable devices.
 | ACS_010 a| PCIe root ports and SoC integrated downstream switch ports MUST
              support the following PCIe access control services (ACS) controls
 
-             * ACS source validation
-             * ACS translation blocking
-             * ACS I/O request blocking
+             * ACS source validation.
+             * ACS translation blocking.
+             * ACS I/O request blocking.
 
-| ACS_020  | If a PCIe root port or a SoC integrated downstream switch port
-             implements memory BAR space, then it SHOULD support the following
-             PCIe ACS DSP memory target access control.
+| ACS_020  | If a PCIe root port or a SoC-integrated downstream switch port
+             implements memory BAR space, then it SHOULD support the PCIe ACS
+             DSP memory target access control.
 2+| _The ACS DSP memory target access control can be used to prevent
      unauthorized accesses to protected memory spaces such as the PCIe root
      port's BAR mapped registers._
 
-| ACS_030 a| Root ports and any SOC integrated downstream switch ports that
+| ACS_030 a| Root ports and SoC-integrated downstream switch ports that
              support direct routing between root ports or direct routing from
              ingress to egress port of a root port MUST support the following
-             PCIe ACS controls
+             PCIe ACS controls:
 
-             * ACS P2P request redirect
-             * ACS P2P completion redirect
-             * ACS upstream forwarding
-             * ACS direct translated P2P
+             * ACS P2P request redirect.
+             * ACS P2P completion redirect.
+             * ACS upstream forwarding.
+             * ACS direct translated P2P.
 
-| ACS_040 a| Root ports and any SoC integrated downstream switch ports that
+| ACS_040 a| Root ports and SoC-integrated downstream switch ports that
              support direct routing between root ports or direct routing from
-             ingress to egress port of a root port SHOULD support:
+             ingress to egress port of a root port SHOULD also support ACS P2P
+             egress control.
 
-             * ACS P2P egress control
+2+| _More commonly, P2P routing is accomplished by forwarding the TLP to the host
+     bridge for routing. For further information, refer to the application note
+     accompanying Fig 2-14 and Section 1.3.1 of the PCIe specification 6.0._
 
-2+| _More commonly P2P routing is accomplished by forwarding the TLP to the host
-     bridge for routing. See also the application note accompanying Fig 2-14 and
-     the section 1.3.1 of PCIe specification 6.0._
-
-| ACS_050  | The ACS features including detection, logging, and reporting of ACS
-             violations MUST comply with the rules in the PCIe
+| ACS_050  | The ACS features, including the detection, logging, and reporting of
+             ACS violations MUST adhere to the rules outlined in the PCIe
              specifications 6.0.
 |===
 
@@ -663,20 +662,24 @@ space of a peer endpoint or RCiEP.
      determination of whether the requester is configured by software to use
      Translated requests._                                                     +
                                                                                +
-    _When the IOMMU operates in the T2GPA mode, the IOMMU provides GPA as
-     translated addresses in response to Translation requests. In this mode of
-     operation, the IOMMU must be invoked by the host bridge for Translated
-     requests to translate the GPA to a SPA._                                  +
+    _When the IOMMU operates in the T2GPA mode, it provides a GPA as the
+     translated address in response to a PCIe ATS address translation requests.
+     In this mode of operation, the IOMMU must be invoked by the host bridge for
+     Translated requests to translate the GPA to an SPA._                      +
                                                                                +
-    _When ACS direct translated P2P controls are enabled the translated
-     requests may not be routed through the host bridge. Software should use
-     the ACS controls to direct such requests to the root complex if direct P2P
-     routing is not desired due to security and/or functional reasons (e.g.,
-     when operating in T2GPA mode)._
+    _When ACS direct translated P2P controls are enabled, the Translated
+     requests may not be routed through the host bridge. In such cases, 
+     if direct P2P routing of these requests is not desired, due to security
+     and/or functional reasons (e.g., when operating in T2GPA mode), software
+     should utilize the ACS controls to direct these requests to the root
+     complex._
 
-| ADR_020  | The host bridge MUST enforce PMA and PMP checks on the translated
-             address provided by the IOMMU and MUST treat violating requests as
+| ADR_020  | The host bridge MUST enforce physical memory attribute checks and
+             physical memory protection checks on the translated address
+             provided by the IOMMU and MUST treat violating requests as
              Unsupported Requests.
+2+| _These checks are analogous to the PMA and PMP checks performed by the
+     RISC-V hart._
 
 | ADR_030  | For Translated and Untranslated requests, the host bridge MUST use
              the translated addresses provided by the IOMMU to determine
@@ -684,25 +687,26 @@ space of a peer endpoint or RCiEP.
              memory.
 
 | ADR_040  | The host bridge MAY support access to peer device memory. If peer
-             device memory access is not enabled (by design or by configuration)
-             then such accesses MUST be responded to with a UR/CA response. The
-             host bridge MUST NOT cause any other error (e.g., hang, deadlock,
-             etc.) when rejecting access to peer device memory.
-2+| _A virtual machine may violate the peer to peer policies and/or
-     configurations established by the hypervisor and/or SoC firmware to
+             device memory access is not enabled (by design or by
+             configuration), then such accesses MUST be responded to with a
+             UR/CA response. The host bridge MUST NOT cause any other error
+             (e.g., hang, deadlock, etc.) when rejecting access to peer device
+             memory.
+2+| _A virtual machine may violate the peer-to-peer access policies and/or
+     configurations established by the hypervisor and/or SoC firmware, which
      disallow peer device memory accesses. Such a VM may attempt to program
      devices passed through to the virtual machine to perform peer memory
-     accesses. Such attempts to violate the peer to peer policies must not
+     accesses. Such attempts to violate the peer-to-peer policies MUST NOT
      lead to system instabilities (e.g., hangs, deadlocks, etc.) or errors._
 
 | ADR_050  | When a posted or non-posted-with-data request is allowed to access
-             peer device memory, then the poisoned data (EP=1) MUST be forwarded
-             as poisoned data unless such forwarding is disallowed (e.g.,
-             poisoned TLP egress blocking, data poisoning is not supported by
-             SoC).
+             peer device memory, then any poisoned data (EP=1) MUST be forwarded
+             as poisoned data, unless such forwarding is disallowed (e.g.,
+             poisoned TLP egress blocking or lack of support for data poisoning
+             is the SoC).
 
 | ADR_060  | Host memory writes caused by posted or non-posted-with-data requests
-             with poisoned data (EP=1) MUST mark the data in the host memory as
+             with poisoned data (EP=1) MUST mark such data in the host memory as
              poisoned.
 
 | ADR_070  | Host memory reads that have uncorrectable data errors detected
@@ -743,10 +747,10 @@ messages or completions.
 | ID#     ^| Requirement
 | CCA_010  | The host bridge MUST enforce PCIe memory ordering rules and SHOULD
              support the relaxed ordering (RO) and ID-based ordering (IDO).
-2+| _An implementation may sometimes or never allow the relaxations allowed by
-     RO and/or IDO attributes. Such implementations will only lead to a more
-     conservative implementation of the ordering rules but not lead to violation
-     of the ordering rules._
+2+| _An implementation may occassionally or never permit the relaxations allowed
+     by RO and/or IDO attributes. Such implementations will result in a more
+     conservative interpretation of the ordering rules, but they will not result
+     in a violation of the ordering rules._
 
 | CCA_020  | Writes to host or device memory using the RO attribute set to 0
              MUST be observed by other harts and bus mastering devices in the
@@ -755,10 +759,10 @@ messages or completions.
              before the RO=0 write is globally observed.
 
 | CCS_030  | The host bridge MUST enforce the idempotency, coherence,
-             cacheability, and access type PMA of the accessed memory and
-             perform any reordering or combining of PCIe transactions only if
-             the combination of PMA and TLP specified memory ordering attributes
-             allow it.
+             cacheability, and access type physical memory attributes of the
+             accessed memory and perform any reordering or combining of PCIe
+             transactions only if the combination of physical memory attributes
+             and TLP specified memory ordering attributes allow it.
 
 | CCS_040  | The host bridge SHOULD implement hardware enforced cache coherency,
              irrespective of the “No Snoop” attribute in the TLP, unless it has
@@ -780,19 +784,20 @@ messages or completions.
                                                                                +
     _Some caches in a SoC may perform clean evictions to memory. In such SoCs,
      if the addresses used by the non-snooped transactions may be cached (e.g.,
-     due to speculative accesses from a hart) then such clean evictions may
-     cause data corruption even if the caches were explicitly cleaned by
-     software using the cache management operations. Software should use memory
-     that has such non-cacheable PMA or use the Svpbmt extension to override the
-     PMA to NC/IO to implement the guarantee required by the PCIe specification
-     with use of “No Snoop” attribute set to 1. If Svpbmt was used to override
-     the PMA then use of cache management operations defined by Zicbom may be
-     required to flush data that may already be cached._             +
+     due to speculative accesses from a hart), then such clean evictions may
+     cause data corruption, even if the caches were explicitly cleaned by
+     software using the cache management operations. To ensure data integrity,
+     software should use memory that has such non-cacheable PMA or use the
+     Svpbmt extension to override the PMA to NC/IO, thereby implementing the
+     guarantee required by the PCIe specification when using the “No Snoop”
+     attribute set to 1. If the Svpbmt extension was used to override the PMA,
+     then use of cache management operations defined by Zicbom extension may be
+     necessary to flush data that might already be cached._                    +
                                                                                +
     _See also section 7.5.3.4 of PCIe specification 6.0._
 
-| CCS_050  | The host bridge MUST NOT violate the coherence PMA if the
-             “No Snoop” attribute in the TLP is 0.
+| CCS_050  | The host bridge MUST NOT violate the coherence physical memory
+             attribute if the “No Snoop” attribute in the TLP is 0.
 
 | CCS_060  | The interpretation of the TLP processing hints (TPH) by the SoC is
              `UNSPECIFIED`.
@@ -918,13 +923,13 @@ mechanism in PCIe.
      PCIe specification 6.0 section 7.2.2.2._
 |===
 
-==== SoC Integrated PCIe Devices
+==== SoC-Integrated PCIe Devices
 
 [width=100%]
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| SID_010  | SoC integrated PCIe devices MUST implement all software visible
+| SID_010  | SoC-integrated PCIe devices MUST implement all software visible
              rules defined by the PCIe specification 6.0 for an EP or RCiEP as
              applicable.
 2+| _Implementing integrated devices as RCiEP or EP allows the use of standardized
@@ -933,29 +938,29 @@ mechanism in PCIe.
      participate in RAS frameworks like data poisoning and AER, power management,
      etc._
 
-| SID_020  | SoC integrated PCIe devices MUST NOT be legacy devices and MUST NOT
-             require use of I/O space, I/O transactions, and INTx virtual wire
-             interrupt signaling mechanism.
+| SID_020  | SoC-integrated PCIe devices MUST NOT use legacy PCI capabilities.
+             They MUST NOT require the use of I/O space, I/O transactions, or
+             the INTx virtual wire interrupt signaling mechanism.
 
 | SID_030  | SoC integrated PCIe devices that cache address translations MUST
              implement the PCIe ATS capability if the address translation cache
              needs management by the operating system or hypervisors.
 
-| SID_040  | SoC integrated PCIe devices that support PCIe SR-IOV capability
+| SID_040  | SoC-integrated PCIe devices that support PCIe SR-IOV capability
              SHOULD support MSI-X capability.
 2+| _MSI-X capability enables virtual machines to assign interrupt resources to
      virtual functions without needing access to the configuration space of the
      function. Access to the configuration space of the virtual function is
      usually mediated by the hypervisor._
 
-| SID_050  | SoC integrated PCIe devices MAY support the PASID capability. When
+| SID_050  | SoC-integrated PCIe devices MAY support the PASID capability. When
              PASID capability is supported, the devices SHOULD support a
              20-bit wide PASID.
 2+| _Endpoints are recommended to support a 20-bit wide PASID to ensure
      interoperability with system software. See also the implementation note on
      PASID width homogeneity in the PCIe specification 6.0 section 6.20.2.2._
 
-| SID_060 a| SoC integrated PCIe devices (a multi-function device or an SR-IOV
+| SID_060 a| SoC-integrated PCIe devices (a multi-function device or an SR-IOV
              capable device) that support P2P traffic among functions (including
              among SR-IOV virtual functions) of the device MUST support the
              following PCIe ACS controls:
@@ -964,7 +969,7 @@ mechanism in PCIe.
              * ACS P2P completion redirect.
              * ACS direct translated P2P.
 
-| SID_070  | SoC integrated PCIe devices MAY support programmable BAR registers.
+| SID_070  | SoC-integrated PCIe devices MAY support programmable BAR registers.
              When programmable BAR registers are supported, the Memory Space
              Indicator (bit 0) of such BAR MUST be 1 and they SHOULD support
              being mapped anywhere in the 64 bit memory space.
@@ -972,7 +977,7 @@ mechanism in PCIe.
 | SID_080  | RCiEP MAY support the PCIe enhanced allocation (EA) capability for
              fixed allocation of memory resources.
 
-| SID_090  | SoC integrated PCIe devices MUST support the PCIe defined baseline
+| SID_090  | SoC-integrated PCIe devices MUST support the PCIe defined baseline
              error reporting capability and MAY support PCIe Advanced Error
              Reporting capability. If PCIe ACS controls are supported then the
              PCIe Advanced Error Reporting capability MUST be supported.
@@ -1189,7 +1194,7 @@ and more.
 === Manageability
 
 This section outlines the guidelines for RISC-V server SoCs to incorporate a
-standardized set of protocols and standards for server management. The SOC
+standardized set of protocols and standards for server management. The SoC
 interfaces with a baseboard management controller (BMC) through in-band and
 out-of-band (OOB) management agents. The in-band management agents execute on
 the RISC-V application processor harts and the out-of-band management agents
