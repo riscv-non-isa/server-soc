@@ -1288,7 +1288,7 @@ data centers and enterprises.
 |===
 | ID#     ^| Requirement
 | DBG_010  | The SoC MUST support at least one RISC-V debug module as specified
-             by the RISC-V debug specification.
+             by the RISC-V debug specification cite:[DEBUG].
 
 | DBG_020 a| The debug modules MUST support the following capabilities:
 
@@ -1310,8 +1310,6 @@ data centers and enterprises.
     _Enforcing a complete and precise set of permissions on abstract and program
      buffer memory accesses mitigates security concerns._
 
-| DBG_030  | The SoC MUST support a JTAG debug transport module as specified by
-             the RISC-V debug specification.
 |===
 
 === Trace
@@ -1319,7 +1317,7 @@ data centers and enterprises.
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| TRC_010 a| The SoC MUST support either the RISC-V E-trace cite:[ETRACE] or the
+| TRC_010  | The SoC MUST support either the RISC-V E-trace cite:[ETRACE] or the
              RISC-V N-trace cite:[NTRACE] standard extension for instruction
              trace.
 
@@ -1349,17 +1347,19 @@ data centers and enterprises.
 
              * Cache lookup
              * Cache miss                                                      +
-                                                                               +
+
              If the SoC supports NUMA configurations, then the HPM SHOULD
              support filtering the counting based on whether the request
              originated in a local node or a remote node.
+2+| _It is recommended that a cache with a capacity larger than 32 KiB be
+     considered a significant cache._
 
 | SPM_020 a| The memory controllers within the SoC SHOULD incorporate an HPM
              capable of counting:
 
              * Read bandwidth
              * Write bandwidth                                                 +
-                                                                               +
+
              If the SoC supports NUMA configurations, then the HPM SHOULD
              support filtering the counting based on whether the request
              originated in a local node or a remote node.
