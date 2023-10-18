@@ -1310,6 +1310,10 @@ data centers and enterprises.
     _Enforcing a complete and precise set of permissions on abstract and program
      buffer memory accesses mitigates security concerns._
 
+| DBG_030  | The SoC SHOULD support an NS16550-compatible UART to support an
+             early OS boot console if graphics hardware is not present or not
+             made available to an OS loader.
+
 |===
 
 === Trace
