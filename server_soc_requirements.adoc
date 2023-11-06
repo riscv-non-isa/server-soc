@@ -745,14 +745,14 @@ messages or completions.
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| CCA_010  | The host bridge MUST enforce PCIe memory ordering rules and SHOULD
+| CCS_010  | The host bridge MUST enforce PCIe memory ordering rules and SHOULD
              support the relaxed ordering (RO) and ID-based ordering (IDO).
 2+| _An implementation may occassionally or never permit the relaxations allowed
      by RO and/or IDO attributes. Such implementations will result in a more
      conservative interpretation of the ordering rules, but they will not result
      in a violation of the ordering rules._
 
-| CCA_020  | Writes to host or device memory using the RO attribute set to 0
+| CCS_020  | Writes to host or device memory using the RO attribute set to 0
              MUST be observed by other harts and bus mastering devices in the
              order in which the write was received by the PCIe root port or the
              host bridge such that all previous writes are globally observed
