@@ -857,7 +857,7 @@ mechanism in PCIe.
 
 |===
 
-==== Error and Event Reporting
+==== Error handling, Error/Event Reporting
 
 [width=100%]
 [%header, cols="5,25"]
@@ -892,6 +892,13 @@ mechanism in PCIe.
 
 | AER_070  | The PCIe RCEC implemented in a SoC MUST implement the RCEC
              endpoint association extended capability.
+
+| AER_080  | PCIe root port configuration registers MUST NOT be affected, except
+             as required to update status associated with the transition to
+             DL_Down (see also section 2.9.1 of PCIe specification 6.0).
+2+| _Retaining port configurations on transition to DL_Down state is important
+     to support hot-plug._
+
 |===
 
 ==== Vendor Specific Registers
