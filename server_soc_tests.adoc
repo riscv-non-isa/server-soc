@@ -3,7 +3,7 @@
 === RISC-V Harts
 
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#            ^| Requirement
 | ME_RVA_010_010 a| For each application processor hart:
@@ -61,7 +61,7 @@
 === Clocks and Timers
 
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#            ^| Requirement
 | ME_CTI_010_010 a| Parse ACPI RHCT table to determine the time base frequency
@@ -72,7 +72,7 @@
 === External Interrupt Controllers
 
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#            ^| Requirement
 | ME_IIC_010_010 a| For each application processor hart:
@@ -139,7 +139,7 @@
 === Input-Output Memory Management Unit (IOMMU)
 
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#            ^| Requirement
 | ME_IOM_010_010 a| * Locate all IOMMUs reported by APCI and verify they are of
@@ -228,7 +228,7 @@
 ==== Enhanced Configuration Access Method (ECAM)
 
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#        ^| Requirement
 | MF_ECM_010 a| * Parse ACPI MCFG tables to local all ECAM ranges.
@@ -329,7 +329,7 @@ The ECAM address ranges MUST have the following physical memory
 ==== PCIe Memory Space
 
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#     ^| Requirement
 | MMS_010  | The SoC MUST support designating, for each hierarchy domain, one or
@@ -426,7 +426,7 @@ These controls may be applicable to the root complex, switches, multi-function
 devices, and SR-IOV capable devices.
 
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#     ^| Requirement
 | ACS_010 a| PCIe root ports and SoC integrated downstream switch ports MUST
@@ -475,7 +475,7 @@ address of a host memory location or the address of a location in the memory
 space of a peer endpoint or RCiEP.
 
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#     ^| Requirement
 | ADR_010  | The host bridge MUST request IOMMU translations for addresses
@@ -545,7 +545,7 @@ are routed by ID. Such requests may be ID Configuration requests, ID routed
 messages or completions.
 
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#     ^| Requirement
 | IDR_010  | Configuration requests from endpoints and RCiEP MUST be treated as
@@ -565,7 +565,7 @@ messages or completions.
 ==== Cacheability and Coherence
 
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#     ^| Requirement
 | CCS_010  | The host bridge MUST enforce PCIe memory ordering rules and SHOULD
@@ -635,7 +635,7 @@ messages or completions.
 A message signaled interrupt (MSI or MSI-X) is the preferred interrupt signaling
 mechanism in PCIe.
 
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#     ^| Requirement
 | MSI_010  | Message Signaled Interrupts MUST be supported.
@@ -656,7 +656,7 @@ mechanism in PCIe.
 ==== Precision Time Measurement (PTM)
 
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#     ^| Requirement
 | PTM_010  | PCIe root ports MAY support PCIe PTM capability.
@@ -683,7 +683,7 @@ mechanism in PCIe.
 ==== Error and Event Reporting
 
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#     ^| Requirement
 | AER_010  | PCIe root ports MUST support advanced error reporting (AER)
@@ -719,7 +719,7 @@ mechanism in PCIe.
 
 ==== Vendor Specific Registers
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#     ^| Requirement
 | VSR_010 a| Vendors specific registers in the root ports, host bridge, RCiEP,
@@ -749,7 +749,7 @@ mechanism in PCIe.
 ==== SoC-Integrated PCIe Devices
 
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#     ^| Requirement
 | SID_010  | SoC-integrated PCIe devices MUST implement all software visible
@@ -813,7 +813,7 @@ mechanism in PCIe.
 === Reliability, Availability, and Serviceability (RAS)
 
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#     ^| Requirement
 | RAS_010  | The level of RAS implemented by the SoC is `UNSPECIFIED`.
@@ -958,7 +958,7 @@ as cache capacity, memory bandwidth, interconnect bandwidth, power consumption,
 and more.
 
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#     ^| Requirement
 | QOS_010  | The SoC SHOULD incorporate QoS mechanisms to mitigate unwarranted
@@ -1061,7 +1061,7 @@ seamlessly integrate into the server management frameworks and tools employed by
 data centers and enterprises.
 
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#     ^| Requirement
 | MNG_010  | The SoC SHOULD incorporate support for an x1 PCIe lane, preferably
@@ -1107,7 +1107,7 @@ data centers and enterprises.
 === Debug
 
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#     ^| Requirement
 | DBG_010  | The SoC MUST support at least one RISC-V debug module as specified
@@ -1141,7 +1141,7 @@ data centers and enterprises.
 
 === Trace
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#     ^| Requirement
 | TRC_010  | The SoC MUST support either the RISC-V E-trace cite:[ETRACE] or the
@@ -1166,7 +1166,7 @@ data centers and enterprises.
 === Performance Monitoring
 
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#     ^| Requirement
 | SPM_010 a| Significant caches within the SoC SHOULD incorporate an HPM capable
@@ -1215,7 +1215,7 @@ data centers and enterprises.
 === Security Requirements
 
 [width=100%]
-[%header, cols="5,25"]
+[%header, cols="8,25"]
 |===
 | ID#     ^| Requirement
 | SEC_010  | The PCIe root ports within the SoC SHOULD support PCIe Integrity and

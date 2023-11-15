@@ -22,10 +22,10 @@ tests.
 The tests in this specification are documented use the following format:
 
 [width=100%]
-[%header, cols="5,5,20"]
+[%header, cols="8,20"]
 |===
 | TEST_ID#       ^| Test algorithm
-| AB_CAT_NNN_MMM  | The `CAT_NNN` identifies a requirement in the RISC-V Server
+| AB_CAT_NNN_MMM a| The `CAT_NNN` identifies a requirement in the RISC-V Server
                     SoC specification. Each requirement is associated with one
                     or more tests identified by `MMM`. The test IDs are prefixed
                     with two character prefix - `AB`.                          +

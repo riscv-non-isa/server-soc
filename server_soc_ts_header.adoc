@@ -34,7 +34,7 @@ endif::[]
 :footnote:
 :xrefstyle: short
 
-= RISC-V Server SoC Specification
+= RISC-V Server SoC Test Specification
 Server SoC Task Group
 
 // Preamble
