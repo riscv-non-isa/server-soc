@@ -7,6 +7,7 @@
 |===
 | ID#            ^| Requirement
 | ME_RVA_010_010 a| For each application processor hart:
+
                     * Determine the ISA node in ACPI RHCT table for that hart.
                     * Parse the ISA string in the ISA node and verify that all
                       mandatory extensions are supported.
@@ -76,6 +77,7 @@
 |===
 | ID#            ^| Requirement
 | ME_IIC_010_010 a| For each application processor hart:
+
                     * Determine the ISA node in ACPI RHCT table for that hart.
                     * Parse the ISA string in the ISA node and verify that Ssaia
                       extension is supported.
@@ -193,6 +195,7 @@
                     bit must be 1.
 | OE_IOM_180_010 a| See ME_IOM_010_010.
 | ME_IOM_190_010 a| For each IOMMU:
+
                     * if `capabilities.HPM` is 0 then continue.
                     * Verify `iohpmcycles` and its `OF` bit are writeable and
                       the cycles counter is at least 40-bit wide. 
@@ -217,7 +220,16 @@
                       the bus:device:function numbers of the IOMMUs in the test
                       output log.
 | ME_IOM_250_010 a| No test.
-| ME_IOM_260_010 a| No test.
+| ME_IOM_260_010 a| * Parse the PCIe root complex device binding structures from
+                      ACPI RIMT table and build a mapping of root complexes associated
+                      with each IOMMU.
+                    * For each IOMMU determine the PCIe segment number of the
+                      associated PCIe root complexes and create a list of IOMMUs
+                      that govern multiple root complexes where the PCIe root
+                      complexes belong to two or more PCIe segments.
+                    * For each IOMMU that governs PCIe root complexes that are
+                      part of different PCIe segments verify that the `ddtp`
+                      supports 3 level DDT.
 | ME_IOM_270_010 a| No test.
 | OE_IOM_280_010 a| No test.
 | ME_IOM_290_010 a| No test.
@@ -230,68 +242,70 @@
 [width=100%]
 [%header, cols="8,25"]
 |===
-| ID#        ^| Requirement
-| MF_ECM_010 a| * Parse ACPI MCFG tables to local all ECAM ranges.
-                * Verify that the reported ECAM ranges are reported as MMIO
-                  ranges in UEFI memory map.
-The ECAM address ranges MUST have the following physical memory
-             attributes (PMAs):
+| ID#            ^| Requirement
+| MF_ECM_010_010 a| * Parse ACPI MCFG tables to local all ECAM ranges.
+                    * Verify that the reported ECAM ranges are reported as MMIO
+                      ranges in UEFI memory map.
+                    * For each 4 KiB range in the ECAM range, verify that the
+                      following reads do not cause any errors or exceptions.
+                      ** 4-bytes at offset 0 - vendor and device ID
+                      ** 2-bytes at offset 0 - vendor ID
+                      ** 1 byte at offset 8 - revision ID
+                    
+| MF_ECM_020_010 a| No test.
+| MF_ECM_030_010 a| * Parse ACPI MCFG table and obtain ECAM ranges for all
+                      heirarchies.
+                    * Verify that the ECAM ranges for each hierarchy are all
+                      contigous and the base address is naturally aligned to
+                      the size.
+                    * Verify ranges of any two heirarchies do not overlap.
+| MF_ECM_040_010 a| See MF_ECM_030_010.
+| MF_ECM_050_010 a| TBA.
+| MF_ECM_060_010 a| * This test requires an input parameter that indicates 
+                      which primary bus number and root port can be used for
+                      this test. The test should be able to disable and enable
+                      the link associated with that root port without causing
+                      system instability (e.g., disabling link used to connect
+                      to boot device, etc.). Let the primary bus number be P and
+                      the RID of the root port be R.
+                    * Verify D is located on bus P.
+                    * Read vendor ID and device ID of all functions, including
+                      R, on bus P and record the results.
+                    * Disable the link using the link control register of R.
+                    * Read vendor ID and device ID of all functions on P and
+                      verify that they match values read before the link was
+                      disabled.
+                    * Enable the link using the link control register of R.
+| ME_ECM_080_010 a| For each PCIe root port in the system:
+                  
+                    * Read root capability register and verify that Configuration
+                      RRS Software Visibility is supported.
+| MF_ECM_090_010 a| No test.
+| MF_ECM_100_010 a| * This test requires an input parameters to use for the test:
+                      ** A primary bus number P.
+                      ** The RID of the root port R on the primary bus P.
+                      ** The RID of a non-existent function NF on the bus P.
+                      ** The RID of a device D downstream of P that can be reset
+                         by the test.
+                    * Read PCIe header of R and verify it is of type 1.
+                    * Read vendor ID offset of NF and verify all 1's returned.
+                    * Make an unaligned 2 and 4 byte read to configuration space
+                      of R and verify all 1's returned.
+                    * Read PCIe header of D and verify it is of type 0 and note
+                      its vendor and device ID.
+                    * Disable link of R.
+                    * Read vendor and device ID of D and verify all 1's
+                      returned.
+                    * Disable CRS software visibility in R.
+                    * Enable link of R.
+                    * Wait for link to be active.
+                    * Read vendor and device ID of D and verify all 1's returned.
+                    * Keep reading vendor and device ID till D is discovered.
+                    * Disable link of R.
+                    * 
+                    * and enable it again.
 
-             * Not cacheable, non-idempotent, coherent, strongly-ordered
-               (I/O ordering) I/O region
-             * One, two, and four byte naturally aligned read and write MUST
-               be supported.
-
-| ECM_020  | Writes to the ECAM address range from a RISC-V hart MUST be
-             non-posted and the write MUST complete at the hart only after a
-             completion is received from the function hosting the accessed
-             configuration register.
-2+| _Besides performing a write, software executing on a hart must not
-     require any additional actions to achieve this property._                 +
-                                                                               +
-    _This requirement satisfies the processor and host bridge implementation
-     requirement mentioned in the “Ordering Considerations for the Enhanced
-     Configuration Access Mechanism” implementation note of the PCIe 6.0
-     specification._
-
-| ECM_030 | The ECAM address range for a hierarchy MUST be contiguous and the
-            base address of the range MUST be naturally aligned to the size of
-            the ECAM address range associated with the hierarchy.
-
-| ECM_040 | A SoC MAY support multiple hierarchies. When multiple hierarchies
-            are supported, the ECAM address range of the hierarchies MUST NOT
-            overlap, but they are NOT REQUIRED to be contiguous.
-
-| ECM_050 | The configuration space of the PCIe root ports MUST be associated
-            with the primary bus number of the hierarchy associated with the
-            root port.
-2+| _PCIe root ports are PCI-PCI bridges that bridge the primary bus to the
-     secondary/subordinate buses. The root port itself enumerates as a PCI-PCI
-     bridge device on the primary bus. The collection of primary, secondary, and
-     subordinate buses are part of a single hierarchy domain that originates at
-     that PCIe root port._
-
-| ECM_060 | The configuration space of functions on the primary bus MUST be
-            accessible irrespective of the state of the corresponding PCIe link.
-2+| _Discovery and activation of the PCIe link requires accessing the
-     configuration space registers of the PCIe root port itself and the PCIe
-     root port is a PCI-PCI bridge device on the primary bus._
-
-| ECM_070 | The PCIe root port MUST enumerate as a PCI-PCI bridge to software
-            and comply with the rules specified for PCIe root ports in PCIe
-            specification 6.0.
-
-| ECM_080 | The PCIe root port MUST support the PCIe Configuration RRS software
-            (CRS) visibility enable control.
-2+| _The number of times a configuration request is retried on an RRS response
-     is `UNSPECIFIED`._
-
-| ECM_090 | Read and/or write to the ECAM range of the hierarchy domain
-            originating at a root port MUST generate PCIe configuration
-            transactions as type 0 or type 1 configuration transactions
-            following the rules specified for ECAM in PCIe specification 6.0.
-
-| ECM_100 a| Read access to ECAM address range from a RISC-V hart MUST be
+Read access to ECAM address range from a RISC-V hart MUST be
              responded with all 1s data if any of the following conditions are
              TRUE:
 
@@ -469,166 +483,15 @@ devices, and SR-IOV capable devices.
 
 ==== Address Routed Transactions
 
-The rules in this section apply to treatment in the root complex of TLPs that
-are routed by address. An address carried in such transactions may be the
-address of a host memory location or the address of a location in the memory
-space of a peer endpoint or RCiEP.
-
-[width=100%]
-[%header, cols="8,25"]
-|===
-| ID#     ^| Requirement
-| ADR_010  | The host bridge MUST request IOMMU translations for addresses
-             (Translated, Untranslated, or a PCIe ATS address translation
-             request) used in the request by endpoints and RCiEPs.
-2+| _The IOMMU must be invoked even for Translated requests to allow
-     determination of whether the requester is configured by software to use
-     Translated requests._                                                     +
-                                                                               +
-    _When the IOMMU operates in the T2GPA mode, it provides a GPA as the
-     translated address in response to a PCIe ATS address translation requests.
-     In this mode of operation, the IOMMU must be invoked by the host bridge for
-     Translated requests to translate the GPA to an SPA._                      +
-                                                                               +
-    _When ACS direct translated P2P controls are enabled, the Translated
-     requests may not be routed through the host bridge. In such cases, 
-     if direct P2P routing of these requests is not desired, due to security
-     and/or functional reasons (e.g., when operating in T2GPA mode), software
-     should utilize the ACS controls to direct these requests to the root
-     complex._
-
-| ADR_020  | The host bridge MUST enforce physical memory attribute checks and
-             physical memory protection checks on the translated address
-             provided by the IOMMU and MUST treat violating requests as
-             Unsupported Requests.
-2+| _These checks are analogous to the PMA and PMP checks performed by the
-     RISC-V hart._
-
-| ADR_030  | For Translated and Untranslated requests, the host bridge MUST use
-             the translated addresses provided by the IOMMU to determine
-             whether the transaction is targeting host memory or peer device
-             memory.
-
-| ADR_040  | The host bridge MAY support access to peer device memory. If peer
-             device memory access is not enabled (by design or by
-             configuration), then such accesses MUST be responded to with a
-             UR/CA response. The host bridge MUST NOT cause any other error
-             (e.g., hang, deadlock, etc.) when rejecting access to peer device
-             memory.
-2+| _A virtual machine may violate the peer-to-peer access policies and/or
-     configurations established by the hypervisor and/or SoC firmware, which
-     disallow peer device memory accesses. Such a VM may attempt to program
-     devices passed through to the virtual machine to perform peer memory
-     accesses. Such attempts to violate the peer-to-peer policies MUST NOT
-     lead to system instabilities (e.g., hangs, deadlocks, etc.) or errors._
-
-| ADR_050  | When a posted or non-posted-with-data request is allowed to access
-             peer device memory, then any poisoned data (EP=1) MUST be forwarded
-             as poisoned data, unless such forwarding is disallowed (e.g.,
-             poisoned TLP egress blocking or lack of support for data poisoning
-             is the SoC).
-
-| ADR_060  | Host memory writes caused by posted or non-posted-with-data requests
-             with poisoned data (EP=1) MUST mark such data in the host memory as
-             poisoned.
-
-| ADR_070  | Host memory reads that have uncorrectable data errors detected
-             within the SoC MUST cause a response with poisoned data (EP=1) if
-             transmission of poisoned TLPs is not blocked (see also section
-             2.7.2.1 of PCIe specification 6.0).
-|===
+No tests are defined for these requirements.
 
 ==== ID Routed Transactions
 
-The rules in this section apply to treatment in the root complex of TLPs that
-are routed by ID. Such requests may be ID Configuration requests, ID routed
-messages or completions.
-
-[width=100%]
-[%header, cols="8,25"]
-|===
-| ID#     ^| Requirement
-| IDR_010  | Configuration requests from endpoints and RCiEP MUST be treated as
-             Unsupported Requests.
-
-| IDR_020  | P2P routing of PCIe VDM between root ports within or across
-             hierarchies SHOULD be supported.
-2+| _MCTP transport protocols using PCIe VDM are used by the BMC to manage
-     PCIe/CXL devices. These messages are used to support manageability
-     protocols such as PLDM, NVMe-MI, Redfish, etc._
-
-| IDR_030  | P2P routing of PCIe VDM to/from RCIeP MAY be supported.
-
-|===
-
+No tests are defined for these requirements.
 
 ==== Cacheability and Coherence
 
-[width=100%]
-[%header, cols="8,25"]
-|===
-| ID#     ^| Requirement
-| CCS_010  | The host bridge MUST enforce PCIe memory ordering rules and SHOULD
-             support the relaxed ordering (RO) and ID-based ordering (IDO).
-2+| _An implementation may occassionally or never permit the relaxations allowed
-     by RO and/or IDO attributes. Such implementations will result in a more
-     conservative interpretation of the ordering rules, but they will not result
-     in a violation of the ordering rules._
-
-| CCS_020  | Writes to host or device memory using the RO attribute set to 0
-             MUST be observed by other harts and bus mastering devices in the
-             order in which the write was received by the PCIe root port or the
-             host bridge such that all previous writes are globally observed
-             before the RO=0 write is globally observed.
-
-| CCS_030  | The host bridge MUST enforce the idempotency, coherence,
-             cacheability, and access type physical memory attributes of the
-             accessed memory and perform any reordering or combining of PCIe
-             transactions only if the combination of physical memory attributes
-             and TLP specified memory ordering attributes allow it.
-
-| CCS_040  | The host bridge SHOULD implement hardware enforced cache coherency,
-             irrespective of the “No Snoop” attribute in the TLP, unless it has
-             been configured through `UNSPECIFIED` means to not enforce coherency
-             for TLPs with “No Snoop” attribute set to 1.
-2+| _A PCIe requester is permitted to set the “No Snoop” in transactions it
-     initiates that do not require hardware enforced cache coherency. Host
-     bridges that do not support isochronous VCs or can meet deadlines with
-     hardware enforced coherency may always enforce coherency. Enforcing cache
-     coherency is always conservative and will not lead to data corruption._   +
-                                                                               +
-    _Modern systems with integrated memory controllers and snoop directories may
-     not require the use of “No Snoop” to meet the latency targets as memory
-     regions accessed for isochronous operations would usually be device
-     exclusive. PCIe requires a function to guarantee that addresses accessed
-     using “No Snoop” set to 1 are not cached in any of the caches and software
-     that instructs a device to perform “No Snoop” transactions must only do so
-     when it can provide this guarantee._                                      +
-                                                                               +
-    _Some caches in a SoC may perform clean evictions to memory. In such SoCs,
-     if the addresses used by the non-snooped transactions may be cached (e.g.,
-     due to speculative accesses from a hart), then such clean evictions may
-     cause data corruption, even if the caches were explicitly cleaned by
-     software using the cache management operations. To ensure data integrity,
-     software should use memory that has such non-cacheable PMA or use the
-     Svpbmt extension to override the PMA to NC/IO, thereby implementing the
-     guarantee required by the PCIe specification when using the “No Snoop”
-     attribute set to 1. If the Svpbmt extension was used to override the PMA,
-     then use of cache management operations defined by Zicbom extension may be
-     necessary to flush data that might already be cached._                    +
-                                                                               +
-    _See also section 7.5.3.4 of PCIe specification 6.0._
-
-| CCS_050  | The host bridge MUST NOT violate the coherence physical memory
-             attribute if the “No Snoop” attribute in the TLP is 0.
-
-| CCS_060  | The interpretation of the TLP processing hints (TPH) by the SoC is
-             `UNSPECIFIED`.
-2+| _A future extension of the RISC-V IOMMU specification may define a standard
-     interpretation of the TPH including the use of ATS memory attributes (AMA)
-     for performing cache management._
-
-|===
+No tests are defined for these requirements.
 
 ==== Message signaled interrupts
 
@@ -637,20 +500,14 @@ mechanism in PCIe.
 
 [%header, cols="8,25"]
 |===
-| ID#     ^| Requirement
-| MSI_010  | Message Signaled Interrupts MUST be supported.
-
-| MSI_020  | SoC MUST NOT require any further action from the operating system
-             besides configuring the MSI address register in devices with the
-             address of an IMSIC interrupt register file (or a virtual interrupt
-             file) and the MSI data register in devices with an external
-             interrupt identity to enable the use of MSI or MSI-X.
-
-| MSI_030  | SoC MUST NOT support INTx virtual wire based interrupt signaling.
-2+| _PCIe supports INTx emulation to support legacy PCI interrupt mechanisms.
-     Modern SoC and devices are not expected be limited by the lack of this
-     emulation mode._
-
+| ID#            ^| Requirement
+| ME_MSI_010_010 a| * Locate all RCiEP and PCIe root ports in the system and verify
+                      that the Interrupt Pin Register reads 0 indicating that the
+                      function does not use legacy interrupt messages.
+                    * Verify that all PCIe root ports support MSI and/or MSI-X
+                      capability.
+| ME_MSI_020_010 a| No test.
+| ME_MSI_030_010 a| See ME_MSI_010_010.
 |===
 
 ==== Precision Time Measurement (PTM)
@@ -658,26 +515,11 @@ mechanism in PCIe.
 [width=100%]
 [%header, cols="8,25"]
 |===
-| ID#     ^| Requirement
-| PTM_010  | PCIe root ports MAY support PCIe PTM capability.
-2+| _Several applications such as instrumentation, media servers, telecom
-     servers, etc. require high precision monitoring and tracking of time. The
-     PCIe PTM protocol supports synchronization of multiple devices/functions to
-     a common shared PTM master time provided by the PTM root._
-
-| PTM_020  | When PCIe PTM capability is supported, the SoC MUST make the PTM
-             master time available to the operating system.
-2+| _The mechanism to make the master time available to the operating system
-     is implementation specific._                                              +
-                                                                               +
-    _Making PTM master time available to software enables software to translate
-     timing information between local time and PTM master time and thereby
-     enable coordination of events across multiple PCIe devices._
-
-| PTM_030  | When PCIe PTM capability is supported, the PTM master time MUST be
-             64-bit wide and MUST use the same or higher resolution clock than
-             the clock used to provide `time`.
-
+| ID#            ^| Requirement
+| OE_PTM_010_010 a| For each PCIe root ports, report the PCIe PTM capability if
+                    present in the test output log.
+| OE_PTM_020_010 a| No test.
+| OE_PTM_030_010 a| No test.
 |===
 
 ==== Error and Event Reporting
@@ -685,66 +527,31 @@ mechanism in PCIe.
 [width=100%]
 [%header, cols="8,25"]
 |===
-| ID#     ^| Requirement
-| AER_010  | PCIe root ports MUST support advanced error reporting (AER)
-             capability for reporting errors from connected devices or the
-             errors detected by the root port itself.
-2+| _AER capability defines more robust error reporting as compared to the
-     baseline error reporting capability._
+| ID#            ^| Requirement
+| ME_AER_010_010 a| For each PCIe root port, verify that the AER extended
+                    capability is supported.
+| ME_AER_020_010 a| For each PCIe root port, verify that the DPC extended
+                    capability is supported.
+| ME_AER_030_010 a| For each PCIe root port, verify that the RP extensions
+                    for DPC is supported in the DPC extended capability.
+| OE_AER_040_010 a| For each RCiEP, report the presence of AER extended
+                    capability in the test output log.
+| ME_AER_050_010 a| For each RCiEP, determine if the ACS extended capability is
+                    supported and if supported verify that the AER extended
+                    capability is also supported.
+| ME_AER_060_010 a| If any RCiEP with AER extended capability were detected then
+                    verify that there is at least one RCEC in the root complex.
+| ME_AER_070_010 a| For each RCEC in the system:
 
-| AER_020  | PCIe root ports MUST support the downstream port containment
-             (DPC) capability.
-
-| AER_030  | PCIe root ports MUST support the RP PIO controls.
-2+| _The root port programmed I/O (PIO) controls enable fine-grained control
-     over handling of non-posted requests that encounter errors and allows
-     handling of such errors as either uncorrectable or advisory based on
-     policies established by the operating system._
-
-
-| AER_040  | A RCiEP in the SoC SHOULD support the AER capability if it
-             detects any of the errors defined by PCIe specification 6.0
-             (See section 6.2.7).
-
-| AER_050  | A RCiEP in the SoC MUST support the AER capability if it supports
-             the ACS capability.
-
-| AER_060  | SoC MUST implement one or more PCIe RCEC in the root complex if
-             any of the RCiEP implement the AER capability or implement PME
-             signaling.
-
-| AER_070  | The PCIe RCEC implemented in a SoC MUST implement the RCEC
-             endpoint association extended capability.
+                    * Verify that it implements the RCEC endpoint association
+                      extended capability.
+                    * Verify that there is an RCEC associated with RCiEP with
+                      AER extended capability (See ME_AER_050_010).
 |===
 
 ==== Vendor Specific Registers
-[width=100%]
-[%header, cols="8,25"]
-|===
-| ID#     ^| Requirement
-| VSR_010 a| Vendors specific registers in the root ports, host bridge, RCiEP,
-             and RCRB MUST be implemented using one or more of the following
-             capabilities:
 
-             * Vendor specific capability.
-             * Vendor specific extended capability.
-             * Designated Vendor Specific extended capability.
-
-| VSR_020  | SoC MUST NOT require hypervisor and/or operating system
-             interaction with configuration space registers that are not defined
-             by an industry standards. Non-standard vendor specific registers,
-             if implemented in the configuration space, must only be used by the
-             SoC firmware.
-2+| _Some industry standards such a CXL may define standard DVSEC structures in
-     the configuration space._                                                 +
-                                                                               +
-    _The preferred way to implement device/SoC vendor specific registers that
-     need to be used by drivers in the run-time environment is to implement
-     them in the memory space of the device. Certain operating systems and
-     hypervisors may disallow and/or require mediating access to the
-     configuration space of devices. See also the implementation note in the
-     PCIe specification 6.0 section 7.2.2.2._
-|===
+No tests are defined for these requirements.
 
 ==== SoC-Integrated PCIe Devices
 
