@@ -59,6 +59,8 @@
                       implemented HPM, `cycles`, and `instret` counters.
 |===
 
+<<<
+
 === Clocks and Timers
 
 [width=100%]
@@ -69,6 +71,8 @@
                     and verify it is equal to 1 GHz.
 | ME_CTI_020_010 a| No test.
 |===
+
+<<<
 
 === External Interrupt Controllers
 
@@ -137,6 +141,8 @@
                       registers support all values between 0 and `GEILEN` supported
                       by the IMSIC.
 |===
+
+<<<
 
 === Input-Output Memory Management Unit (IOMMU)
 
@@ -235,6 +241,8 @@
 | ME_IOM_290_010 a| No test.
 |===
 
+<<<
+
 === PCIe Subsystem Integration
 
 ==== Enhanced Configuration Access Method (ECAM)
@@ -309,6 +317,8 @@
 | ME_ECM_120_010 a| No test.
 |===
 
+<<<
+
 ==== PCIe Memory Space
 
 [width=100%]
@@ -355,6 +365,8 @@
                     05, 06, or 07.
 |===
 
+<<<
+
 ==== Access Control Services (ACS)
 
 [width=100%]
@@ -376,6 +388,8 @@
 | ME_ACS_040_010 a| No test.
 | ME_ACS_050_010 a| No test.
 |===
+
+<<<
 
 ==== Address Routed Transactions
 
@@ -449,6 +463,8 @@ mechanism in PCIe.
 
 No tests are defined for these requirements.
 
+<<<
+
 ==== SoC-Integrated PCIe Devices
 
 [width=100%]
@@ -484,9 +500,13 @@ No tests are defined for these requirements.
 | ME_SID_100_010 a| See ME_AER_050_010 and ME_AER_070_010.
 |===
 
+<<<
+
 === Reliability, Availability, and Serviceability (RAS)
 
 No tests are defined for these requirements.
+
+<<<
 
 === Quality of Service
 
@@ -531,9 +551,13 @@ No tests are defined for these requirements.
 
 |===
 
+<<<
+
 === Manageability
 
 No tests are defined for these requirements.
+
+<<<
 
 === Debug
 
@@ -563,9 +587,13 @@ tests use a debug API/commands such as those provided by OpenOCD.
                       ACPI SPCR reports a NS16550-compatible UART.
 |===
 
+<<<
+
 === Trace
 
 No tests are defined for these requirements.
+
+<<<
 
 === Performance Monitoring
 
@@ -610,6 +638,8 @@ These tests require the use of a vendor provided API to access the HPMs.
                     the Flit performance measurement extended capability is
                     supported.
 |===
+
+<<<
 
 === Security Requirements
 
