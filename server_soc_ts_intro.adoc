@@ -2,16 +2,6 @@
 
 == Introduction
 
-The RISC-V server SoC specification defines a standardized set of capabilities
-that portable system software such as operating systems and hypervisors, can
-rely on being present in a RISC-V server SoC. The RISC-V Server SoC
-specification standardizes the requirements for the hardware interfaces and
-capabilities (e.g., harts, timers, interrupt controllers, PCIe root complexes,
-RAS, QoS, in-band management, out-of-band (OOB) management, etc.) provided by
-the SoC to software executing on the application processor harts at privilege
-levels below M. It enables OS and hypervisor vendors to support such SoCs with a
-single binary OS image distribution model.
-
 The RISC-V Server SoC Test Specification defines a set of tests to verify if the
 requirements specified in RISC-V Server SoC specification are implemented. The
 tests specified in this specification are not intended to exhaustively verify
@@ -34,7 +24,9 @@ The tests in this specification are documented use the following format:
                     requirement that MUST be supported and this test MUST pass.
                     If character in position `A` is `O` then the test is for a
                     requirement that SHOULD or MAY be supported; such tests may
-                    be skipped if the requirement is not implemented.          +
+                    be skipped if the requirement is not implemented. The tests
+                    record if optional features were present in the test output
+                    log.                                                       +
                                                                                +
                     The character in position `B` indicates the nature of the 
                     test. If this character is `F` then the test exercises some    
@@ -42,6 +34,7 @@ The tests in this specification are documented use the following format:
                     the character is `E` then the test determines for evidence 
                     that the feature is implemented (e.g., check ACPI tables) 
                     but does not functionally exercise the feature.
+                   
 |===
 
 This specification groups the tests in the following broad categories:
