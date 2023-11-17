@@ -581,10 +581,8 @@ tests use a debug API/commands such as those provided by OpenOCD.
                     . Verify that `dcsr.stopcount` supports freeze control for
                       freezing hart local counters in Debug Mode.
                     . Verify that `dmstatus.hasresethaltreq` is 1.
-| ME_DBG_030_010 a| . Determine if a graphical console is available
-                      through EFI_GRAPHICS_OUTPUT_PROTOCOL.
-                    . If a graphical console is not available verify that the
-                      ACPI SPCR reports a NS16550-compatible UART.
+| OE_DBG_030_010 a| . Report in test output log the presense of a UART through
+                      ACPI SPCR or SBI console interfacec.
 |===
 
 <<<
