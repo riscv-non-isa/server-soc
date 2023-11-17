@@ -1,0 +1,656 @@
+== Server SoC Test Specification
+
+=== RISC-V Harts
+
+[width=100%]
+[%header, cols="8,25"]
+|===
+| ID#            ^| Algorithm
+| ME_RVA_010_010 a| For each application processor hart:
+
+                    . Determine the ISA node in ACPI RHCT table for that hart.
+                    . Parse the ISA string in the ISA node and verify that all
+                      mandatory extensions are supported.
+                    . Verify that the ISA string matches that of hart 0.
+                    . Report the ISA string of hart 0 into the test output log.
+| ME_RVA_020_010  | See T_RVA_010_010.
+| ME_RVA_030_010 a| . The T_RVA_010_010 verifies that all ISA strings are
+                      identical. 
+                    . For each ISA extension reported in the ISA string, if
+                      there are CSRs associated with that extension, then probe
+                      the CSR to determine the width of the CSR fields and the
+                      legal encodings on each application processor hart. The
+                      CSR field widths and legal encodings supported by each
+                      hart must match that of hart 0.
+| ME_RVA_040_010  | See ME_RVA_030_010.
+| ME_RVA_050_010 a| No test.
+| MF_RVA_060_010 a| Install 4 instruction address match triggers using the debug
+                    triggers SBI and verify that each trigger fires.
+| MF_RVA_060_020 a| Install 4 load address match triggers using the debug
+                    triggers SBI and verify that each trigger fires.
+| MF_RVA_060_030 a| Install 4 store address match triggers using the debug
+                    triggers SBI and verify that each trigger fires.
+| MF_RVA_060_040 a| Install an `icount` trigger using the debug triggers SBI and
+                    verify single-step.
+| MF_RVA_060_050 a| . Install an interrupt trigger to match supervisor timer
+                      interrupt using the debug triggers SBI. 
+                    . Program a timer deadline in `stimecmp`
+                    . Verify that the trigger fires on reaching the programmed
+                      deadline.
+| MF_RVA_060_060 a| . Install an exception trigger to match ECALL to S-mode
+                      exception using the debug triggers SBI. 
+                    . Transition to U-mode and invoke an ECALL.
+                    . Verify that the trigger fires.
+| MF_RVA_060_070 a| . Verify `hcontext` exists.
+                    . Repeat MF_RVA_060_010 and MF_RVA_060_050 with a matching
+                      and non-matching `hcontext` value.
+| ME_RVA_060_080 a| . Install and read-back triggers with VMID values between 0
+                      and `VMIDLEN`.
+| MF_RVA_060_090 a| . Verify `scontext` exists.
+                    . Repeat MF_RVA_060_010 and MF_RVA_060_050 with a matching
+                      and non-matching `scontext` value.
+| ME_RVA_060_100 a| . Install and read-back triggers with ASID values between 0
+                      and `ASIDLEN`.
+| ME_RVA_070_010 a| . Request delegation of all HPM counters using the SBI.
+                    . Verify at least 6 programmable HPM counter are implemented.
+                    . Verify that the `scountovf` CSR is implemented
+                    . Verify `cycles` and `instret` are writeable.
+                    . Verify ability to toggle counter enable for each
+                      implemented HPM, `cycles`, and `instret` counters.
+|===
+
+<<<
+
+=== Clocks and Timers
+
+[width=100%]
+[%header, cols="8,25"]
+|===
+| ID#            ^| Algorithm
+| ME_CTI_010_010 a| Parse ACPI RHCT table to determine the time base frequency
+                    and verify it is equal to 1 GHz.
+| ME_CTI_020_010 a| No test.
+|===
+
+<<<
+
+=== External Interrupt Controllers
+
+[width=100%]
+[%header, cols="8,25"]
+|===
+| ID#            ^| Algorithm
+| ME_IIC_010_010 a| For each application processor hart:
+
+                    . Determine the ISA node in ACPI RHCT table for that hart.
+                    . Parse the ISA string in the ISA node and verify that Ssaia
+                      extension is supported.
+                    . Parse the RINTC structure in ACPI MADT tables to verify that 
+                      the interrupt controller type for the hart is IMSIC.
+| ME_IIC_020_010 a| See ME_IIC_010_010.
+| MF_IIC_030_010 a| . Verify presence of `siselect`, `sireg`, `stopi`, and
+                      `stopei` CSRs.
+                    . For each external interrupt identity supported by the
+                      S-level interrupt file, verify the ability to set the
+                      corresponding bit in the `eip__k__` and `eie__k__`
+                      registers.
+                    . Verify ability to enable and disable interrupt delivery in
+                      the `eidelivery` register.
+                    . Map the physical address of the S-mode interrupt register
+                      file of the hart with a virtual address using PBMT set to
+                      IO. The physical address is provided by the RINTC
+                      structure in ACPI MADT table.
+                    . Write a supported external interrupt identity to the
+                      S-level interrupt register file using a 4-byte store to
+                      the `seteipnum_le` register using virtual address
+                      established in previous step.  
+                    . Read the `seteipnum_le` register using a 4-byte load to
+                      verify it reads 0.
+                    . Verify that the written external interrupt identity is
+                      recorded in the `eip__k__` register of the IMSIC.
+                    . Determine the highest priority pending and enabled
+                      interrupt in the `eip__k__` registers.
+                    . Read the `stopei` register to verify that the highest
+                      priority external interrupt identity is reported.
+                    . Clear any external interrupts pended or enabled in the
+                      IMSIC by this test by clearing the corresponding bits in
+                      the `eip__k__` and `eie__k__` registers.
+| ME_IIC_040_010 a| Use WARL discovery method on `hstatus.VGEIN` CSR field to
+                    determine the `GEILEN` and verify that at least 5 guest
+                    interrupt files are supported.
+| ME_IIC_050_010 a| Verify the number of supported supervisor mode interrupt
+                    identities in IMSIC structure of the ACPI MADT table is at
+                    least 255.
+| ME_IIC_060_010 a| Verify the number of supported guest mode interrupt
+                    identities in IMSIC structure of the ACPI MADT table is at
+                    least 63.
+| ME_IIC_070_010 a| See MF_IIC_030_010.
+| ME_IIC_080_010 a| . Parse ACPI MADT to determine if an APLIC for supervisor
+                      interrupt domain is reported.
+                    . If no APLIC is reported then skip the remaining steps.
+                    . Locate the APLIC structure.
+                    . Verify that number of interrupt delivery control.
+                      structures is reported as 0 indicating it is used as a 
+                      wired-to-MSI bridge.
+                    . Verify the `domaincfg` supports MSI delivery mode and is
+                      configured to be in MSI delivery mode.
+                    . Write an external interrupt ID to `genmsi` register and
+                      verify that the extempore MSI is delivered to the IMSIC
+                      of the targeted hart.
+                    . Verify that the guest index field of the `target[i]`
+                      registers support all values between 0 and `GEILEN` supported
+                      by the IMSIC.
+|===
+
+<<<
+
+=== Input-Output Memory Management Unit (IOMMU)
+
+[width=100%]
+[%header, cols="8,25"]
+|===
+| ID#            ^| Algorithm
+| ME_IOM_010_010 a| . Locate all IOMMUs reported by APCI and verify they are of
+                      RIMT type.
+                    . For each IOMMU, read the `capabilities` register and
+                      verify that it supports version 1.0 of the RISC-V IOMMU
+                      specification.
+                    . Output the `capabilities` register in the test output log.
+| ME_IOM_020_010 a| No test.
+| ME_IOM_030_010 a| . Locate all IOMMUs governing PCIe root ports.
+                    . For each located IOMMU:
+                      .. if `capabilities.MSI_FLAT` is 0, then the `ddtp` must
+                         support at least 2 level DDT.
+                      .. if `capabilities.MSI_FLAT` is 1, then the `ddtp` must
+                         support 3 level DDT.
+| ME_IOM_040_010 a| For each IOMMU that does not govern a PCIe root port:
+                    . Parse the ACPI RIMT structure of that IOMMU to determine
+                      the widest device ID.
+                    . Verify that the `ddtp` supports a mode that supports the 
+                      widest device ID.
+| ME_IOM_050_010 a| . Parse ISA string in ACPI RHCT table and determine the 
+                      page based virtual memory systems supported by the harts.
+                    . For each IOMMU in reported:
+                      .. Verify that the `capabilities` register enumerates 
+                         support for each of the page based virtual memory
+                         system modes supported by the harts.
+| OE_IOM_060_010 a| See ME_IOM_010_010.
+| OE_IOM_070_010 a| See ME_IOM_010_010.
+| ME_IOM_080_010 a| For each IOMMU, verify that if `capabilities.MSI_MRIF` is 
+                    equal to `capabilities.AMO_MRIF`.
+| OE_IOM_090_010 a| See ME_IOM_010_010.
+| OE_IOM_100_010 a| See ME_IOM_010_010.
+| ME_IOM_110_010 a| . Use PCIe discovery to locate all RCiEPs.
+                    . For each RCiEP:
+                      .. If PCIe ATS capability not supported by the RCiEP
+                         then continue.
+                      .. Locate the governing IOMMU using ACPI RIMT table.
+                      .. Verify that the `capabilities.ATS` is 1 in the
+                         governing IOMMU.
+| OE_IOM_120_010 a| See ME_IOM_010_010.
+| ME_IOM_130_010 a| For each IOMMU, verify that if `capabilities.IGS` is either
+                    0 or 2. 
+| ME_IOM_140_010 a| For each IOMMU, verify that if `fctl.BE` is either read-only
+                    zero or is writeable. Verify that the support is identical
+                    for all IOMMUs. If big-endian mode supported then emit the
+                    support status in the test output log.
+| OE_IOM_150_010 a| See ME_IOM_140_010.
+| OE_IOM_160_010 a| See ME_IOM_010_010.
+| ME_IOM_170_010 a| For each IOMMU, verify that if any of the `PD8`, `PD17`, or
+                    `PD20` bits are 1 in the `capabilities` register then `PD20`
+                    bit must be 1.
+| OE_IOM_180_010 a| See ME_IOM_010_010.
+| ME_IOM_190_010 a| For each IOMMU:
+
+                    . if `capabilities.HPM` is 0 then continue.
+                    . Verify `iohpmcycles` and its `OF` bit are writeable and
+                      the cycles counter is at least 40-bit wide. 
+                    . Verify at least four programmable HPM counters are
+                      supported and the counters for each are at least 40-bit
+                      wide.
+                    . Verify that the bits corresponding to the implemented 
+                      HPM counters in `iocountovf` and `iocountinh` are
+                      writeable.
+                    . Verify that the `iohpmcycles` is at least 40-bit wide.
+                    . Verify that the `CY` bit in `iocountovf` and `iocountinh` is
+                      writeable.
+| ME_IOM_200_010 a| See ME_IOM_090_010.
+| OE_IOM_210_010 a| See ME_IOM_010_010.
+| ME_IOM_220_010 a| . Determine the width of the `PPN` field in `hgatp` and 
+                      multiply that by 4096 to determine the PA size supported
+                      by the hart.
+                    . Verify that the `capabilities.PAS` is greater than equal
+                      to the PA size supported by the hart.
+| ME_IOM_230_010 a| No test.
+| OE_IOM_240_010 a| . Do a PCIe scan to locate all RCiEP of IOMMU class and report
+                      the bus:device:function numbers of the IOMMUs in the test
+                      output log.
+| ME_IOM_250_010 a| No test.
+| ME_IOM_260_010 a| . Parse the PCIe root complex device binding structures from
+                      ACPI RIMT table and build a mapping of root complexes associated
+                      with each IOMMU.
+                    . For each IOMMU determine the PCIe segment number of the
+                      associated PCIe root complexes and create a list of IOMMUs
+                      that govern multiple root complexes where the PCIe root
+                      complexes belong to two or more PCIe segments.
+                    . For each IOMMU that governs PCIe root complexes that are
+                      part of different PCIe segments verify that the `ddtp`
+                      supports 3 level DDT.
+| ME_IOM_270_010 a| No test.
+| OE_IOM_280_010 a| No test.
+| ME_IOM_290_010 a| No test.
+|===
+
+<<<
+
+=== PCIe Subsystem Integration
+
+==== Enhanced Configuration Access Method (ECAM)
+
+[width=100%]
+[%header, cols="8,25"]
+|===
+| ID#            ^| Algorithm
+| MF_ECM_010_010 a| . Parse ACPI MCFG tables to local all ECAM ranges.
+                    . For each 4 KiB range in the ECAM range, verify that the
+                      following reads do not cause any errors or exceptions.
+                      .. 4-bytes at offset 0 - vendor and device ID
+                      .. 2-bytes at offset 0 - vendor ID
+                      .. 1 byte at offset 8 - revision ID
+| MF_ECM_020_010 a| No test.
+| MF_ECM_030_010 a| . Parse ACPI MCFG table and obtain ECAM ranges for all
+                      heirarchies.
+                    . Verify that the ECAM ranges for each hierarchy are all
+                      contigous and the base address is naturally aligned to
+                      the size.
+                    . Verify ranges of any two heirarchies do not overlap.
+| MF_ECM_040_010 a| See MF_ECM_030_010.
+| MF_ECM_050_010 a| TBA.
+| MF_ECM_060_010 a| . This test requires an input parameter that indicates 
+                      which primary bus number and root port can be used for
+                      this test. The test should be able to disable and enable
+                      the link associated with that root port without causing
+                      system instability (e.g., disabling link used to connect
+                      to boot device, etc.). Let the primary bus number be P and
+                      the RID of the root port be R.
+                    . Verify D is located on bus P.
+                    . Read vendor ID and device ID of all functions, including
+                      R, on bus P and record the results.
+                    . Disable the link using the link control register of R.
+                    . Read vendor ID and device ID of all functions on P and
+                      verify that they match values read before the link was
+                      disabled.
+                    . Enable the link using the link control register of R.
+| ME_ECM_080_010 a| For each PCIe root port in the system:
+                  
+                    . Read root capability register and verify that Configuration
+                      RRS Software Visibility is supported.
+| MF_ECM_090_010 a| No test.
+| MF_ECM_100_010 a| . This test requires an input parameters to use for the test:
+                      .. A primary bus number P.
+                      .. ECAM base address of the segment that includes P.
+                      .. The RID of a root port R on the primary bus P.
+                      .. The RID of a non-existent function NF on the bus P.
+                      .. The RID of a device D downstream of P that can be reset
+                         by the test.
+                    . Read PCIe header of R and verify it is of type 1.
+                    . Read vendor ID offset of NF and verify all 1's returned.
+                    . Write command register offset of NF and verify no errors or
+                      exceptions occur.
+                    . Make an unaligned 2 and 4 byte read to configuration space
+                      of R and verify all 1's returned.
+                    . Read PCIe header of D and verify it is of type 0 and note
+                      its vendor and device ID.
+                    . Disable CRS software visibility in R.
+                    . Issue FLR to D.
+                    . Read vendor ID of D and verify all 1's returned.
+                    . Keep reading vendor ID till D is discovered.
+                    . Enable CRS software visibility in R.
+                    . Issue FLR to D.
+                    . Read vendor ID of D and verify 0x0001 returned.
+                    . Read device ID of D and verify all 1s returned.
+                    . Keep reading vendor ID till D is discovered.
+                    . Disable link of R.
+                    . Read vendor ID of D and verify all 1's returned.
+                    . Enable link of R.
+| MF_ECM_110_010 a| See MF_ECM_100_010.
+| ME_ECM_120_010 a| No test.
+|===
+
+<<<
+
+==== PCIe Memory Space
+
+[width=100%]
+[%header, cols="8,25"]
+|===
+| ID#            ^| Algorithm
+| ME_MMS_010_010 a| Use ACPI DSDT table to locate PCI host bridges and collect
+                    the memory ranges routed to each host bridge. Verify that
+                    each host bridge has a memory range available for use with
+                    64-bit BARs and a memory range available for use with 32-bit
+                    BARs.
+| ME_MMS_020_010 a| See ME_MMS_010_010.
+| ME_MMS_030_010 a| No test.
+| ME_MMS_040_010 a| This test requires the following inputs: 
+
+                      .. A primary bus number P.
+                      .. ECAM base address of the segment that includes P.
+                      .. The RID of a root port R on the primary bus P.
+                      .. Changing the memory or prefetchable memory base/limit
+                         on R should not lead to any system instability i.e. 
+                         R is not connected to the main NVMe/Network, etc.
+ 
+                    . Read the memory base/limit and prefetchable memory
+                      base/limit of the ranges bridged downstream of R.
+                    . Change limit to reduce the memory limit range by 1 MiB.
+                      Let this excluded 1 MiB range be E. 
+                    . Perform 1, 2, 4, and 8 byte reads to locations in E and
+                      verify that all 1s is returned.
+                    . Perform 1, 2, 4, and 8 byte write to locations in E and
+                      verify that all no errors or exceptions occur.
+                    . Restore the memory limit and repeat same steps with the
+                      prefetchable memory limit.
+                    . Restore prefetchable memory limit to original value.
+                    . Disable link of R
+                    . Read 1, 2, 4, and 8 bytes from locations in memory
+                      base/limit range and prefetchable memory base/limit range
+                      and verify all 1s data returned.
+                    . Enable link R.
+| ME_MMS_050_010 a| See ME_MMS_040_010.
+| MF_MMS_060_010 a| No test.
+| MF_MMS_070_010 a| No test.
+| ME_MMS_080_010 a| For each PCIe root port, verify if EA capability is supported
+                    then the primary and/or secondary properties are not of type
+                    05, 06, or 07.
+|===
+
+<<<
+
+==== Access Control Services (ACS)
+
+[width=100%]
+[%header, cols="8,25"]
+|===
+| ID#            ^| Algorithm
+| ME_ACS_010_010 a| For each PCIe root port:
+
+                    . Verify ACS extended capability is supported.
+                    . Verify that the ACS capability register reports support for
+                      .. ACS source validation.
+                      .. ACS translation blocking.
+                      .. ACS I/O request blocking.
+                    . Report ACS capability register into test output log.
+| ME_ACS_020_010 a|  For each PCIe root port:
+                     . If BAR0 or BAR1 are implemented, then verify that the ACS
+                       capability register supports ACS Enhanced Capability.
+| ME_ACS_030_010 a| No test.
+| ME_ACS_040_010 a| No test.
+| ME_ACS_050_010 a| No test.
+|===
+
+<<<
+
+==== Address Routed Transactions
+
+No tests are defined for these requirements.
+
+==== ID Routed Transactions
+
+No tests are defined for these requirements.
+
+==== Cacheability and Coherence
+
+No tests are defined for these requirements.
+
+==== Message signaled interrupts
+
+A message signaled interrupt (MSI or MSI-X) is the preferred interrupt signaling
+mechanism in PCIe.
+
+[%header, cols="8,25"]
+|===
+| ID#            ^| Algorithm
+| ME_MSI_010_010 a| . Locate all RCiEP and PCIe root ports in the system and verify
+                      that the Interrupt Pin Register reads 0 indicating that the
+                      function does not use legacy interrupt messages.
+                    . Verify that all PCIe root ports support MSI and/or MSI-X
+                      capability.
+| ME_MSI_020_010 a| No test.
+| ME_MSI_030_010 a| See ME_MSI_010_010.
+|===
+
+==== Precision Time Measurement (PTM)
+
+[width=100%]
+[%header, cols="8,25"]
+|===
+| ID#            ^| Algorithm
+| OE_PTM_010_010 a| For each PCIe root ports, report the PCIe PTM capability if
+                    present in the test output log.
+| OE_PTM_020_010 a| No test.
+| OE_PTM_030_010 a| No test.
+|===
+
+==== Error and Event Reporting
+
+[width=100%]
+[%header, cols="8,25"]
+|===
+| ID#            ^| Algorithm
+| ME_AER_010_010 a| For each PCIe root port, verify that the AER extended
+                    capability is supported.
+| ME_AER_020_010 a| For each PCIe root port, verify that the DPC extended
+                    capability is supported.
+| ME_AER_030_010 a| For each PCIe root port, verify that the RP extensions
+                    for DPC is supported in the DPC extended capability.
+| OE_AER_040_010 a| For each RCiEP, report the presence of AER extended
+                    capability in the test output log.
+| ME_AER_050_010 a| For each RCiEP, determine if the ACS extended capability is
+                    supported and if supported verify that the AER extended
+                    capability is also supported.
+| ME_AER_060_010 a| If any RCiEP with AER extended capability were detected then
+                    verify that there is at least one RCEC in the root complex.
+| ME_AER_070_010 a| For each RCEC in the system:
+
+                    . Verify that it implements the RCEC endpoint association
+                      extended capability.
+                    . Verify that there is an RCEC associated with RCiEP with
+                      AER extended capability (See ME_AER_050_010).
+|===
+
+==== Vendor Specific Registers
+
+No tests are defined for these requirements.
+
+<<<
+
+==== SoC-Integrated PCIe Devices
+
+[width=100%]
+[%header, cols="8,25"]
+|===
+| ID#            ^| Algorithm
+| MF_SID_010_010 a| No test.
+
+| MF_SID_020_010 a| For all RCiEP and root ports:
+
+                    . Verify that I/O BAR are not implemented.
+                    . Verify that no I/O EA capability are implemented.
+                    . Interrupt pin register reads 0.
+| MF_SID_030_010 a| No test.
+| ME_SID_040_010 a| For all RCiEP:
+
+                    . Verify that MSI-X extended capability is supported if
+                      SR-IOV extended capability is supported.
+| ME_SID_050_010 a| For all RCiEP:
+           
+                    . Verify that if PASID extended capability is supported then
+                      the maximum PASID width supported is 20.
+| ME_SID_060_010 a| No test.
+| ME_SID_070_010 a| For all RCiEP:
+
+                    . Verify that if memory BAR are implemented then the BAR
+                      supports 64-bit memory space.
+| OE_SID_080_010 a| No test.
+| ME_SID_090_010 a| For all RCiEP:
+
+                    . Verify if ACS extended capability is supported then AER
+                      extended capability is also supported.
+| ME_SID_100_010 a| See ME_AER_050_010 and ME_AER_070_010.
+|===
+
+<<<
+
+=== Reliability, Availability, and Serviceability (RAS)
+
+No tests are defined for these requirements.
+
+<<<
+
+=== Quality of Service
+
+[width=100%]
+[%header, cols="8,25"]
+|===
+| ID#            ^| Algorithm
+| OE_QOS_010_010 a| . Determine the ISA node in ACPI RHCT table for hart 0.
+                    . Parse the ISA string in the ISA node and report in test
+                      output log if Ssqosid extension is supported.
+                    . Determine if ACPI RQSC table is present and if present
+                      report support for CBQRI extension in test output log.
+| OE_QOS_020_010 a| See OE_QOS_010_010.
+| ME_QOS_030_010 a| If Ssqosid extension is supported, then verify that the
+                    `sqoscfg` CSR can hold at least 16 RCID and at least 32
+                    MCID values.
+| OE_QOS_040_010 a| If CBQRI extension is supported, as determined by ACPI
+                    RQSC table, then report `capabilities.QOSID` bit of each
+                    IOMMU in the test output log.
+| OE_QOS_050_010 a| If ACPI RQSC table is not present then this test is skipped.
+
+                    . Determine caches in the Soc from the ACPI PPTT table.
+                    . Determine if there is a capacity controller implemented by
+                      that cache by looking up the cache ID in ACPI RQSC table
+                      and report in test output log whether capacity allocation
+                      and capacity monitoring are supported by that capacity
+                      controller by accessing the controllers capabilities
+                      register.
+                    . Locate all bandwidth controllers in ACPI RQSC table and
+                      and report in test output log whether bandwidth allocation
+                      and bandwidth monitoring are supported by that bandwidth
+                      controller by accessing the controllers capabilities
+                      register.
+| OE_QOS_060_010 a| See OE_QOS_050_010.
+| OE_QOS_070_010 a| See OE_QOS_050_010.
+| OE_QOS_080_010 a| See OE_QOS_050_010.
+| ME_QOS_090_010 a| If ACPI RQSC table is present then verify that the RCID and
+                    MCID count reported for all capacity and bandwidth
+                    controllers is identical in the quality of service
+                    controllers structures.
+| ME_QOS_100_010 a| No test.
+
+|===
+
+<<<
+
+=== Manageability
+
+No tests are defined for these requirements.
+
+<<<
+
+=== Debug
+
+The debug module tests are executed on a debug host connected to Server SoC.
+Executing these tests may require a vendor specific script/procedure to be
+executed to authorize debug before starting the execution of these tests. The
+tests use a debug API/commands such as those provided by OpenOCD.
+
+[width=100%]
+[%header, cols="8,25"]
+|===
+| ID#            ^| Algorithm
+| ME_DBG_010_010 a| . Connect to the Server SoC and verify there is a debug
+                      module that can be used to debug each of the RISC-V
+                      application processor harts in the SoC and verify that the
+                      `dmstatus.version` reports version 1.0.
+| ME_DBG_020_010 a| . Verify that `abstractcs.progbufsize` is not zero.
+                    . Verify that `abstractcs.relaxedpriv` is hardwired to 0.
+                    . Verify that `dmcs2` and supports atleast one halt group and at
+                      least one resume group, besides group 0.
+                    . Verify that `dcsr.stopcount` supports freeze control for
+                      freezing hart local counters in Debug Mode.
+                    . Verify that `dmstatus.hasresethaltreq` is 1.
+| OE_DBG_030_010 a| . Report in test output log the presense of a UART through
+                      ACPI SPCR or SBI console interfacec.
+|===
+
+<<<
+
+=== Trace
+
+No tests are defined for these requirements.
+
+<<<
+
+=== Performance Monitoring
+
+These tests require the use of a vendor provided API to access the HPMs.
+
+[width=100%]
+[%header, cols="8,25"]
+|===
+| ID#            ^| Algorithm
+| OF_SPM_010_010 a| . Determine caches in the Soc from the ACPI PPTT table and
+                      obtain their cache IDs.
+                    . Allocate two regions of memory.
+                    . For each cache:
+                      .. Use `CBO.FLUSH` to writeback and invalidate the two
+                         memory regions from the caches.
+                      .. Invoke vendor provided API,  passing the cache ID as a
+                         parameter, to determine if the cache supports an HPM.
+                      .. If an HPM is supported then invoke the vendor provided
+                         API, passing the cache ID and events, to program the
+                         HPM.
+                      .. Perform a memory copy from one region to another.
+                      .. Use the vendor provided API to read the performance
+                         counters and verify that they update.
+| OF_SPM_020_010 a| . Obtain the memory ranges from ACPI SRAT table and
+                      determine their proximity domains.
+                    . Allocate two regions of memory.
+                    . For each proximity domain:
+                      .. Use `CBO.FLUSH` to writeback and invalidate the two
+                         memory regions from the caches.
+                      .. Invoke vendor provided API,  passing the proximity
+                         domain as a parameter, to determine if the cache
+                         supports an HPM.
+                      .. If an HPM is supported then invoke the vendor provided
+                         API, passing the proximity domain and events, to
+                         program the HPM.
+                      .. Perform a memory copy from one region to another.
+                      .. Use the vendor provided API to read the performance
+                         counters and verify that they update.
+| OF_SPM_030_010 a| No test.
+| OF_SPM_040_010 a| Use algorithm from OF_SPM_020_010.
+| OE_SPM_050_010 a| For all PCIe root ports, report in the test output log if
+                    the Flit performance measurement extended capability is
+                    supported.
+|===
+
+<<<
+
+=== Security Requirements
+
+[width=100%]
+[%header, cols="8,25"]
+|===
+| ID#            ^| Algorithm
+| OE_SEC_010_010 a| For all PCIe root ports, report if the IDE extended
+                    capability is supported in the test output log.
+| OE_SEC_020_010 a| No tests.
+| OE_SEC_030_010 a| Report if system memory ranges are reported as crypto
+                    capable (EFI_MEMORY_CPU_CRYPTO) in the UEFI memory map.
+| OE_SEC_040_010 a| . Report if the EFI TPM2 protocol is supported.
+                    . If EFI TPM2 protocol is supported, report the TPM present
+                      flag by retrieving the boot service capabilities.
+|===

@@ -226,10 +226,6 @@ deliver external interrupts to the RISC-V application processor harts.
 
 | IOM_100  | IOMMU governing PCIe root ports SHOULD support the T2GPA mode of
              operation with ATS if ATS is supported.
-
-| IOM_110  | IOMMU governing RCiEP MUST support PCIe address translation
-             services (ATS) if any of the RCiEPs governed by the IOMMU support
-             the ATS capability.
 2+| _The T2GPA control enables a hypervisor to prevent DMA from a device, even
      if the device misuses the ATS capability and attempts to access memory that
      is not explicitly authorized by the page tables governing that device's
@@ -244,6 +240,10 @@ deliver external interrupts to the RISC-V application processor harts.
      This mechanism establishes such a trust relationship, and the PCIe link may
      be integrity-protected using PCIe integrity and data encryption (IDE) to
      defend against a man-in-the-middle adversary._
+
+| IOM_110  | IOMMU governing RCiEP MUST support PCIe address translation
+             services (ATS) if any of the RCiEPs governed by the IOMMU support
+             the ATS capability.
 
 | IOM_120  | IOMMU governing RCiEP MAY support the T2GPA mode of operation with
              ATS if ATS is supported.
@@ -1317,9 +1317,7 @@ data centers and enterprises.
     _Enforcing a complete and precise set of permissions on abstract and program
      buffer memory accesses mitigates security concerns._
 
-| DBG_030  | The SoC SHOULD support an NS16550-compatible UART to support an
-             early OS boot console if graphics hardware is not present or not
-             made available to an OS loader.
+| DBG_030  | The SoC SHOULD support an UART for use as early OS boot console.
 
 |===
 

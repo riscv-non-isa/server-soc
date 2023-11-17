@@ -1,0 +1,178 @@
+[[intro]]
+
+== Introduction
+
+The RISC-V Server SoC Test Specification defines a set of tests to verify if the
+requirements specified in RISC-V Server SoC specification are implemented. The
+tests specified in this specification are not intended to exhaustively verify
+the implementation. In most cases the tests only check for existence of the
+feature. Future versions of this specification may include more exhaustive
+tests.
+
+The tests in this specification are documented use the following format:
+
+[width=100%]
+[%header, cols="8,20"]
+|===
+| TEST_ID#       ^| Test algorithm
+| AB_CAT_NNN_MMM a| The `CAT_NNN` identifies a requirement in the RISC-V Server
+                    SoC specification. Each requirement is associated with one
+                    or more tests identified by `MMM`. The test IDs are prefixed
+                    with two character prefix - `AB`.                          +
+                                                                               +
+                    If character in position `A` is `M` then the test is for a
+                    requirement that MUST be supported and this test MUST pass.
+                    If character in position `A` is `O` then the test is for a
+                    requirement that SHOULD or MAY be supported; such tests may
+                    be skipped if the requirement is not implemented. The tests
+                    record if optional features were present in the test output
+                    log.                                                       +
+                                                                               +
+                    The character in position `B` indicates the nature of the 
+                    test. If this character is `F` then the test exercises some    
+                    or all of the functionality associated with the feature. If
+                    the character is `E` then the test determines for evidence 
+                    that the feature is implemented (e.g., check ACPI tables) 
+                    but does not functionally exercise the feature.
+                   
+|===
+
+This specification groups the tests in the following broad categories:
+
+* Harts
+* Clocks and Timers
+* External Interrupt Controllers
+* IOMMU
+* PCIe subsystem
+* Reliability, Availability, and Serviceability
+* Quality of Service
+* Debug
+* Trace
+* Performance monitoring
+* Security
+
+=== Glossary
+
+Most terminology has the standard RISC-V meaning. This table captures other
+terms used in the document. Terms in the document prefixed by 'PCIe' have the
+meaning defined in the PCI Express (PCIe) Base Specification cite:[PCI] (even
+if they are not in this table).
+
+.Terms and definitions
+[width=90%]
+[%header, cols="5,20"]
+|===
+| Term            ^| Definition
+| ACPI             | Advanced Configuration and Power Interface cite:[ACPI].
+| ACS              | Follows PCI Express. Access Control Services. A set of
+                     capabilities used to provide controls over routing of PCIe
+                     transactions.
+| AER              | Advanced Error Reporting. Follows PCI Express. A PCIe
+                     defined error reporting paradigm.
+| AIA              | RISC-V Advanced Interrupt Architecture.
+| ATS              | Follows PCI Express. Address Translation Services.
+| BAR or
+  Base Address
+  Register         | Follows PCI Express. A register that is used by hardware to
+                     show the amount of system memory needed by a PCIe function
+                     and used by system software to set the base address of the
+                     allocated space.
+| BMC              | Baseboard Management Controller. A motherboard resident
+                     management controller that provides functions for platform
+                     management.
+| CXL              | Compute Express Link bus standard.
+| DMA              | Direct Memory Access.
+| DMTF             | Distributed Management Task Force. Industry association for
+                     promoting systems management and interoperability.
+| ECAM             | Follows PCI Express. Enhanced Configuration Access Method.
+                     A mechanism to allow addressing of Configuration Registers
+                     for PCIe functions. In addition to the PCI Express Base
+                     Specification, see the detailed requirements in this
+                     document.
+| EP, EP=1         | Follows PCI Express. Also called Data Poisoning. EP is an
+                     error flag that accompanies data in some PCIe transactions
+                     to indicate the data is known to contain an error. Defined
+                     in PCI Express Base Specification 6.0 section 2.7.2. Unless
+                     otherwise blocked, the poison associated with the data must
+                     continue to propagate in the SoC internal interconnect.
+| GPA              | Guest Physical Address: An address in the virtualized
+                     physical memory space of a virtual machine.
+| Guest            | Software in a virtual machine.
+| Hierarchy ID or
+  Segment ID       | Follows PCI Express. An identifier of a PCIe Hierarchy
+                     within which the Requester IDs are unique.
+| Host Bridge      | Part of a SoC that connects host CPUs and memory to PCIe
+                     root ports, RCiEP, and non-PCIe devices integrated in the
+                     SoC. The host bridge is placed between the device(s) and
+                     the platform interconnect to process DMA transactions. IO
+                     Devices may perform DMA transactions using IO Virtual
+                     Addresses (VA, GVA or GPA). The host bridge invokes the
+                     associated IOMMU to translate the IOVA to Supervisor
+                     Physical Addresses (SPA).
+| HPM              | Hardware Performance Monitor.
+| Hypervisor       | Software entity that controls virtualization.
+| ID               | Identifier.
+| IMSIC            | Incoming Message-signaled Interrupt Controller.
+| IO Bridge        | See host bridge.
+| IOVA             | I/O Virtual Address: Virtual address for DMA by devices.
+| MCTP             | Follows DMTF Standard. Management Component Transport
+                     Protocol used for communication between components of a
+                     platform management system.
+| MSI              | Message Signaled Interrupts.
+| NUMA             | Non-uniform memory access.
+| OS               | Operating System.
+| PASID            | Follows PCI Express. Process Address Space Identifier: It
+                     identifies the address space of a process. The PASID value is
+                     provided in the PASID TLP prefix of the request.
+| PBMT             | Page-Based Memory Types.
+| PRI              | Page Request Interface. Follows PCI Express. A PCIe protocol
+                     that enables devices to request OS memory manager services to
+                     make pages resident.
+| RCiEP            | Root Complex Integrated Endpoint. Follows PCI Express. An
+                     internal peripheral that enumerates and behaves as
+                     specified in the PCIe standard.
+| RCEC             | Follows PCI Express. Root Complex Event Collector. A block
+                     for collecting errors and PME messages in a standard way
+                     from various internal peripherals.
+| RID or
+  Requester ID     | Follows PCI Express. An identifier that uniquely identifies
+                     the requester within a PCIe Hierarchy. Needs to be extended
+                     with a Hierarchy ID to ensure it is unique across the
+                     platform.
+| Root Complex, RC | Follows PCI Express. Part of the SoC that includes the Host
+                     Bridge, Root Port, and RCiEP.
+| Root Port, RP    | Follows PCI Express. A PCIe port in a Root Complex used to
+                     map a Hierarchy Domain using a PCI-PCI bridge.
+| P2P or
+  peer-to-peer     | Follows PCI Express. Transfer of data directly from one
+                     device to another. If the devices are under different PCIe
+                     Root Ports or are internal to the SoC this may involve data
+                     movement across the SoC internal interconnect.
+| PLDM             | Follows DMTF standard. Platform Level Data Model.
+| PMA              | Physical Memory Attributes.
+| PMP              | Physical Memory Protection.
+| Prefetchable
+  Non-prefetchable | Follows PCI Express. Defines the property of the memory
+                     space used by a device. For details see the PCIe Base
+                     Specification. Broadly, non-prefetchable space covers any
+                     locations where reads have side effects or where writes
+                     cannot be merged.
+| SMBIOS           | System Management BIOS.
+| SoC              | System on a chip, also referred as system-on-a-chip and
+                     system-on-chip.
+| SPA              | Supervisor Physical Address: Physical address used to
+                     to access memory and memory-mapped resources.
+| SPDM             | Follows DMTF Standard. Security Protocols and Data Models.
+                     A standard for authentication, attestation and key exchange
+                     to assist in providing infrastructure security enablement.
+| SR-IOV           | Follows PCI Express. Single-Root I/O Virtualization.
+| TLP              | Follows PCI Express. Transaction Layer Packet. Defined by
+                     Chapter 2 of the PCI Express Base Specification.
+| QoS              | Quality of Service. Quality of Service (QoS) is defined as
+                     the minimal end-to-end performance that is guaranteed in
+                     advance by a service level agreement (SLA) to a workload.
+| UEFI             | Unified Extensible Firmware Interface. cite:[UEFI]
+| UR, CA           | Follows PCI Express. Error returns to an access made to a
+                     PCIe hierarchy.
+| VM               | Virtual Machine.
+|===
