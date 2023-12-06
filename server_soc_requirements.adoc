@@ -453,6 +453,10 @@ hierarchy domain originating at each PCIe root port.
                processor harts in the SoC or by peer endpoints, including those
                of type RCiEP.
              * MAY support atomics, instruction fetch, and page walks.
+             * Naturally aligned data requests of size up to 8 bytes from the
+               RISC-V application processor harts in the SoC or by peer
+               endpoints, including those of type RCiEP, MUST result in a single
+               PCIe Memory Request to the target device.
 
 2+| _Software may use the Svpbmt extension to override the PMA to NC if such an
      override is compatible with the restricted programming model of the
