@@ -60,7 +60,8 @@ deliver external interrupts to the RISC-V application processor harts.
 | IIC_070 a| The memory regions for IMSIC interrupt files MUST have the
              following PMAs:
 
-             * Not cacheable, coherent, I/O region.
+             * Not cacheable, non-idempotent, coherent, strongly-ordered
+               (I/O ordering) channel 0 I/O region
              * Support 4-byte aligned reads and writes.
 
 | IIC_080 a| If the SoC implements devices that use wire-signaled interrupts
