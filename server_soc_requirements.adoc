@@ -895,10 +895,10 @@ mechanism in PCIe.
              * ACS P2P completion redirect.
              * ACS direct translated P2P.
 
-| SID_070  | SoC-integrated PCIe devices MAY support programmable BAR registers.
-             When programmable BAR registers are supported, the Memory Space
-             Indicator (bit 0) of such BAR MUST be 1 and they SHOULD support
-             being mapped anywhere in the 64 bit memory space.
+| SID_070  | The BAR registers are implemented by SoC-integrated PCIe devices
+             then they MUST be programmable. The Memory Space Indicator (bit 0)
+             of such BAR registers MUST be 1 and they SHOULD support being
+             mapped anywhere in the 64 bit memory space.
 
 | SID_080  | RCiEP MAY support the PCIe enhanced allocation (EA) capability for
              fixed allocation of memory resources.
