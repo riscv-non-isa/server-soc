@@ -460,6 +460,9 @@ hierarchy domain originating at each PCIe root port.
                                                                                +
     _See also the implementation note on optimizations based on restricted
      programming mode in section 2.3.1 of PCIe specification 6.0._
+                                                                               +
+    _See also first/last DW byte enable rules in section 2.2.5 of PCIe
+     specification 6.0._
 
 | MMS_040 a| A load from a RISC-V application processor hart to memory ranges
              designated for the mapped memory space of endpoints or RCiEP MUST
