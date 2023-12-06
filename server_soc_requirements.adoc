@@ -1338,7 +1338,7 @@ data centers and enterprises.
      hardware-level attacks._
 
 | SEC_020  | The SoC SHOULD support encryption of off-chip DRAM using a
-             transient memory encryption key that has at least 192-bit key
+             transient memory encryption key that has at least 256-bit key
              lengths.
 2+| _Off-chip memory encryption provides protection to critical assets in memory
      such as credentials, data encryption keys, and other secrets._
