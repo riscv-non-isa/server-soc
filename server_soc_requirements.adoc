@@ -912,7 +912,10 @@ mechanism in PCIe.
              mapped anywhere in the 64 bit memory space.
 
 | SID_080  | RCiEP MAY support the PCIe enhanced allocation (EA) capability for
-             fixed allocation of memory resources.
+             fixed allocation of memory resources. If EA capability is used then
+             the BEI of the entries MUST be one of 0 through 5 or 9 though 14
+             and their primary/secondary properties must be one of 0 through 4
+             or 0xFF.
 
 | SID_090  | SoC-integrated PCIe devices MUST support the PCIe defined baseline
              error reporting capability and MAY support PCIe Advanced Error
