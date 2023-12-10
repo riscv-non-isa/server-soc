@@ -1,87 +1,5 @@
 == Server SoC Hardware Requirements
 
-=== RISC-V Harts
-
-A RISC-V SoC includes a RISC-V application processor and may include one or
-more service processors. These service processors may provide services such as
-security and power management to software executing on the application
-processors, and they may themselves implement the RISC-V ISA. The requirements
-in this section apply solely to harts in the application processors of the SoC.
-
-[width=100%]
-[%header, cols="5,25"]
-|===
-| ID#     ^| Requirement
-| RVA_010  | The RISC-V application processor harts in the SoC MUST support the
-             RVA23 ISA profile cite:[RVA23].
-2+| _The next major release of the profiles is expected to be RVA24, which is
-     still under construction. This specification should be updated to comply
-     with the RVA24 profiles as the profile definition becomes more finalized._
-
-| RVA_020 a| The RISC-V application processor harts in the SoC MUST support the
-             following extensions:
-
-             * Sv48
-             * Sv48x4
-             * Svadu
-             * Sdtrig
-             * Sdext
-             * H
-             * Sscofpmf
-             * Zkr
-             * Ssecorrupt
-             * Ssccfg
-             * Ssctr
-             * Sscrind
-
-2+| _Ssccfg, Sscind, and Ssctr are under construction._                       +
-                                                                              +
-    _Many of these mandated extensions are optional in the RVA23 ISA profile.
-     This requirement is placed here as a placeholder. These mandates may be
-     moved downstream into a platform specification (as a chapter) or as a new
-     ISA profile specification._
-
-| RVA_030  | The ISA extensions and associated CSR field widths implemented by
-             any of the RISC-V application processor harts in the SoC MUST be
-             identical.
-2+| _The RVA23 profile supports a set of optional extensions. The set of
-     optional extensions implemented by the harts must be identical. Where the
-     extension supports optionality in the form of field widths (e.g.,
-     ASIDLEN, VLEN, allowed vstart values, physical address width, debug
-     triggers, cache-block size, etc.), the implementation of these must also be
-     identical. Having an identical ISA on all harts allows system software to
-     migrate tasks among the harts without constraints._
-
-| RVA_040  | The RISC-V application processor harts in the SoC MAY support
-             different power and performance characteristics but MUST be
-             otherwise indistinguishable from each other from a software
-             execution viewpoint.
-2+| _All harts in the SoC being indistinguishable from a software execution
-     viewpoint allows system software to migrate tasks among the harts without
-     constraints._
-
-| RVA_050 a| The RISC-V application processor hart MUST support:
-
-             * Single stepping using the step bit in  `dcsr`
-             * Debug scratch register 0 (`dscratch0`)
-
-| RVA_060 a| The RISC-V application processor hart MUST support:
-
-             * At least 4 instruction address match triggers.
-             * At least 4 load/store address match triggers.
-             * At least one icount trigger to support single stepping.
-             * At least one interrupt trigger.
-             * At least one exception trigger.
-             * Trigger filtering using `hcontext`.
-             * Trigger filtering using all VMID encodings supported by the hart.
-             * Trigger filtering using `scontext`.
-             * Trigger filtering using all ASID encodings supported by the hart.
-
-| RVA_070  | The RISC-V application processor MUST support at least 6 hardware
-             performance counters defined by the Zihpm extension in addition to
-             the three counters defined by Zicntr extension.
-|===
-
 === Clocks and Timers
 
 [width=100%]
@@ -142,7 +60,8 @@ deliver external interrupts to the RISC-V application processor harts.
 | IIC_070 a| The memory regions for IMSIC interrupt files MUST have the
              following PMAs:
 
-             * Not cacheable, coherent, I/O region.
+             * Not cacheable, non-idempotent, coherent, strongly-ordered
+               (I/O ordering) channel 0 I/O region
              * Support 4-byte aligned reads and writes.
 
 | IIC_080 a| If the SoC implements devices that use wire-signaled interrupts
@@ -417,7 +336,11 @@ hierarchy domain originating at each PCIe root port.
              * Not cacheable, non-idempotent, coherent, strongly-ordered
                (I/O ordering) I/O region
              * One, two, and four byte naturally aligned read and write MUST
-               be supported.
+               be supported and MUST result in a single PCIe Configuration
+               Request.
+2+| _See also the implementation note on root complex requirements for
+     generating configuration requests in section 7.2.2 of
+     PCIe specification 6.0._                                                  +
 
 | ECM_020  | Writes to the ECAM address range from a RISC-V hart MUST be
              non-posted and the write MUST complete at the hart only after a
@@ -534,6 +457,10 @@ hierarchy domain originating at each PCIe root port.
                processor harts in the SoC or by peer endpoints, including those
                of type RCiEP.
              * MAY support atomics, instruction fetch, and page walks.
+             * Naturally aligned data requests of size up to 8 bytes from the
+               RISC-V application processor harts in the SoC or by peer
+               endpoints, including those of type RCiEP, MUST result in a single
+               PCIe Memory Request to the target device.
 
 2+| _Software may use the Svpbmt extension to override the PMA to NC if such an
      override is compatible with the restricted programming model of the
@@ -541,6 +468,9 @@ hierarchy domain originating at each PCIe root port.
                                                                                +
     _See also the implementation note on optimizations based on restricted
      programming mode in section 2.3.1 of PCIe specification 6.0._
+                                                                               +
+    _See also first/last DW byte enable rules in section 2.2.5 of PCIe
+     specification 6.0._
 
 | MMS_040 a| A load from a RISC-V application processor hart to memory ranges
              designated for the mapped memory space of endpoints or RCiEP MUST
@@ -976,13 +906,16 @@ mechanism in PCIe.
              * ACS P2P completion redirect.
              * ACS direct translated P2P.
 
-| SID_070  | SoC-integrated PCIe devices MAY support programmable BAR registers.
-             When programmable BAR registers are supported, the Memory Space
-             Indicator (bit 0) of such BAR MUST be 1 and they SHOULD support
-             being mapped anywhere in the 64 bit memory space.
+| SID_070  | The BAR registers are implemented by SoC-integrated PCIe devices
+             then they MUST be programmable. The Memory Space Indicator (bit 0)
+             of such BAR registers MUST be 1 and they SHOULD support being
+             mapped anywhere in the 64 bit memory space.
 
 | SID_080  | RCiEP MAY support the PCIe enhanced allocation (EA) capability for
-             fixed allocation of memory resources.
+             fixed allocation of memory resources. If EA capability is used then
+             the BEI of the entries MUST be one of 0 through 5 or 9 though 14
+             and their primary/secondary properties must be one of 0 through 4
+             or 0xFF.
 
 | SID_090  | SoC-integrated PCIe devices MUST support the PCIe defined baseline
              error reporting capability and MAY support PCIe Advanced Error
@@ -1408,7 +1341,7 @@ data centers and enterprises.
      hardware-level attacks._
 
 | SEC_020  | The SoC SHOULD support encryption of off-chip DRAM using a
-             transient memory encryption key that has at least 192-bit key
+             transient memory encryption key that has at least 256-bit key
              lengths.
 2+| _Off-chip memory encryption provides protection to critical assets in memory
      such as credentials, data encryption keys, and other secrets._
