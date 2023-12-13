@@ -1205,77 +1205,11 @@ data centers and enterprises.
 | MNG_030 a| The SoC SHOULD incorporate support for utilizing a UART connection
              to the BMC, enabling the provision of a host debug console.
 
-| MNG_040  | The SoC SHOULD support remote debug using a JTAG interface with the
-             BMC.
-2+| _The JTAG debug transport modules within the SoC can be utilized to access
-     the RISC-V debug modules in the SoC through the Debug Module Interface._
-
-| MNG_050 a| The SoC SHOULD support the use of I3C for in-band and out-of-band
-             management agents in the SoC to communicate with the BMC.
-2+| _The out-of-band interface enables monitoring of sensors (e.g.,
-     temperature, power, etc.), control of parameters (e.g, power limits,
-     etc.), and logging (e.g., RAS error records, etc.) by the BMC._           +
-                                                                               +
-    _I3C supports high bandwidth communication with the BMC and is preferred
+| MNG_040 a| The SoC SHOULD support the use of I3C for in-band management agents
+             in the SoC to communicate with the BMC.
+2+| _I3C supports high bandwidth communication with the BMC and is preferred
      over I2C to minimize server boot times._
 
-|===
-
-=== Debug
-
-[width=100%]
-[%header, cols="5,25"]
-|===
-| ID#     ^| Requirement
-| DBG_010  | The SoC MUST support at least one RISC-V debug module as specified
-             by the RISC-V debug specification cite:[DEBUG].
-
-| DBG_020 a| The debug modules MUST support the following capabilities:
-
-             * Program buffer to execute instructions in debug mode.
-             * Support at least one halt group and at least one resume group,
-               besides group 0.
-             * Support debugging harts immediately out of reset.
-             * Always perform program buffer and abstract memory access with a
-               full and exact set of permissions (i.e., hardwire `relaxedpriv`
-               to 0).
-             * Freezing hart local counters using `stopcount` control.
-
-2+| _The ability to halt harts as a group and the ability to halt at reset 
-     offers convenience in debugging system software._                         +
-                                                                               +
-    _The program buffer provides greater flexibility and ease of use in
-     comparison to abstract command access._                                   +
-                                                                               +
-    _Enforcing a complete and precise set of permissions on abstract and program
-     buffer memory accesses mitigates security concerns._
-
-| DBG_030  | The SoC SHOULD support an UART for use as early OS boot console.
-
-|===
-
-=== Trace
-[width=100%]
-[%header, cols="5,25"]
-|===
-| ID#     ^| Requirement
-| TRC_010  | The SoC MUST support either the RISC-V E-trace cite:[ETRACE] or the
-             RISC-V N-trace cite:[NTRACE] standard extension for instruction
-             trace.
-
-| TRC_020  | The SoC MUST support the RISC-V trace control interface
-             specification.
-2+| _The RISC-V N-trace and the trace control interface specification are
-     currently under development._
-
-| TRC_030  | The trace control interface MUST support filtering by privilege
-             levels.
-
-| TRC_040  | The SoC SHOULD incorporate support for a System Memory trace sink.
-2+| _The system memory sink facilitates self-hosted trace decoders for software
-     debugging and profiling purposes. Additionally, the system memory sink
-     conveniently supports the off-chip transmission of trace data through a
-     PCIe or USB ports._
 |===
 
 === Performance Monitoring
@@ -1358,8 +1292,3 @@ data centers and enterprises.
      protection against tampering or unauthorized access._
 
 |===
-
-
-
-
-
