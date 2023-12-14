@@ -1,4 +1,4 @@
-= RISC-V RERI specification
+= RISC-V Server SoC specification
 
 This document is capturing discussions at the Server SoC HW TG.
 This is not an official specification and everything in this document may change.
