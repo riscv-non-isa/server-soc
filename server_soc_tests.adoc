@@ -292,7 +292,11 @@
                     64-bit BARs and a memory range available for use with 32-bit
                     BARs.
 | ME_MMS_020_010 a| See ME_MMS_010_010.
-| ME_MMS_030_010 a| No test.
+| ME_MMS_030_010 a| . Use PCIe discovery to locate the RISC-V PCIe test card.
+                    . Map the BAR 0 of the test card as IO memory using PBMT
+                      attribute.
+                    . Write data values to the scratchpad buffer in BAR 0 using
+                      and read it back.
 | ME_MMS_040_010 a| This test requires the following inputs: 
 
                       .. A primary bus number P.
@@ -319,8 +323,24 @@
                       and verify all 1s data returned.
                     . Enable link R.
 | ME_MMS_050_010 a| See ME_MMS_040_010.
-| MF_MMS_060_010 a| No test.
-| MF_MMS_070_010 a| No test.
+| MF_MMS_060_010 a| This test requires the use of two RISC-V PCIe test cards
+                    connected to two root ports in the system. This test is
+                    optional if peer-to-peer DMA is not supported by the system.
+                    One test card - card-0 - is used as an initiator and the
+                    second card - card-1 - is used as a responder.
+
+                    . Disable poisoned TLP egress blocking in the root ports
+                      connecting to the card-0 and card-1.
+                    . Program the card-0 to read from the `TEST_POISON_REG` in
+                      BAR 0 of card-1.
+                    . Verify that card-0 receives completion with EP=1.
+
+| MF_MMS_070_010 a| . Use PCIe discovery to locate the RISC-V PCIe test card and
+                      memory map its BAR 0 as IO memory.
+                    . Read the MMIO register - `TEST_POISON_REG` in BAR 0 that
+                      responds with poisoned data.
+                    . Verify that either a data-corruption exception occurs on
+                      the load instruction or the load returns all 1s data.
 | ME_MMS_080_010 a| For each PCIe root port, verify if EA capability is supported
                     then the primary and/or secondary properties are not of type
                     05, 06, or 07.
