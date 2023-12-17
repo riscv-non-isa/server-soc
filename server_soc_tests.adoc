@@ -8,7 +8,10 @@
 | ID#            ^| Algorithm
 | ME_CTI_010_010 a| Parse ACPI RHCT table to determine the time base frequency
                     and verify it is equal to 1 GHz.
-| ME_CTI_020_010 a| No test.
+| ME_CTI_020_010 a| Locate the _LPI objects for each RISC-V application
+                    processor hart. If present, verify that the __Architectural
+                    Context Lost Flags__ have bit 0 set to 0, indicating no loss
+                    of timer context for each supported low-power idle state.
 |===
 
 <<<
