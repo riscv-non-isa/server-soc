@@ -42,14 +42,13 @@ tailored to meet the requirements of the SoC hardware (e.g., initialization
 of address decoders, memory controllers, RAS, etc.).
 
 This specification standardizes the requirements for the hardware interfaces and
-capabilities (e.g., harts, timers, interrupt controllers, PCIe root complexes,
-RAS, QoS, in-band management, out-of-band (OOB) management, etc.) provided by
-the SoC to software executing on the application processor harts at privilege
-levels below M. It enables OS and hypervisor vendors to support such SoCs with a
-single binary OS image distribution model. The requirements posed by this
-specification represent a standard set of infrastructural capabilities,
-encompassing areas where divergence is typically unnecessary and where novelty
-is absent across implementations.
+capabilities (e.g., timers, interrupt controllers, PCIe root complexes, RAS, QoS,
+in-band management, etc.) provided by the SoC to software executing on the
+application processor harts at privilege levels below M. It enables OS and
+hypervisor vendors to support such SoCs with a single binary OS image
+distribution model. The requirements posed by this specification represent a
+standard set of infrastructural capabilities, encompassing areas where divergence
+is typically unnecessary and where novelty is absent across implementations.
 
 To be compliant with this specification, the SoC MUST support all mandatory
 requirements and MUST support the listed versions of the specifications. This
@@ -84,15 +83,12 @@ The requirements in this specification use the following format:
 
 This specification groups the requirements in the following broad categories:
 
-* Harts
 * Clocks and Timers
 * External Interrupt Controllers
 * IOMMU
 * PCIe subsystem
 * Reliability, Availability, and Serviceability
 * Quality of Service
-* Debug
-* Trace
 * Performance monitoring
 * Security
 
