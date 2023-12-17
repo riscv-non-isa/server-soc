@@ -98,7 +98,10 @@
                       verify that it supports version 1.0 of the RISC-V IOMMU
                       specification.
                     . Output the `capabilities` register in the test output log.
-| ME_IOM_020_010 a| No test.
+| ME_IOM_020_010 a| . Use PCIe discovery to locate all RCiEPs and PCIe RPs.
+                    . Locate the ACPI RIMT tables of all IOMMUs
+                    . For each RCiEP, verify that there is a governing IOMMU.
+                    . For each RP, verify that there is a governing IOMMU.
 | ME_IOM_030_010 a| . Locate all IOMMUs governing PCIe root ports.
                     . For each located IOMMU:
                       .. if `capabilities.MSI_FLAT` is 0, then the `ddtp` must
