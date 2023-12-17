@@ -202,7 +202,14 @@
                       .. 4-bytes at offset 0 - vendor and device ID
                       .. 2-bytes at offset 0 - vendor ID
                       .. 1 byte at offset 8 - revision ID
-| MF_ECM_020_010 a| No test.
+| MF_ECM_020_010 a| . Use PCIe discovery to locate the RISC-V PCIe test card.
+                    . Capture timestamp A from `time` CSR.
+                    . Write to `TEST_REG_1` in the test card DVSEC with a
+                      timeout value of 100 ns to request that the completion
+                      for CfgWr be generated after 1000 ns.
+                    . Issue a `fence iorw, iorw` instruction.
+                    . Capture timestamp B from `time` CSR.
+                    . Verify that the two timestamps are at least 1000 ns apart.
 | MF_ECM_030_010 a| . Parse ACPI MCFG table and obtain ECAM ranges for all
                       heirarchies.
                     . Verify that the ECAM ranges for each hierarchy are all
@@ -230,7 +237,16 @@
                   
                     . Read root capability register and verify that Configuration
                       RRS Software Visibility is supported.
-| MF_ECM_090_010 a| No test.
+| MF_ECM_090_010 a| . This test takes the PCIe root port to which the test card
+                      is connected as an input parameter.
+                    . Increment the subordinate bus number of the root port.
+                    . Read the vendor ID of function on subordinate bus and
+                      verify that the PCIe test card receives a type 1
+                      transaction.
+                    . Read the vendor ID of the test card on the secondary bus
+                      and verify that the PCIe test card receives a type 0
+                      transaction.
+                    . Restore the subordinate bus number of the root port.
 | MF_ECM_100_010 a| . This test requires an input parameters to use for the test:
                       .. A primary bus number P.
                       .. ECAM base address of the segment that includes P.
