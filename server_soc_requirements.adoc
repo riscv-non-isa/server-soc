@@ -1205,11 +1205,6 @@ data centers and enterprises.
 | MNG_030 a| The SoC SHOULD incorporate support for utilizing a UART connection
              to the BMC, enabling the provision of a host debug console.
 
-| MNG_040 a| The SoC SHOULD support the use of I3C for in-band management agents
-             in the SoC to communicate with the BMC.
-2+| _I3C supports high bandwidth communication with the BMC and is preferred
-     over I2C to minimize server boot times._
-
 |===
 
 === Performance Monitoring
