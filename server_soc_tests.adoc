@@ -27,7 +27,7 @@
                     . Determine the ISA node in ACPI RHCT table for that hart.
                     . Parse the ISA string in the ISA node and verify that Ssaia
                       extension is supported.
-                    . Parse the RINTC structure in ACPI MADT tables to verify that 
+                    . Parse the RINTC structure in ACPI MADT tables to verify that
                       the interrupt controller type for the hart is IMSIC.
 | ME_IIC_020_010 a| See ME_IIC_010_010.
 | MF_IIC_030_010 a| . Verify presence of `siselect`, `sireg`, `stopi`, and
@@ -45,7 +45,7 @@
                     . Write a supported external interrupt identity to the
                       S-level interrupt register file using a 4-byte store to
                       the `seteipnum_le` register using virtual address
-                      established in previous step.  
+                      established in previous step.
                     . Read the `seteipnum_le` register using a 4-byte load to
                       verify it reads 0.
                     . Verify that the written external interrupt identity is
@@ -72,7 +72,7 @@
                     . If no APLIC is reported then skip the remaining steps.
                     . Locate the APLIC structure.
                     . Verify that number of interrupt delivery control.
-                      structures is reported as 0 indicating it is used as a 
+                      structures is reported as 0 indicating it is used as a
                       wired-to-MSI bridge.
                     . Verify the `domaincfg` supports MSI delivery mode and is
                       configured to be in MSI delivery mode.
@@ -111,17 +111,17 @@
 | ME_IOM_040_010 a| For each IOMMU that does not govern a PCIe root port:
                     . Parse the ACPI RIMT structure of that IOMMU to determine
                       the widest device ID.
-                    . Verify that the `ddtp` supports a mode that supports the 
+                    . Verify that the `ddtp` supports a mode that supports the
                       widest device ID.
-| ME_IOM_050_010 a| . Parse ISA string in ACPI RHCT table and determine the 
+| ME_IOM_050_010 a| . Parse ISA string in ACPI RHCT table and determine the
                       page based virtual memory systems supported by the harts.
                     . For each IOMMU in reported:
-                      .. Verify that the `capabilities` register enumerates 
+                      .. Verify that the `capabilities` register enumerates
                          support for each of the page based virtual memory
                          system modes supported by the harts.
 | OE_IOM_060_010 a| See ME_IOM_010_010.
 | OE_IOM_070_010 a| See ME_IOM_010_010.
-| ME_IOM_080_010 a| For each IOMMU, verify that if `capabilities.MSI_MRIF` is 
+| ME_IOM_080_010 a| For each IOMMU, verify that if `capabilities.MSI_MRIF` is
                     equal to `capabilities.AMO_MRIF`.
 | OE_IOM_090_010 a| See ME_IOM_010_010.
 | OE_IOM_100_010 a| See ME_IOM_010_010.
@@ -134,7 +134,7 @@
                          governing IOMMU.
 | OE_IOM_120_010 a| See ME_IOM_010_010.
 | ME_IOM_130_010 a| For each IOMMU, verify that if `capabilities.IGS` is either
-                    0 or 2. 
+                    0 or 2.
 | ME_IOM_140_010 a| For each IOMMU, verify that if `fctl.BE` is either read-only
                     zero or is writeable. Verify that the support is identical
                     for all IOMMUs. If big-endian mode supported then emit the
@@ -149,11 +149,11 @@
 
                     . if `capabilities.HPM` is 0 then continue.
                     . Verify `iohpmcycles` and its `OF` bit are writeable and
-                      the cycles counter is at least 40-bit wide. 
+                      the cycles counter is at least 40-bit wide.
                     . Verify at least four programmable HPM counters are
                       supported and the counters for each are at least 40-bit
                       wide.
-                    . Verify that the bits corresponding to the implemented 
+                    . Verify that the bits corresponding to the implemented
                       HPM counters in `iocountovf` and `iocountinh` are
                       writeable.
                     . Verify that the `iohpmcycles` is at least 40-bit wide.
@@ -161,7 +161,7 @@
                       writeable.
 | ME_IOM_200_010 a| See ME_IOM_090_010.
 | OE_IOM_210_010 a| See ME_IOM_010_010.
-| ME_IOM_220_010 a| . Determine the width of the `PPN` field in `hgatp` and 
+| ME_IOM_220_010 a| . Determine the width of the `PPN` field in `hgatp` and
                       multiply that by 4096 to determine the PA size supported
                       by the hart.
                     . Verify that the `capabilities.PAS` is greater than equal
@@ -218,7 +218,7 @@
                     . Verify ranges of any two heirarchies do not overlap.
 | MF_ECM_040_010 a| See MF_ECM_030_010.
 | MF_ECM_050_010 a| TBA.
-| MF_ECM_060_010 a| . This test requires an input parameter that indicates 
+| MF_ECM_060_010 a| . This test requires an input parameter that indicates
                       which primary bus number and root port can be used for
                       this test. The test should be able to disable and enable
                       the link associated with that root port without causing
@@ -234,7 +234,7 @@
                       disabled.
                     . Enable the link using the link control register of R.
 | ME_ECM_080_010 a| For each PCIe root port in the system:
-                  
+
                     . Read root capability register and verify that Configuration
                       RRS Software Visibility is supported.
 | MF_ECM_090_010 a| . This test takes the PCIe root port to which the test card
@@ -292,24 +292,24 @@
                     64-bit BARs and a memory range available for use with 32-bit
                     BARs.
 | ME_MMS_020_010 a| See ME_MMS_010_010.
-| ME_MMS_030_010 a| . Use PCIe discovery to locate the RISC-V PCIe test card.
+| MF_MMS_030_010 a| . Use PCIe discovery to locate the RISC-V PCIe test card.
                     . Map the BAR 0 of the test card as IO memory using PBMT
                       attribute.
-                    . Write data values to the scratchpad buffer in BAR 0 using
-                      and read it back.
-| ME_MMS_040_010 a| This test requires the following inputs: 
+                    . Write data values to the `SCRATCHPAD` registers in BAR 0
+                      using and read them back.
+| MF_MMS_040_010 a| This test requires the following inputs:
 
                       .. A primary bus number P.
                       .. ECAM base address of the segment that includes P.
                       .. The RID of a root port R on the primary bus P.
                       .. Changing the memory or prefetchable memory base/limit
-                         on R should not lead to any system instability i.e. 
+                         on R should not lead to any system instability i.e.
                          R is not connected to the main NVMe/Network, etc.
- 
+
                     . Read the memory base/limit and prefetchable memory
                       base/limit of the ranges bridged downstream of R.
                     . Change limit to reduce the memory limit range by 1 MiB.
-                      Let this excluded 1 MiB range be E. 
+                      Let this excluded 1 MiB range be E.
                     . Perform 1, 2, 4, and 8 byte reads to locations in E and
                       verify that all 1s is returned.
                     . Perform 1, 2, 4, and 8 byte write to locations in E and
@@ -322,28 +322,27 @@
                       base/limit range and prefetchable memory base/limit range
                       and verify all 1s data returned.
                     . Enable link R.
-| ME_MMS_050_010 a| See ME_MMS_040_010.
-| MF_MMS_060_010 a| This test requires the use of two RISC-V PCIe test cards
-                    connected to two root ports in the system. This test is
-                    optional if peer-to-peer DMA is not supported by the system.
-                    One test card - card-0 - is used as an initiator and the
-                    second card - card-1 - is used as a responder.
+| MF_MMS_050_010 a| See ME_MMS_040_010.
+| MF_MMS_060_010 a| This test requires the use of two functions of the RISC-V
+                    PCIe test cards. This test is optional if peer-to-peer DMA
+                    is not supported by the system. One test card function -
+                    card-f0 - is used as an initiator and the second card
+                    function - card-f1 - is used as a responder.
 
                     . Disable poisoned TLP egress blocking in the root ports
-                      connecting to the card-0 and card-1.
-                    . Program the card-0 to read from the `TEST_POISON_REG` in
-                      BAR 0 of card-1.
-                    . Verify that card-0 receives completion with EP=1.
+                      connecting to the test card.
+                    . Program the card-f0 to read from the `TEST_POISON_REG` in
+                      BAR 0 of card-f1.
+                    . Verify that card-f0 receives completion with EP=1.
 
 | MF_MMS_070_010 a| . Use PCIe discovery to locate the RISC-V PCIe test card and
                       memory map its BAR 0 as IO memory.
                     . Read the MMIO register - `TEST_POISON_REG` in BAR 0 that
                       responds with poisoned data.
-                    . Verify that either a data-corruption exception occurs on
+                    . Verify that either a hardware error exception occurs on
                       the load instruction or the load returns all 1s data.
-| ME_MMS_080_010 a| For each PCIe root port, verify if EA capability is supported
-                    then the primary and/or secondary properties are not of type
-                    05, 06, or 07.
+| ME_MMS_080_010 a| . For each PCIe root port, verify that no EA capability is
+                      reported.
 |===
 
 <<<
@@ -374,11 +373,103 @@
 
 ==== Address Routed Transactions
 
-No tests are defined for these requirements.
+[width=100%]
+[%header, cols="8,25"]
+|===
+| ID#            ^| Algorithm
+| MF_ADR_010_010 a| . Use PCIe discovery to locate the RISC-V PCIe test card.
+                    . Configure IOMMU govering the test card with an invalid
+                      device context for the test card.
+                    . Initiate Translated Mrd, Untranslated Mrd, and a PCIe ATS
+                      translation request from the test card.
+                    . Verify that the IOMMU reports a "DDT entry not valid"
+                      fault for each of the transactions.
+                    . Verify that the test card receives a Unsupported Request
+                      (UR) response to each of the transactions.
+| MF_ADR_020_010 a| . Use PCIe discovery to locate the RISC-V PCIe test card.
+                    . Determine the address range of system memory reserved for
+                      machine mode use. This may be a test input.
+                    . Configure the IOMMU govering the test card to allow
+                      read and write access to the reserved system memory range
+                      and enable use of ATS by the test card.
+                    . Initiate Translated Mrd and Untranslated Mrd request from
+                      the test card with an address in the reserved memory
+                      range.
+                    . Verify that the test card receives a Unsupported Request
+                      (UR) response to each of the transactions.
+| MF_ADR_030_010 a| This test requires the use of two functions of the RISC-V
+                    PCIe test card. One function - card-f0 - is used as an
+                    initiator and the second function - card-f1 - is used as a
+                    responder.
+
+                    . Program the IOMMU govering the card-f0 to remap the
+                      physical address range corresponding BAR 0 of card-f1 to
+                      an equally sized system memory buffer in page tables set
+                      up for card-f0.
+                    . Program card-f0 to initiate a memory read to an address
+                      in BAR 0 of card-f1 using an Untranslated request.
+                    . Verify that the data returned to card-f0 is from the
+                      corresponding offset in the system memory buffer and no
+                      transaction is received by card-f1.
+| MF_ADR_040_010 a| This test uses same setup as MF_ADR_030_010.
+
+                    . Program the IOMMU govering the card-f0 to disallow access
+                      to physical address range corresponding BAR 0 of card-f1
+                      for DMA originating from card-f0. This test uses a Bare
+                      G-stage.
+                    . Program card-f0 to perform a memory read to the BAR 0 of
+                      card-f1.
+                    . Verify an Unsupported Request response is received and the
+                      IOMMU reports a "Read page fault".
+                    . Program card-f0 to perform a memory write to the BAR 0 of
+                      card-f1.
+                    . Verify that the IOMMU reports a "Write/AMO page fault".
+| MF_ADR_050_010 a| This test uses same setup as MF_ADR_040_010.
+
+                    . Program the IOMMU govering the card-f0 to allow read and
+                      write access to physical address range corresponding
+                      BAR 0 of card-f1 for DMA originating from card-f0.
+                    . Disable poisoned TLP egress blocking in the root ports
+                      connecting to the test card.
+                    . Program card-f0 to generate a Mwr to a test register in
+                      BAR 0 of card-f1 with EP=1.
+                    . Verify that card-f1 receives a Mwr with EP=1.
+| MF_ADR_060_010 a| . Disable poisoned TLP egress blocking in the root ports
+                      connecting to the test card.
+                    . Program card-f0 to write a system memory location with
+                      poisoned data (EP=1).
+                    . Read the memory location written by the card-f0 from a
+                      RISC-V application processor hart and verify that a
+                      hardware error exception occurs.
+                    . Program card-f0 to read the previously written memory
+                      location and verify that the data is returned in a
+                      completion with with EP=1.
+| MF_ADR_070_010 a| See MF_ADR_060_010.
+|===
 
 ==== ID Routed Transactions
 
-No tests are defined for these requirements.
+[width=100%]
+[%header, cols="8,25"]
+|===
+| ID#            ^| Algorithm
+| MF_IDR_010_010 a| . Use PCIe discovery to locate the RISC-V PCIe test card.
+                      The test card must be connected directly to the root port.
+                    . Program the test card to generate a type 0 and a type 1
+                      CfgRd request.
+                    . Verify that the card receives a Unsupported Request (UR)
+                      response.
+| OF_IDR_020_010 a| This test is optional and can be skipped if P2P routing of
+                    PCIe VDMs is not supported. This test requires the use of
+                    two functions of the RISC-V PCIe test card. One function
+                    - card-f0 - is used as an initiator and the second function
+                    - card-f1 - is used as a responder.
+
+                    . Program the card-f0 to generate a MCTP VDM with the
+                      card-f1 as the destination.
+                    . Verify that the VDM is received by card-f1.
+| OF_IDR_030_010 a| No tests.
+|===
 
 ==== Cacheability and Coherence
 
@@ -442,7 +533,17 @@ mechanism in PCIe.
 
 ==== Vendor Specific Registers
 
-No tests are defined for these requirements.
+[width=100%]
+[%header, cols="8,25"]
+|===
+| ID#            ^| Algorithm
+| MF_VSR_010_010 a| . Use PCIe discovery to locate all RCiEP, root ports, IOMMUs,
+                      and host bridges.
+                    . For each dicovered function walk the PCIe capability list
+                      and verify that the capability ID is one of PCIe specified
+                      capabilities.
+| MF_VSR_020_010 a| No tests.
+|===
 
 <<<
 
@@ -465,7 +566,7 @@ No tests are defined for these requirements.
                     . Verify that MSI-X extended capability is supported if
                       SR-IOV extended capability is supported.
 | ME_SID_050_010 a| For all RCiEP:
-           
+
                     . Verify that if PASID extended capability is supported then
                       the maximum PASID width supported is 20.
 | ME_SID_060_010 a| No test.
@@ -536,7 +637,21 @@ No tests are defined for these requirements.
 
 === Manageability
 
-No tests are defined for these requirements.
+[width=100%]
+[%header, cols="8,25"]
+|===
+| ID#            ^| Algorithm
+| OE_MNG_010_010 a| . Report into test log if a Management Controller Host
+                      Interface (Type 42) SMBIOS structures are present.
+                    . If Type 42 structures are present report into the test log
+                      the Device Type field indicating the type of network
+                      interface (USB, PCIe v2, etc.).
+| OE_MNG_020_010 a| . Report into test log if a IPMI Device Information
+                      (Type 38) SMBIOS structure is present.
+                    . If Type 38 structure is present report into the
+                      test log the Interface Type (SSIF, etc.).
+| OE_MNG_030_010 a| No tests.
+|===
 
 <<<
 
@@ -551,7 +666,7 @@ These tests require the use of a vendor provided API to access the HPMs.
 | OF_SPM_010_010 a| . Determine caches in the Soc from the ACPI PPTT table and
                       obtain their cache IDs.
                     . Allocate two regions of memory.
-                    . For each cache:
+                    . For each data cache:
                       .. Use `CBO.FLUSH` to writeback and invalidate the two
                          memory regions from the caches.
                       .. Invoke vendor provided API,  passing the cache ID as a
@@ -559,25 +674,47 @@ These tests require the use of a vendor provided API to access the HPMs.
                       .. If an HPM is supported then invoke the vendor provided
                          API, passing the cache ID and events, to program the
                          HPM.
-                      .. Perform a memory copy from one region to another.
+                      .. Perform a memory copy from one region to another from
+                         a hart that can access that cache.
                       .. Use the vendor provided API to read the performance
                          counters and verify that they update.
 | OF_SPM_020_010 a| . Obtain the memory ranges from ACPI SRAT table and
                       determine their proximity domains.
-                    . Allocate two regions of memory.
                     . For each proximity domain:
-                      .. Use `CBO.FLUSH` to writeback and invalidate the two
+                      .. Allocate a region of memory in each proximity domain.
+                    . For each proximity domain - P:
+                      .. Use `CBO.FLUSH` to writeback and invalidate the
                          memory regions from the caches.
-                      .. Invoke vendor provided API,  passing the proximity
-                         domain as a parameter, to determine if the cache
-                         supports an HPM.
+                      .. Invoke vendor provided API, passing the proximity
+                         domain as a parameter, to determine if the memory
+                         controller supports an HPM.
                       .. If an HPM is supported then invoke the vendor provided
                          API, passing the proximity domain and events, to
-                         program the HPM.
-                      .. Perform a memory copy from one region to another.
+                         program the HPM to count local/remote read/write
+                         bandwidth appropriately.
+                      .. Perform a memory copy from the region allocated in P
+                         to the region allocated in each of the other proximity
+                         domains from a hart with affinity to P.
                       .. Use the vendor provided API to read the performance
                          counters and verify that they update.
-| OF_SPM_030_010 a| No test.
+                    . Repeat previous step but now copy to the region allocated
+                      in P from each of the other proximity domains and verify
+                      that the counters update.
+| OF_SPM_030_010 a| . Use PCIe discovery to locate the RISC-V PCIe test card.
+                    . Determine the PCIe root port to which the card is
+                      connected.
+                    . Use vendor provided API, passing the test card and root
+                      port requester ID to determine if there is the PCie port
+                      supports an HPM.
+                    . If an HPM is supported then invoke the vendor provided
+                      API, passing the PCie root port RID and program the HPM
+                      to count read bandwidth.
+                    . Program test card to read from system memory.
+                    . Use the vendor provided API to read performance counters
+                      and verify they update.
+                    . Repeat previous steps but with counter programmed to
+                      count write bandwidth and the test card programmed to
+                      write to system memory.
 | OF_SPM_040_010 a| Use algorithm from OF_SPM_020_010.
 | OE_SPM_050_010 a| For all PCIe root ports, report in the test output log if
                     the Flit performance measurement extended capability is
@@ -601,3 +738,49 @@ These tests require the use of a vendor provided API to access the HPMs.
                     . If EFI TPM2 protocol is supported, report the TPM present
                       flag by retrieving the boot service capabilities.
 |===
+
+== RISC-V PCIe Test Card
+
+A PCIe test card is required to create stimulus for a subset of the tests. This
+section outlines the design of such a test card. The PCIe test card shall be
+designed to support a x1 PCIe lane and at least Gen 3 speeds. The test card
+shall be implemented as a single device with two functions. Each function
+implements the standard PCIe type 0 header and the following PCIe capabilities:
+
+* PCIe Capability
+* MSI Capability
+* Power Management Capability
+* ATS Capability
+* DVSEC capability
+
+Each function shall support a 64-bit memory BAR. The functions should support
+all legal values of Max_Payload_Size.
+
+The DVSEC capability of the function shall provide the following registers:
+
+* `TEST_REG_1` - a 32-bit wide test register that can be written with a value
+   between 0 and 8191. When the register is written with a value of `X`, the
+   function will generate a completion for the CfgWr transaction that writes
+   the register after a delay of `X` nanoseconds.
+
+* `TEST_REG_2` - a 32-bit wide register that may be configured with a value
+  that represents the duration in nanoseconds that the device should wait
+  before starting to respond to transactions following a FLR.
+
+The BAR 0 of the functions provide the following registers:
+
+* `TEST_POISON_REG` - a 64-bit wide test register which always returns a EP=1
+  completion on read.
+
+* `SCRATCHPAD` - a 4 KiB read/write scratchpad register space that can be
+  written using Mrd/Mwr transactions and supports all legal address and byte
+  enable rules.
+
+* `INJECTED_TLP` - a set of registers that can be used to setup the TLP header
+  and if required the data payload of the TLP.
+
+* `INJECT_TLP` - a control register to request the card to originate the TLP
+  programmed in `INJECTED_TLP`.
+
+* `LAST_RX_TLP` - a set of registers that hold the header and payload of the
+  last TLP received by the function.
