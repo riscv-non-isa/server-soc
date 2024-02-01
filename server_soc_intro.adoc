@@ -20,21 +20,22 @@ computing systems that may be used for one or more of these purposes.
 .Components of a RISC-V Server Platform
 image::riscv-server-platform.png[width=800]
 
-The RISC-V server platform is defined as the collection of SoC hardware,
-platform firmware, boot/runtime services, and security services. The platform
-provides hardware interfaces (e.g., harts, timers, interrupt controllers, PCIe
-root ports, etc.) to portable system software. It also offers a set of
-standardized boot and runtime services based on the UEFI and ACPI standards. To
-support provisioning and platform management, it interfaces with a baseboard
-management controller (BMC) through both in-band and out-of-band (OOB)
-management interfaces. The in-band management interfaces support the use of
-standard manageability specifications like MCTP, PLDM, IPMI, and Redfish for
-provisioning and management of the operating system executing on the platform.
-The OOB interface supports the use of standard manageability specifications like
-MCTP, PLDM, Redfish, and IPMI for functions such as power management, telemetry,
-debug, and provisioning. The security model includes guidelines and requirements
-for aspects such as debug authorization, secure/measured boot, firmware updates,
-firmware resilience, and confidential computing, among others.
+The RISC-V server platform cite:[SPLT] is defined as the collection of SoC
+hardware, platform firmware, boot/runtime services, and security services. The
+platform provides hardware interfaces (e.g., harts, timers, interrupt
+controllers, PCIe root ports, etc.) to portable system software. It also offers
+a set of standardized RISC-V boot and runtime services cite:[BRS] based on the
+UEFI and ACPI standards. To support provisioning and platform management, it
+interfaces with a baseboard management controller (BMC) through both in-band and
+out-of-band (OOB) management interfaces. The in-band management interfaces
+support the use of standard manageability specifications like MCTP, PLDM, IPMI,
+and Redfish for provisioning and management of the operating system executing on
+the platform. The OOB interface supports the use of standard manageability
+specifications like MCTP, PLDM, Redfish, and IPMI for functions such as power
+management, telemetry, debug, and provisioning. The RISC-V security model
+cite:[SEC] includes guidelines and requirements for aspects such as debug
+authorization, secure/measured boot, firmware updates, firmware resilience, and
+confidential computing, among others.
 
 The platform firmware, typically operating at privilege level M, is
 considered part of the platform and is usually expected to be customized and
