@@ -8,8 +8,8 @@
 # SPDX-License-Identifier: CC-BY-SA-4.0
 #
 # Description:
-# 
-# This Makefile is designed to automate the process of building and packaging 
+#
+# This Makefile is designed to automate the process of building and packaging
 # the Doc Template for RISC-V Extensions.
 
 DATE ?= $(shell date +%Y-%m-%d)
@@ -18,13 +18,13 @@ REVMARK ?= Draft
 DOCKER_RUN := docker run --rm -v ${PWD}:/build -w /build \
 riscvintl/riscv-docs-base-container-image:latest
 
-HEADER_SOURCE := server_soc_header.adoc
-PDF_RESULT := riscv-server-soc.pdf
-
-TS_HEADER_SOURCE := server_soc_ts_header.adoc
-TS_PDF_RESULT := riscv-server-soc-ts.pdf
-
+SRC_DIR := src
+BUILD_DIR := build
+HEADER_SOURCE := $(SRC_DIR)/riscv-server-soc.adoc
+TS_HEADER_SOURCE := $(SRC_DIR)/riscv-server-soc-ts.adoc
+XTRA_ADOC_OPTS :=
 ASCIIDOCTOR_PDF := asciidoctor-pdf
+ASCIIDOCTOR_HTML := asciidoctor
 OPTIONS := --trace \
            -a compress \
            -a mathematical-format=svg \
@@ -32,7 +32,9 @@ OPTIONS := --trace \
            -a revremark=${REVMARK} \
            -a revdate=${DATE} \
            -a pdf-fontsdir=docs-resources/fonts \
-           -a pdf-style=docs-resources/themes/riscv-pdf.yml \
+           -a pdf-theme=docs-resources/themes/riscv-pdf.yml \
+           $(XTRA_ADOC_OPTS) \
+		   -D build \
            --failure-level=ERROR
 REQUIRES := --require=asciidoctor-bibtex \
             --require=asciidoctor-diagram \
@@ -42,7 +44,7 @@ REQUIRES := --require=asciidoctor-bibtex \
 
 all: build
 
-build: 
+build:
 	@echo "Checking if Docker is available..."
 	@if command -v docker >/dev/null 2>&1 ; then \
 		echo "Docker is available, building inside Docker container..."; \
@@ -54,18 +56,21 @@ build:
 
 build-container:
 	@echo "Starting build inside Docker container..."
-	$(DOCKER_RUN) /bin/sh -c "$(ASCIIDOCTOR_PDF) $(OPTIONS) $(REQUIRES) --out-file=$(PDF_RESULT) $(HEADER_SOURCE)"
-	$(DOCKER_RUN) /bin/sh -c "$(ASCIIDOCTOR_PDF) $(OPTIONS) $(REQUIRES) --out-file=$(TS_PDF_RESULT) $(TS_HEADER_SOURCE)"
+	$(DOCKER_RUN) /bin/sh -c "$(ASCIIDOCTOR_PDF) $(OPTIONS) $(REQUIRES) $(HEADER_SOURCE)"
+	$(DOCKER_RUN) /bin/sh -c "$(ASCIIDOCTOR_HTML) $(OPTIONS) $(REQUIRES) $(HEADER_SOURCE)"
+	$(DOCKER_RUN) /bin/sh -c "$(ASCIIDOCTOR_PDF) $(OPTIONS) $(REQUIRES) $(TS_HEADER_SOURCE)"
+	$(DOCKER_RUN) /bin/sh -c "$(ASCIIDOCTOR_HTML) $(OPTIONS) $(REQUIRES) $(TS_HEADER_SOURCE)"
 	@echo "Build completed successfully inside Docker container."
 
 build-no-container:
 	@echo "Starting build..."
-	$(ASCIIDOCTOR_PDF) $(OPTIONS) $(REQUIRES) --out-file=$(PDF_RESULT) $(HEADER_SOURCE)
-	$(ASCIIDOCTOR_PDF) $(OPTIONS) $(REQUIRES) --out-file=$(TS_PDF_RESULT) $(TS_HEADER_SOURCE)
+	$(ASCIIDOCTOR_PDF) $(OPTIONS) $(REQUIRES) $(HEADER_SOURCE)
+	$(ASCIIDOCTOR_HTML) $(OPTIONS) $(REQUIRES) $(HEADER_SOURCE)
+	$(ASCIIDOCTOR_PDF) $(OPTIONS) $(REQUIRES) $(TS_HEADER_SOURCE)
+	$(ASCIIDOCTOR_HTML) $(OPTIONS) $(REQUIRES) $(TS_HEADER_SOURCE)
 	@echo "Build completed successfully."
 
 clean:
 	@echo "Cleaning up generated files..."
-	rm -f $(PDF_RESULT)
-	rm -f $(TS_PDF_RESULT)
+	rm -rf $(BUILD_DIR)
 	@echo "Cleanup completed."

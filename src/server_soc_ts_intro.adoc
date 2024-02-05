@@ -28,13 +28,13 @@ The tests in this specification are documented use the following format:
                     record if optional features were present in the test output
                     log.                                                       +
                                                                                +
-                    The character in position `B` indicates the nature of the 
-                    test. If this character is `F` then the test exercises some    
+                    The character in position `B` indicates the nature of the
+                    test. If this character is `F` then the test exercises some
                     or all of the functionality associated with the feature. If
-                    the character is `E` then the test determines for evidence 
-                    that the feature is implemented (e.g., check ACPI tables) 
+                    the character is `E` then the test determines for evidence
+                    that the feature is implemented (e.g., check ACPI tables)
                     but does not functionally exercise the feature.
-                   
+
 |===
 
 This specification groups the tests in the following broad categories:
