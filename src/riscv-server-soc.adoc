@@ -1,5 +1,5 @@
 [[header]]
-:description: RISC-V Server SoC Test Specification
+:description: RISC-V Server SoC Specification
 :company: RISC-V.org
 :revdate: 08/2023
 :revnumber: 0.1
@@ -9,13 +9,15 @@
 :preface-title: Preamble
 :colophon:
 :appendix-caption: Appendix
-:imagesdir: images
-:title-logo-image: image:risc-v_logo.png[pdfwidth=3.25in,align=center]
+// https://docs.asciidoctor.org/asciidoc/latest/macros/images-directory/
+:imagesdir: ../docs-resources/images
+:title-logo-image: image:risc-v_logo.png["RISC-V International Logo",pdfwidth=3.25in,align=center]
 // Settings:
 :experimental:
 :reproducible:
-:imagesoutdir: images
-:bibtex-file: server_soc.bib
+:imagesoutdir: ../build/images
+:srcdir: src
+:bibtex-file: {srcdir}/server_soc.bib
 :bibtex-order: appearance
 :bibtex-style: ieee
 :icons: font
@@ -34,7 +36,7 @@ endif::[]
 :footnote:
 :xrefstyle: short
 
-= RISC-V Server SoC Test Specification
+= RISC-V Server SoC Specification
 Server SoC Task Group
 
 // Preamble
@@ -55,8 +57,12 @@ https://creativecommons.org/licenses/by/4.0/.
 
 Copyright 2022 by RISC-V International.
 
+:imagesdir: images
 [preface]
 include::server_soc_contributors.adoc[]
-include::server_soc_ts_intro.adoc[]
-include::server_soc_tests.adoc[]
+
+include::server_soc_intro.adoc[]
+
+include::server_soc_requirements.adoc[]
+
 include::server_soc_bibliography.adoc[]
