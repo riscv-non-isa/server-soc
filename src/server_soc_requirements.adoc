@@ -96,13 +96,18 @@ deliver external interrupts to the RISC-V application processor harts.
 2+| _The number of IOMMUs implemented in the SoC is `UNSPECIFIED`._
 
 | IOM_020  | All DMA capable peripherals (RCiEP and non-PCIe devices) and all
-             PCIe root ports that are made available to software on the RISC-V
-             application processor harts MUST be governed by an IOMMU.         +
+             PCIe root ports accessible by software on the RISC-V application
+             processor harts MUST be governed by an IOMMU.                     +
                                                                                +
-             This requirement does not apply to platform devices such as the
-             APLIC or the IOMMU itself. This requirement does not apply to
-             memory accesses originated by a debug module using a System Bus
-             Access block.
+             The following initiators are exempt from this requirement:
+
+             * Interrupt controllers, such as the APLIC.
+             * IOMMUs.
+             * System Bus Access blocks of Debug Modules.
+             * Controllers, including the root of trust (RoT) controller, power
+               management controllers, or other SoC management controllers, when
+               they access resources reserved for their use.
+
 2+| _DMA capable peripherals being governed by an IOMMU allows OS/hypervisors to
      restrict DMA originating from such devices to a subset of memory to enhance
      security and software fault tolerance. The address translation capability
