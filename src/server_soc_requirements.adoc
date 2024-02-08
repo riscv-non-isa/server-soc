@@ -95,7 +95,7 @@ deliver external interrupts to the RISC-V application processor harts.
              cite:[IOMMU].
 2+| _The number of IOMMUs implemented in the SoC is `UNSPECIFIED`._
 
-| IOM_020  | All DMA capable peripherals (RCiEP and non-PCIe devices) and all
+| IOM_020 a| All DMA capable peripherals (RCiEP and non-PCIe devices) and all
              PCIe root ports accessible by software on the RISC-V application
              processor harts MUST be governed by an IOMMU.                     +
                                                                                +
