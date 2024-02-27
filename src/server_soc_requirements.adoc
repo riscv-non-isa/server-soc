@@ -99,12 +99,12 @@ deliver external interrupts to the RISC-V application processor harts.
              PCIe root ports accessible by software on the RISC-V application
              processor harts MUST be governed by an IOMMU.                     +
                                                                                +
-             The following initiators are exempt from this requirement:
+             Initiators, such as the following, are exempt from this requirement:
 
              * Interrupt controllers, such as the APLIC.
              * IOMMUs.
              * System Bus Access blocks of Debug Modules.
-             * Controllers, including the root of trust (RoT) controller, power
+             * Controllers, including the root of trust (RoT) controllers, power
                management controllers, or other SoC management controllers, when
                they access resources reserved for their use.
 
