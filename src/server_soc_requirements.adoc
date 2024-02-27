@@ -1266,6 +1266,24 @@ data centers and enterprises.
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
+| SEC_005 a| The Server SoC MUST comply with the requirements and guidelines
+             detailed in Reference Model, Ecosystem Security Objectives, and
+             the Cryptography sections of the RISC-V Security Model cite:[SEC].
+             The Server SoC is classified as a complex security system for the
+             purposes of SR_ROT_001 and SR_ATT_002.
+
+| SEC_006 a| The Server SoC MUST support the Generic System Without Supervisor
+             Domains use case detailed in the RISC-V Security Model. The
+             building blocks used to implement this use case MUST comply with
+             the requirements specified in the RISC-V Security Building Blocks
+             section of the RISC-V Security Model specification.
+
+| SEC_007 a| The Server SoC MAY support the Confidential Computing on RISC-V
+             (CoVE) use detailed in the RISC-V Security Model. The building
+             blocks used to implement this use case MUST comply with the
+             requirements specified in the RISC-V Security Building Blocks
+             section of the RISC-V Security Model specification.
+
 | SEC_010  | The PCIe root ports within the SoC SHOULD support PCIe Integrity and
              Data Encryption (IDE) capability.
 2+| _The IDE extension adds optional capabilities to perform hardware encryption
