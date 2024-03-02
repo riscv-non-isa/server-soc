@@ -95,14 +95,19 @@ deliver external interrupts to the RISC-V application processor harts.
              cite:[IOMMU].
 2+| _The number of IOMMUs implemented in the SoC is `UNSPECIFIED`._
 
-| IOM_020  | All DMA capable peripherals (RCiEP and non-PCIe devices) and all
-             PCIe root ports that are made available to software on the RISC-V
-             application processor harts MUST be governed by an IOMMU.         +
+| IOM_020 a| All DMA capable peripherals (RCiEP and non-PCIe devices) and all
+             PCIe root ports accessible by software on the RISC-V application
+             processor harts MUST be governed by an IOMMU.                     +
                                                                                +
-             This requirement does not apply to platform devices such as the
-             APLIC or the IOMMU itself. This requirement does not apply to
-             memory accesses originated by a debug module using a System Bus
-             Access block.
+             Initiators, such as the following, are exempt from this requirement:
+
+             * Interrupt controllers, such as the APLIC.
+             * IOMMUs.
+             * System Bus Access blocks of Debug Modules.
+             * Controllers, including the root of trust (RoT) controllers, power
+               management controllers, or other SoC management controllers, when
+               they access resources reserved for their use.
+
 2+| _DMA capable peripherals being governed by an IOMMU allows OS/hypervisors to
      restrict DMA originating from such devices to a subset of memory to enhance
      security and software fault tolerance. The address translation capability
@@ -1261,6 +1266,24 @@ data centers and enterprises.
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
+| SEC_005 a| The Server SoC MUST comply with the requirements and guidelines
+             detailed in Reference Model, Ecosystem Security Objectives, and
+             the Cryptography sections of the RISC-V Security Model Version
+             1.0 cite:[SEC].  The Server SoC is classified as a complex
+             security system for the purposes of SR_ROT_001 and SR_ATT_002.
+
+| SEC_006 a| The Server SoC MUST support the Generic System Without Supervisor
+             Domains use case detailed in the RISC-V Security Model Version 1.0.
+             The building blocks used to implement this use case MUST comply
+             with the requirements specified in the RISC-V Security Building
+             Blocks section of the RISC-V Security Model specification.
+
+| SEC_007 a| The Server SoC MAY support the Confidential Computing on RISC-V
+             (CoVE) use detailed in the RISC-V Security Model Version 1.0. The
+             building blocks used to implement this use case MUST comply with
+             the requirements specified in the RISC-V Security Building Blocks
+             section of the RISC-V Security Model specification.
+
 | SEC_010  | The PCIe root ports within the SoC SHOULD support PCIe Integrity and
              Data Encryption (IDE) capability.
 2+| _The IDE extension adds optional capabilities to perform hardware encryption
