@@ -1301,7 +1301,7 @@ data centers and enterprises.
              encryption SHOULD comply with security requirements specified by
              standards such as FIPS 140-3.
 
-| SEC_040  | The SoC should have the capability interfacing with a Trusted
+| SEC_040  | The SoC SHOULD have the capability interfacing with a Trusted
              Platform Module (TPM) that adheres to the TPM 2.0 Library
              specification cite:[TPM20].
 2+| _A TPM enhances security by providing secure storage for sensitive
