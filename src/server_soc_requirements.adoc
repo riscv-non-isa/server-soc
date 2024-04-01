@@ -265,7 +265,7 @@ deliver external interrupts to the RISC-V application processor harts.
 
 | IOM_300  | The host bridge MUST provide the 20-bit PASID from the PCIe PASID
              TLP Prefix as the `process_id` input to the IOMMU along with an
-             indication about the validity of the `process_id` input. When the 
+             indication about the validity of the `process_id` input. When the
              `process_id` is indicated as valid, the host bridge MUST
              additionally provide the "Execute Requested" and the "Privilege
              Mode Requested" bits from the PASID TLP prefix as input to the
