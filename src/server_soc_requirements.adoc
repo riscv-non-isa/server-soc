@@ -1124,7 +1124,7 @@ and more.
              processors of the SoC MUST include support for the `srmcfg` CSR.
              Furthermore, this CSR MUST support a minimum of 16 RCIDs and at
              least 32 MCIDs.
-2+| _The count of RCID and MCID that can be used in the SoC should scale with
+2+a| _The count of RCID and MCID that can be used in the SoC should scale with
      the number of RISC-V harts in the SoC._                                   +
                                                                                +
    _The `srmcfg` CSR is provided by the Ssqosid extension cite:[PRIV]._
