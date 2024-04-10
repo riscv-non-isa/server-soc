@@ -1,4 +1,4 @@
-== Server SoC Hardware Requirements
+== Server SoC Requirements
 
 === Clocks and Timers
 
@@ -9,13 +9,17 @@
 | CTI_010  | The `time` CSR MUST increment at a constant frequency and the count
              MUST be in units of 1 ns. The frequency at which the CSR provides
              an updated time value MUST be at least 100 MHz.
+2+a| _The Zicntr extension cite:[UNPRIV] requires the real-time clocks of all
+     harts to be synchronized to within one tick of the real-time clock._
 
 | CTI_020  | The `time` counter MUST appear to be always on and MUST appear to
              not lose its count across power states, including when the hart is
              powered off.
 |===
 
-=== External Interrupt Controllers
+<<<
+
+=== Interrupt Controllers
 
 This section specifies the requirements on the interrupt controllers used to
 deliver external interrupts to the RISC-V application processor harts.
@@ -84,6 +88,8 @@ deliver external interrupts to the RISC-V application processor harts.
      by the device and/or bus interface specifications that such devices conform
      to. See also SID_010._
 |===
+
+<<<
 
 === Input-Output Memory Management Unit (IOMMU)
 
@@ -278,6 +284,8 @@ deliver external interrupts to the RISC-V application processor harts.
              originating from non-PCIe devices is `UNSPECIFIED`.
 
 |===
+
+<<<
 
 === PCIe Subsystem
 
@@ -778,6 +786,8 @@ mechanism in PCIe.
 
 |===
 
+<<<
+
 ==== Precision Time Measurement (PTM)
 
 [width=100%]
@@ -805,7 +815,7 @@ mechanism in PCIe.
 
 |===
 
-==== Error handling, Error/Event Reporting
+==== Error/Event Reporting
 
 [width=100%]
 [%header, cols="5,25"]
@@ -848,6 +858,8 @@ mechanism in PCIe.
      to support hot-plug._
 
 |===
+
+<<<
 
 ==== Vendor Specific Registers
 [width=100%]
@@ -944,6 +956,8 @@ mechanism in PCIe.
 | SID_100  | A RCiEP that supports PCIe Advanced Error Reporting MUST be
              associated with a Root Complex Event Collector.
 |===
+
+<<<
 
 === Reliability, Availability, and Serviceability (RAS)
 
@@ -1082,6 +1096,8 @@ mechanism in PCIe.
      determines reporting and counting based on its specific filtering rules._
 |===
 
+<<<
+
 === Quality of Service
 
 Quality of Service (QoS) refers to the minimum end-to-end performance that a
@@ -1108,8 +1124,10 @@ and more.
              processors of the SoC MUST include support for the `srmcfg` CSR.
              Furthermore, this CSR MUST support a minimum of 16 RCIDs and at
              least 32 MCIDs.
-2+| _The count of RCID and MCID that can be used in the SoC should scale with
-     the number of RISC-V harts in the SoC._
+2+a| _The count of RCID and MCID that can be used in the SoC should scale with
+     the number of RISC-V harts in the SoC._                                   +
+                                                                               +
+   _The `srmcfg` CSR is provided by the Ssqosid extension cite:[PRIV]._
 
 | QOS_040  | If CBQRI is supported, the IOMMU in the SoC SHOULD incorporate
              support for the CBQRI-defined extension, enabling the association
@@ -1148,6 +1166,8 @@ and more.
      data transfers at a rate of up to 1 TB/s. This scenario would necessitate a
      34-bit counter to prevent overflow when sampled at a frequency of 1 Hz._
 |===
+
+<<<
 
 === Manageability
 
@@ -1268,6 +1288,8 @@ data centers and enterprises.
              the Flit performance measurement extended capability defined by
              PCIe specification 6.0.
 |===
+
+<<<
 
 === Security Requirements
 

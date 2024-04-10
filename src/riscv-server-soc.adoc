@@ -1,8 +1,8 @@
 [[header]]
 :description: RISC-V Server SoC Specification
 :company: RISC-V.org
-:revdate: 08/2023
-:revnumber: 0.1
+:revdate: 04/2024
+:revnumber: 0.5
 :revremark: This document is in development. Assume everything can change. See http://riscv.org/spec-state for details.
 :url-riscv: http://riscv.org
 :doctype: book
@@ -55,7 +55,7 @@ Attribution 4.0 International License (CC-BY 4.0). The full
 license text is available at
 https://creativecommons.org/licenses/by/4.0/.
 
-Copyright 2022 by RISC-V International.
+Copyright 2022-2024 by RISC-V International.
 
 :imagesdir: images
 [preface]
