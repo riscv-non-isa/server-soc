@@ -85,13 +85,15 @@ The requirements in this specification use the following format:
 This specification groups the requirements in the following broad categories:
 
 * Clocks and Timers
-* External Interrupt Controllers
+* Interrupt Controllers
 * IOMMU
 * PCIe subsystem
 * Reliability, Availability, and Serviceability
 * Quality of Service
 * Performance monitoring
 * Security
+
+<<<
 
 === Glossary
 

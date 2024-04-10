@@ -1,4 +1,4 @@
-== Server SoC Hardware Requirements
+== Server SoC Requirements
 
 === Clocks and Timers
 
@@ -15,7 +15,9 @@
              powered off.
 |===
 
-=== External Interrupt Controllers
+<<<
+
+=== Interrupt Controllers
 
 This section specifies the requirements on the interrupt controllers used to
 deliver external interrupts to the RISC-V application processor harts.
@@ -84,6 +86,8 @@ deliver external interrupts to the RISC-V application processor harts.
      by the device and/or bus interface specifications that such devices conform
      to. See also SID_010._
 |===
+
+<<<
 
 === Input-Output Memory Management Unit (IOMMU)
 
@@ -278,6 +282,8 @@ deliver external interrupts to the RISC-V application processor harts.
              originating from non-PCIe devices is `UNSPECIFIED`.
 
 |===
+
+<<<
 
 === PCIe Subsystem
 
@@ -805,7 +811,7 @@ mechanism in PCIe.
 
 |===
 
-==== Error handling, Error/Event Reporting
+==== Error/Event Reporting
 
 [width=100%]
 [%header, cols="5,25"]
@@ -945,6 +951,8 @@ mechanism in PCIe.
              associated with a Root Complex Event Collector.
 |===
 
+<<<
+
 === Reliability, Availability, and Serviceability (RAS)
 
 [width=100%]
@@ -1082,6 +1090,8 @@ mechanism in PCIe.
      determines reporting and counting based on its specific filtering rules._
 |===
 
+<<<
+
 === Quality of Service
 
 Quality of Service (QoS) refers to the minimum end-to-end performance that a
@@ -1148,6 +1158,8 @@ and more.
      data transfers at a rate of up to 1 TB/s. This scenario would necessitate a
      34-bit counter to prevent overflow when sampled at a frequency of 1 Hz._
 |===
+
+<<<
 
 === Manageability
 
@@ -1268,6 +1280,8 @@ data centers and enterprises.
              the Flit performance measurement extended capability defined by
              PCIe specification 6.0.
 |===
+
+<<<
 
 === Security Requirements
 
