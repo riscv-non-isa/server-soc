@@ -9,7 +9,7 @@
 | CTI_010  | The `time` CSR MUST increment at a constant frequency and the count
              MUST be in units of 1 ns. The frequency at which the CSR provides
              an updated time value MUST be at least 100 MHz.
-2+| _The Zicntr extension cite:[UNPRIV] requires the real-time clocks of all
+2+a| _The Zicntr extension cite:[UNPRIV] requires the real-time clocks of all
      harts to be synchronized to within one tick of the real-time clock._
 
 | CTI_020  | The `time` counter MUST appear to be always on and MUST appear to
