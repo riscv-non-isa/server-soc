@@ -219,8 +219,8 @@ deliver external interrupts to the RISC-V application processor harts.
      program the mode in the appropriate IOMMU prior to programming the
      peripheral governed by that IOMMU to perform a DMA._
 
-| IOM_240  | The IOMMU SHOULD be implemented as an RCiEP with base class 08H and
-             subclass 06H cite:[PCI-CLS].
+| IOM_240  | An IOMMU that is implemented as an RCiEP MUST use base class 08H
+             and subclass 06H cite:[PCI-CLS].
 2+| _The base class 08H and sub-class 06H are designated by PCIe for use by an
      IOMMU. Implementing the IOMMU as a PCIe device allows an operating system
      to determine a driver for the IOMMU and to assign resources such as
