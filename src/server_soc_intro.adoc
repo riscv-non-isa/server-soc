@@ -20,7 +20,7 @@ computing systems that may be used for one or more of these purposes.
 .Components of a RISC-V Server Platform
 image::riscv-server-platform.png[width=800]
 
-The RISC-V server platform cite:[SPLT] is defined as the collection of SoC
+The RISC-V server platform is defined as the collection of SoC
 hardware, platform firmware, boot/runtime services, and security services. The
 platform provides hardware interfaces (e.g., harts, timers, interrupt
 controllers, PCIe root ports, etc.) to portable system software. It also offers
