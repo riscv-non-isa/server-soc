@@ -93,7 +93,6 @@ deliver external interrupts to the RISC-V application processor harts.
 | ID#     ^| Requirement
 | IOM_010  | All IOMMUs in the SoC MUST support the RISC-V IOMMU specification
              cite:[IOMMU].
-2+| _The number of IOMMUs implemented in the SoC is `UNSPECIFIED`._
 
 | IOM_020 a| All DMA capable peripherals (RCiEP and non-PCIe devices) and all
              PCIe root ports accessible by software on the RISC-V application
@@ -112,7 +111,10 @@ deliver external interrupts to the RISC-V application processor harts.
      restrict DMA originating from such devices to a subset of memory to enhance
      security and software fault tolerance. The address translation capability
      provided by the IOMMU enables usages such as passthrough of such devices to
-     virtual machines, shared virtual addressing, etc._
+     virtual machines, shared virtual addressing, etc._                        +
+                                                                               +
+    _The number of IOMMUs implemented in the SoC to satisfy requirement IOM_020
+     is `UNSPECIFIED`._
 
 | IOM_030  | The IOMMU governing a PCIe root port MUST support at least 16-bit
              wide device IDs.
