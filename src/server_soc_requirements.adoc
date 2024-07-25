@@ -929,9 +929,8 @@ mechanism in PCIe.
      participate in RAS frameworks like data poisoning and AER, power management,
      etc._
 
-| SID_020  | SoC-integrated PCIe devices MUST NOT require the use of I/O space,
-             I/O transactions, or the INTx virtual wire interrupt signaling
-             mechanism.
+| SID_020  | SoC-integrated PCIe devices MUST NOT require the use of I/O space
+             or I/O transactions.
 
 | SID_030  | SoC integrated PCIe devices that cache address translations MUST
              implement the PCIe ATS capability if the address translation cache
