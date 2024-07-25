@@ -834,8 +834,8 @@ mechanism in PCIe.
              64-bit wide.
 
 | PTM_040  | When PCIe PTM capability is supported, the PTM master time MUST use
-             the same or higher resolution clock than the clock used to provide
-             `time`.
+             the same or higher resolution clock than the clock used to increment
+             `time` CSR of the RISC-V application processor harts.
 
 |===
 
