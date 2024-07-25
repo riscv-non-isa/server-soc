@@ -13,8 +13,18 @@
      harts to be synchronized to within one tick of the real-time clock._
 
 | CTI_020  | The `time` counter MUST appear to be always on and MUST appear to
-             not lose its count across power states, including when the hart is
-             powered off.
+             not lose its count across hart low power idle states, including
+             when the hart is powered off.
+2+a| _This requirement does not apply to system power states such as G3 (power
+      off), S3 (Suspend to RAM), or S4 (Hibernate)._                           +
+                                                                               +
+     _Losing `time` count across hart low power idle states may lead to the
+      hart losing time synchronization with other application processor harts,
+      potentially causing unexpected behaviors and/or system instability._     +
+                                                                               +
+     _Information about whether a hart low power idle state retains timer
+      context may be determined by the OS/hypervisors using information
+      provided by the ACPI `_LPI` object or equivalent mechanisms._
 |===
 
 <<<
