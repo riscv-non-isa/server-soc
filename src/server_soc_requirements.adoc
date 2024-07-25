@@ -290,9 +290,15 @@ deliver external interrupts to the RISC-V application processor harts.
              `process_id` is indicated as valid, the host bridge MUST
              additionally provide the "Execute Requested" and the "Privilege
              Mode Requested" bits from the PASID TLP prefix as input to the
-             IOMMU. When `process_id` input is indicated as not valid the host
+             IOMMU. When `process_id` input is indicated as not valid, the host
              bridge MUST set the "Execute Requested" and "Privilege Mode
-             Requested" inputs as 0.
+             Requested" inputs to 0.
+
+2+| _The host bridge providing the full 20-bit value without truncation from
+     the PASID TLP prefix to the IOMMU enables the IOMMU to determine if the
+     PASID value is wider than supported by the current configuration of the
+     process directory table for that device and generate a fault notification
+     if so._
 
 | IOM_310  | The determination of `process_id`, "Execute Requested", and
              "Privilege Mode Requested" inputs to an IOMMU for requests
