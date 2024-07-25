@@ -1307,7 +1307,7 @@ data centers and enterprises.
              counting based on whether the request is to local memory or to
              remote memory.
 
-| SPM_060  | The PCIe Gen6 ports within the SoC SHOULD incorporate support for
+| SPM_060  | All PCIe Gen6 ports within the SoC SHOULD incorporate support for
              the Flit performance measurement extended capability defined by
              PCIe specification 6.0.
 |===
