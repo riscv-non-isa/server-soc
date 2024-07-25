@@ -87,6 +87,7 @@ deliver external interrupts to the RISC-V application processor harts.
      to ordering of interrupts vs. older read/writes from devices as specified
      by the device and/or bus interface specifications that such devices conform
      to. See also SID_010._
+
 |===
 
 <<<
@@ -201,8 +202,10 @@ deliver external interrupts to the RISC-V application processor harts.
      monitoring and optimizations. An IOMMU is highly recommended to provide an
      HPM._
 
-| IOM_190  | An IOMMU that supports an HPM MUST support the cycles counter and
-             MUST incorporate at least 4 event counters.
+| IOM_190  | An IOMMU that supports an HPM MUST support the cycles counter.
+
+| IOM_195  | An IOMMU that supports an HPM MUST MUST incorporate at least 4
+             event counters.
 
 | IOM_200  | The cycles counter and the event counters MUST be at least 40 bits
              wide.
@@ -812,8 +815,11 @@ mechanism in PCIe.
      enable coordination of events across multiple PCIe devices._
 
 | PTM_030  | When PCIe PTM capability is supported, the PTM master time MUST be
-             64-bit wide and MUST use the same or higher resolution clock than
-             the clock used to provide `time`.
+             64-bit wide.
+
+| PTM_040  | When PCIe PTM capability is supported, the PTM master time MUST use
+             the same or higher resolution clock than the clock used to provide
+             `time`.
 
 |===
 
