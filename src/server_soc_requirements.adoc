@@ -898,18 +898,18 @@ mechanism in PCIe.
              * Vendor specific extended capability.
              * Designated Vendor Specific extended capability.
 
-| VSR_020  | SoC MUST NOT require hypervisor and/or operating system
-             interaction with configuration space registers that are not defined
-             by an industry standard. Non-standard vendor specific registers,
-             if implemented in the configuration space, must only be used by the
-             SoC firmware.
+| VSR_020  | SoC MUST NOT require hypervisor and/or operating system interaction
+             with PCIe configuration space registers that are not defined by an
+             industry standard. Non-standard vendor specific registers, if
+             implemented in the PCIe configuration space, must only be used by
+             the SoC firmware.
 2+| _Some industry standards such a CXL may define standard DVSEC structures in
-     the configuration space._                                                 +
+     the PCIe configuration space._                                            +
                                                                                +
     _The preferred way to implement device/SoC vendor specific registers that
      need to be used by drivers in the run-time environment is to implement
      them in the memory space of the device. Certain operating systems and
-     hypervisors may disallow and/or require mediating access to the
+     hypervisors may disallow and/or require mediating access to the PCIe
      configuration space of devices. See also the implementation note in the
      PCIe specification 6.0 section 7.2.2.2._
 |===
