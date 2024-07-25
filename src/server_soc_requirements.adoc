@@ -221,7 +221,7 @@ deliver external interrupts to the RISC-V application processor harts.
              wide.
 
 | IOM_210  | The IOMMU SHOULD support the software debug capabilities enumerated
-             by `capabilities.DBG`.
+             by `DBG` field in the `capabilities` register.
 
 | IOM_220  | The physical address width supported by the IOMMU MUST be greater
              than or equal to the physical address width supported by the RISC-V
