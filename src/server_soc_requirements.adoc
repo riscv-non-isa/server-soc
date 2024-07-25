@@ -1152,7 +1152,7 @@ and more.
                                                                                +
    _The `srmcfg` CSR is provided by the Ssqosid extension cite:[PRIV]._
 
-| QOS_040  | If CBQRI is supported, the IOMMU in the SoC SHOULD incorporate
+| QOS_040  | If CBQRI is supported, the IOMMUs in the SoC SHOULD incorporate
              support for the CBQRI-defined extension, enabling the association
              of RCID and MCID with requests initiated by devices and the IOMMU.
 
