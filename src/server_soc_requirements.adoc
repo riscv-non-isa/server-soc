@@ -1074,7 +1074,7 @@ mechanism in PCIe.
              RAS-initiated reset. The state of RAS error records MAY persist
              across other types of implementation-defined resets. After a reset,
              including a RAS-initiated reset, the state of the control register
-             is considered `UNSPECIFIED`.
+             in the RAS error record is considered `UNSPECIFIED`.
 2+| _Some errors may lead a hardware component to enter a failure mode in which
      it becomes incapable of servicing additional requests- colloquially termed
      'jammed' or 'wedged'. In these situations, the SoC may require a reset to
