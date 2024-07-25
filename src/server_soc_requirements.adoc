@@ -517,7 +517,7 @@ hierarchy domain originating at each PCIe root port.
 
 | MMS_040 a| A load from a RISC-V application processor hart to memory ranges
              designated for mapping memory spaces of endpoints or RCiEP MUST
-             complete with an all 1s response and MUST NOT lead to any other
+             complete with an all 1s response and MUST NOT lead to any abnormal
              behavior (e.g., hangs, deadlocks, etc.) if any of the following are
              TRUE:
 
@@ -538,7 +538,7 @@ hierarchy domain originating at each PCIe root port.
 | MMS_050 a| A store from a RISC-V application processor hart to memory ranges
              designated for mapping memory space of endpoints or RCiEP MUST
              be dropped (silently ignored or discarded) and MUST NOT lead to any
-             other behavior (e.g., hangs, deadlocks, etc.) if any of the
+             abnormal behavior (e.g., hangs, deadlocks, etc.) if any of the
              following are TRUE:
 
              * Address is not within any of the following address ranges:
