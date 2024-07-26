@@ -808,14 +808,7 @@ mechanism in PCIe.
 | ID#     ^| Requirement
 | MSI_010  | Message Signaled Interrupts MUST be supported.
 
-| MSI_020  | SoC MUST NOT require any further action from the operating system
-             besides configuring the MSI address register in devices with the
-             address of an IMSIC interrupt file -- a supervisor-level interrupt
-             file or a guest interrupt file -- and the MSI data register in
-             devices with an external interrupt identity to enable the use of
-             MSI or MSI-X.
-
-| MSI_030  | SoC MUST NOT support INTx virtual wire based interrupt signaling.
+| MSI_020  | SoC MUST NOT support INTx virtual wire based interrupt signaling.
 2+| _PCIe supports INTx emulation to support legacy PCI interrupt mechanisms.
      Modern SoC and devices are not expected be limited by the lack of this
      emulation mode._
