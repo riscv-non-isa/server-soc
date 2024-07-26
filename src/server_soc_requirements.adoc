@@ -356,6 +356,14 @@ process DMA transactions. Devices perform DMA transactions using IO Virtual
 Addresses (VA, GVA or GPA). The host bridge invokes the associated IOMMU to
 translate the IOVA to Supervisor Physical Addresses (SPA).
 
+[width=100%]
+[%header, cols="5,25"]
+|===
+| RCI_010  | The PCIe root ports, host bridges, RCRBs, and RCECs in the root
+             compplex MUST implement all software visible rules defined by the
+             PCIe specification 6.0 for the root complex as applicable.
+|===
+
 ==== Enhanced Configuration Access Method (ECAM)
 
 Each PCIe endpoint and the PCIe root port itself implement a set of memory
@@ -420,10 +428,6 @@ hierarchy domain originating at each PCIe root port.
 2+| _Discovery and activation of the PCIe link requires accessing the
      configuration space registers of the PCIe root port itself and the PCIe
      root port is a PCI-PCI bridge device on the primary bus._
-
-| ECM_070 | The PCIe root port MUST enumerate as a PCI-PCI bridge to software
-            and comply with the rules specified for PCIe root ports in PCIe
-            specification 6.0.
 
 | ECM_080 | The PCIe root port MUST support the PCIe Configuration RRS software
             (CRS) visibility enable control.
@@ -621,10 +625,6 @@ devices, and SR-IOV capable devices.
 2+| _More commonly, P2P routing is accomplished by forwarding the TLP to the host
      bridge for routing. For further information, refer to the application note
      accompanying Fig 2-14 and Section 1.3.1 of the PCIe specification 6.0._
-
-| ACS_050  | The ACS features, including the detection, logging, and reporting of
-             ACS violations MUST adhere to the rules outlined in the PCIe
-             specifications 6.0.
 |===
 
 ==== Address Routed Transactions
