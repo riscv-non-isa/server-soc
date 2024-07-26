@@ -214,7 +214,7 @@ deliver external interrupts to the RISC-V application processor harts.
 
 | IOM_190  | An IOMMU that supports an HPM MUST support the cycles counter.
 
-| IOM_195  | An IOMMU that supports an HPM MUST incorporate at least 4 event
+| IOM_200  | An IOMMU that supports an HPM MUST incorporate at least 4 event
              counters.
 2+| _A typical performance analysis operation may involve simultaneously
      counting the number of translation requests, IOATC misses, and page table
@@ -222,13 +222,13 @@ deliver external interrupts to the RISC-V application processor harts.
      comprehensive data collection, enabling detailed performance analysis and
      optimization._
 
-| IOM_200  | The cycles counter and the event counters MUST be at least 40 bits
+| IOM_210  | The cycles counter and the event counters MUST be at least 40 bits
              wide.
 
-| IOM_210  | The IOMMU SHOULD support the software debug capabilities enumerated
+| IOM_220  | The IOMMU SHOULD support the software debug capabilities enumerated
              by `DBG` field in the `capabilities` register.
 
-| IOM_220  | The physical address width supported by the IOMMU MUST be greater
+| IOM_230  | The physical address width supported by the IOMMU MUST be greater
              than or equal to the physical address width supported by the RISC-V
              application processor harts in the SoC.
 2+| _Having the physical address width greater than or equal to the width
@@ -236,7 +236,7 @@ deliver external interrupts to the RISC-V application processor harts.
      I/O and facilitates the sharing of page tables between the hart MMU and the
      IOMMU._
 
-| IOM_230  | The reset default of the `iommu_mode` MUST be `Off`.
+| IOM_240  | The reset default of the `iommu_mode` MUST be `Off`.
 2+| _The IOMMU disallowing DMA unconditionally following reset due to the mode
      being Off allows the SoC firmware and software to enable DMA when
      suitable security protections as required have been established. The IOMMU
@@ -245,14 +245,14 @@ deliver external interrupts to the RISC-V application processor harts.
      program the mode in the appropriate IOMMU prior to programming the
      peripheral governed by that IOMMU to perform a DMA._
 
-| IOM_240  | An IOMMU that is implemented as an RCiEP MUST use base class 08H
+| IOM_250  | An IOMMU that is implemented as an RCiEP MUST use base class 08H
              and subclass 06H cite:[PCI-CLS].
 2+| _The base class 08H and sub-class 06H are designated by PCIe for use by an
      IOMMU. Implementing the IOMMU as a PCIe device allows an operating system
      to determine a driver for the IOMMU and to assign resources such as
      interrupt vectors to the IOMMU in a PCIe compatible manner._
 
-| IOM_250  | The host bridge MUST enforce the physical memory attribute checks
+| IOM_260  | The host bridge MUST enforce the physical memory attribute checks
              and physical memory protection checks on memory accesses originated
              by the IOMMU and signal detected access violations to the IOMMU.
 
@@ -262,7 +262,7 @@ deliver external interrupts to the RISC-V application processor harts.
      bridge the IOMMU may need to access in-memory data structures such as the
      device directory table and page tables._
 
-| IOM_260  | An IOMMU MUST support 24-bit device IDs if the IOMMU governs
+| IOM_270  | An IOMMU MUST support 24-bit device IDs if the IOMMU governs
              multiple PCIe root ports that may be part of different PCIe
              hierarchies.
 2+| _An IOMMU governing PCIe root ports uses requester ID (RID) - the tuple of
@@ -273,23 +273,23 @@ deliver external interrupts to the RISC-V application processor harts.
      (also known as segment ID) - an 8-bit number - to uniquely identify a
      requester across PCIe hierarchies._
 
-| IOM_270  | The host bridge MUST provide the PCIe RID as the bits 15:0 of the
+| IOM_280  | The host bridge MUST provide the PCIe RID as the bits 15:0 of the
              `device_id` input to the IOMMU for requests from PCIe EPs and
              RCiEP.
 
-| IOM_280  | When the IOMMU supports 24-bit device IDs, the host bridge MUST
+| IOM_290  | When the IOMMU supports 24-bit device IDs, the host bridge MUST
              specify the segment number associated with the PCIe hierarchy from
              which requests were received as the bits 23:16 of the `device_id`
              to the IOMMU.
 
-| IOM_290  | The determination of `device_id` input to an IOMMU for requests
+| IOM_300  | The determination of `device_id` input to an IOMMU for requests
              originating from non-PCIe devices is `UNSPECIFIED`. If PCIe and
              non-PCIe endpoints/RCiEP are governed by the same IOMMU, the SoC
              MUST ensure that there is no overlap between any `device_id`
              associated with non-PCIe devices with any `device_id` formed using
              the PCIe RID (and if applicable the segment ID).
 
-| IOM_300  | The host bridge MUST provide the 20-bit PASID from the PCIe PASID
+| IOM_310  | The host bridge MUST provide the 20-bit PASID from the PCIe PASID
              TLP Prefix as the `process_id` input to the IOMMU along with an
              indication about the validity of the `process_id` input. When the
              `process_id` is indicated as valid, the host bridge MUST
@@ -305,7 +305,7 @@ deliver external interrupts to the RISC-V application processor harts.
      process directory table for that device and generate a fault notification
      if so._
 
-| IOM_310  | The determination of `process_id`, "Execute Requested", and
+| IOM_320  | The determination of `process_id`, "Execute Requested", and
              "Privilege Mode Requested" inputs to an IOMMU for requests
              originating from non-PCIe devices is `UNSPECIFIED`.
 
