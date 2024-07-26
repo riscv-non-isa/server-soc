@@ -214,8 +214,13 @@ deliver external interrupts to the RISC-V application processor harts.
 
 | IOM_190  | An IOMMU that supports an HPM MUST support the cycles counter.
 
-| IOM_195  | An IOMMU that supports an HPM MUST MUST incorporate at least 4
-             event counters.
+| IOM_195  | An IOMMU that supports an HPM MUST incorporate at least 4 event
+             counters.
+2+| _A typical performance analysis operation may involve simultaneously
+     counting the number of translation requests, IOATC misses, and page table
+     walks. An HPM with sufficient number of event counters ensures accurate and
+     comprehensive data collection, enabling detailed performance analysis and
+     optimization._
 
 | IOM_200  | The cycles counter and the event counters MUST be at least 40 bits
              wide.
@@ -429,12 +434,12 @@ hierarchy domain originating at each PCIe root port.
      configuration space registers of the PCIe root port itself and the PCIe
      root port is a PCI-PCI bridge device on the primary bus._
 
-| ECM_080 | The PCIe root port MUST support the PCIe Configuration RRS software
+| ECM_070 | The PCIe root port MUST support the PCIe Configuration RRS software
             (CRS) visibility enable control.
 2+| _The number of times a configuration request is retried on an RRS response
      is `UNSPECIFIED`._
 
-| ECM_090 | Read and/or write to the ECAM range of the hierarchy domain
+| ECM_080 | Read and/or write to the ECAM range of the hierarchy domain
             originating at a root port MUST generate PCIe configuration
             transactions as type 0 or type 1 configuration transactions
             following the rules specified for ECAM in PCIe specification 6.0.
@@ -449,7 +454,7 @@ hierarchy domain originating at each PCIe root port.
      than 0 must be silently dropped, and read accesses must be responded to
      with all 1s data._
 
-| ECM_100 a| Read access to ECAM address range from a RISC-V hart MUST be
+| ECM_090 a| Read access to ECAM address range from a RISC-V hart MUST be
              responded with all 1s data if any of the following conditions are
              TRUE:
 
@@ -470,12 +475,12 @@ hierarchy domain originating at each PCIe root port.
      MUST follow the PCIe defined rules. See also the recommendations in PCIe
      specification 6.0 section 2.3.2._
 
-| ECM_110 | Write access from a RISC-V hart to configuration registers of a
+| ECM_100 | Write access from a RISC-V hart to configuration registers of a
             non-existent function on the primary bus MUST be dropped (silently
             ignored or discarded) and the write completed. Such accesses MUST
             NOT lead to any other behavior (e.g., hangs, deadlocks, etc.).
 
-| ECM_120 | Poisoned data received from completers (EP=1) MUST be forwarded to
+| ECM_110 | Poisoned data received from completers (EP=1) MUST be forwarded to
             the requesting RISC-V hart as poisoned data unless such forwarding
             is disallowed (e.g., SoC does not support data poisoning or
             forwarding of poisoned data is disabled though implementation
