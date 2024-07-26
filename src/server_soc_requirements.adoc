@@ -1320,42 +1320,31 @@ data centers and enterprises.
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| SEC_010 a| The Server SoC MUST comply with the requirements and guidelines
-             detailed in Reference Model, Ecosystem Security Objectives, and
-             the Cryptography sections of the RISC-V Security Model Version
-             1.0 cite:[SEC]. The Server SoC is classified as a complex
-             security system for the purposes of SR_ROT_001 and SR_ATT_002.
+| SEC_010 a| The Server SoC MUST implement a hardware RoT as the _primary_ root
+             of trust.
+2+| _A root of trust (RoT) is the foundation on which all secure operations of a
+     system depend. A hardware RoT is a dedicated and possibly isolated trusted
+     subsystem that can provide stronger protections against physical and
+     logical attacks._
 
-| SEC_020 a| The Server SoC MUST support the Generic System Without Supervisor
-             Domains use case detailed in the RISC-V Security Model Version 1.0.
-             The building blocks used to implement this use case MUST comply
-             with the requirements specified in the RISC-V Security Building
-             Blocks section of the RISC-V Security Model specification.
-
-| SEC_030 a| The Server SoC MAY support the Confidential Computing on RISC-V
-             (CoVE) use case detailed in the RISC-V Security Model Version 1.0. The
-             building blocks used to implement this use case MUST comply with
-             the requirements specified in the RISC-V Security Building Blocks
-             section of the RISC-V Security Model specification.
-
-| SEC_040  | The PCIe root ports within the SoC SHOULD support PCIe Integrity and
+| SEC_020  | The PCIe root ports within the SoC SHOULD support PCIe Integrity and
              Data Encryption (IDE) capability.
 2+| _The IDE extension adds optional capabilities to perform hardware encryption
      and integrity checks on packets transferred across PCIe links. This addition
      provides confidentiality, integrity, and replay protection against
      hardware-level attacks._
 
-| SEC_050  | The SoC SHOULD support encryption of off-chip DRAM using a
+| SEC_030  | The SoC SHOULD support encryption of off-chip DRAM using a
              transient memory encryption key that has at least 256-bit key
              lengths.
 2+| _Off-chip memory encryption provides protection to critical assets in memory
      such as credentials, data encryption keys, and other secrets._
 
-| SEC_060  | The cryptographic modules used to implement PCIe and off-chip DRAM
+| SEC_040  | The cryptographic modules used to implement PCIe and off-chip DRAM
              encryption SHOULD comply with security requirements specified by
              standards such as FIPS 140-3.
 
-| SEC_040  | The SoC SHOULD have the capability of interfacing with a Trusted
+| SEC_050  | The SoC SHOULD have the capability of interfacing with a Trusted
              Platform Module (TPM) that adheres to the TPM 2.0 Library
              specification cite:[TPM20].
 2+| _A TPM enhances security by providing secure storage for sensitive
