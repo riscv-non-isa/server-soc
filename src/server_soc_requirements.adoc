@@ -1342,7 +1342,8 @@ data centers and enterprises.
 
 | SEC_040  | The cryptographic modules used to implement PCIe and off-chip DRAM
              encryption SHOULD comply with security requirements specified by
-             standards such as FIPS 140-3.
+             relevant security standards from national standards laboratories.
+2+| _FIPS 140-3 is an example of such a standard_
 
 | SEC_050  | The SoC SHOULD have the capability of interfacing with a Trusted
              Platform Module (TPM) that adheres to the TPM 2.0 Library
