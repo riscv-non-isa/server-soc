@@ -434,6 +434,16 @@ hierarchy domain originating at each PCIe root port.
             originating at a root port MUST generate PCIe configuration
             transactions as type 0 or type 1 configuration transactions
             following the rules specified for ECAM in PCIe specification 6.0.
+2+| _Determination of the type of configuration transaction based on whether
+     the access is to the primary, secondary or subordinate buses may involve
+     logic in the host bridge to work in conjunction with the root port PCIe
+     controller. See also Alternative Routing-ID Interpretation in PCIe
+     specification 6.0 section 6.13 for rules related to converting type 1
+     configuration requests into type 0 configuration request based on the
+     traditional Device Number field being 0. Specifically, when ARI forwarding
+     is disabled, write accesses to configuration space of Device Number greater
+     than 0 must be silently dropped, and read accesses must be responded to
+     with all 1s data._
 
 | ECM_100 a| Read access to ECAM address range from a RISC-V hart MUST be
              responded with all 1s data if any of the following conditions are
