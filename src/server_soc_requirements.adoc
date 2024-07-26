@@ -260,7 +260,17 @@ deliver external interrupts to the RISC-V application processor harts.
      RISC-V hart. The host bridge (also known as IO bridge) invokes the IOMMU
      for address translations. To perform the operations requested by the host
      bridge the IOMMU may need to access in-memory data structures such as the
-     device directory table and page tables._
+     device directory table and page tables.                                   +
+                                                                               +
+     The physical memory protection limit access from IOMMUs to phusical
+     addresses to support secure processing and contain faults. These checks
+     allow restricting the IOMMU to only have access to the same memory that
+     the hart software that programs the IOMMU has access to.                  +
+                                                                               +
+     The IOMMU specification requires an IOMMU to support locating IOMMUs
+     in-memory data structures, in-memory queues, and page tables in memory
+     address ranges that hold main memory. Support for locating these in I/O
+     memory is not required._
 
 | IOM_270  | An IOMMU MUST support 24-bit device IDs if the IOMMU governs
              multiple PCIe root ports that may be part of different PCIe
