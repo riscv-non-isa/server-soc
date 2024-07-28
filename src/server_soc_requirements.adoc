@@ -516,7 +516,14 @@ hierarchy domain originating at each PCIe root port.
 
 2+| _The ranges suitable for mapping using 32-bit BARs are also sometimes termed
      as the low MMIO ranges and those suitable for use with 64-bit BARs termed
-     as high MMIO ranges._
+     as high MMIO ranges.                                                      +
+                                                                               +
+    _The bit 3 of the Base Address Register used to called the “Prefetchable”
+     bit and required PCIe functions to support 64-bit addressing for any BAR
+     that requested "Prefetchable" memory space. The "Removing Prefetchable
+     Terminology" ECN <<PCI_PREF>> reworks the PCIe Base Specification to
+     remove Prefetchable terminology to more accurately reflect modern device
+     and system requirements._
 
 | MMS_030 a| The system physical address ranges designated for mapping endpoint
              memory spaces have the following physical memory attribute (PMAs)
