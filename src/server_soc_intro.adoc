@@ -195,12 +195,11 @@ if they are not in this table).
 | PLDM             | Follows DMTF standard. Platform Level Data Model.
 | PMA              | Physical Memory Attributes.
 | PMP              | Physical Memory Protection.
-| Prefetchable
-  Non-prefetchable | Follows PCI Express. Defines the property of the memory
-                     space used by a device. For details see the PCIe Base
-                     Specification. Broadly, non-prefetchable space covers any
-                     locations where reads have side effects or where writes
-                     cannot be merged.
+| Significant Cache| A large cache that might have significant impact on
+                     performance. This specification recommendeds that a cache
+                     with a capacity larger than 32 KiB be considered a
+                     significant cache if it has a significant impact on
+                     performance.
 | SMBIOS           | System Management BIOS.
 | SoC              | System on a chip, also referred as system-on-a-chip and
                      system-on-chip.

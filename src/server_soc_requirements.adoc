@@ -551,8 +551,8 @@ hierarchy domain originating at each PCIe root port.
              TRUE:
 
              * Address is not within any of the following address ranges:
-               ** Address range defined by memory base/limit or prefetchable
-                  memory base/limit registers of any root port.
+               ** Address range defined by memory base/limit or 64-bit memory
+                  base/limit registers of any root port.
                ** BAR (including when EA capability is used) mapped range of
                   any RCiEP.
                ** BAR (including when EA capability is used) mapped range of
@@ -564,6 +564,20 @@ hierarchy domain originating at each PCIe root port.
              * A UR or a CA response is received from the completer.
              * A completion timeout occurs.
 
+2+| _The 64-bit memory base/limit register was previously called Prefetchable
+     Memory Base/Limit. The concept of “Prefetchable” MMIO was originally needed
+     to control PCI-PCI Bridges, which were allowed/encouraged to prefetch
+     Memory Read data in prefetchable regions. The original intent of the
+     Prefetchable/Non-Prefetchable distinction was focused on PCI behaviors,
+     and was not intended for software use in determining memory attributes
+     and/or coding techniques. The "Removing Prefetchable Terminology" ECN
+     <<PCI_PREF>> reworks the PCIe Base Specification to remove Prefetchable
+     terminology._                                                             +
+                                                                               +
+    _See also the implementation note on optimizations based on restricted
+     programming mode in section 2.3.1 of PCIe specification 6.0._
+
+
 | MMS_050 a| A store from a RISC-V application processor hart to memory ranges
              designated for mapping memory space of endpoints or RCiEP MUST
              be dropped (silently ignored or discarded) and MUST NOT lead to any
@@ -571,8 +585,8 @@ hierarchy domain originating at each PCIe root port.
              following are TRUE:
 
              * Address is not within any of the following address ranges:
-               ** Address range defined by memory base/limit or prefetchable
-                  memory base/limit registers of any root port.
+               ** Address range defined by memory base/limit or 64-bit memory
+                  base/limit registers of any root port.
                ** BAR (including when EA capability is used) mapped range of
                   any RCiEP.
                ** BAR (including when EA capability is used) mapped range of
