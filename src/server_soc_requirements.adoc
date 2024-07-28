@@ -13,8 +13,18 @@
      harts to be synchronized to within one tick of the real-time clock._
 
 | CTI_020  | The `time` counter MUST appear to be always on and MUST appear to
-             not lose its count across power states, including when the hart is
-             powered off.
+             not lose its count across hart low power idle states, including
+             when the hart is powered off.
+2+a| _This requirement does not apply to system power states such as G3 (power
+      off), S3 (Suspend to RAM), or S4 (Hibernate)._                           +
+                                                                               +
+     _Losing `time` count across hart low power idle states may lead to the
+      hart losing time synchronization with other application processor harts,
+      potentially causing unexpected behaviors and/or system instability._     +
+                                                                               +
+     _Information about whether a hart low power idle state retains timer
+      context may be determined by the OS/hypervisors using information
+      provided by the ACPI `_LPI` object or equivalent mechanisms._
 |===
 
 <<<
@@ -87,6 +97,7 @@ deliver external interrupts to the RISC-V application processor harts.
      to ordering of interrupts vs. older read/writes from devices as specified
      by the device and/or bus interface specifications that such devices conform
      to. See also SID_010._
+
 |===
 
 <<<
@@ -201,16 +212,23 @@ deliver external interrupts to the RISC-V application processor harts.
      monitoring and optimizations. An IOMMU is highly recommended to provide an
      HPM._
 
-| IOM_190  | An IOMMU that supports an HPM MUST support the cycles counter and
-             MUST incorporate at least 4 event counters.
+| IOM_190  | An IOMMU that supports an HPM MUST support the cycles counter.
 
-| IOM_200  | The cycles counter and the event counters MUST be at least 40 bits
+| IOM_200  | An IOMMU that supports an HPM MUST incorporate at least 4 event
+             counters.
+2+| _A typical performance analysis operation may involve simultaneously
+     counting the number of translation requests, IOATC misses, and page table
+     walks. An HPM with sufficient number of event counters ensures accurate and
+     comprehensive data collection, enabling detailed performance analysis and
+     optimization._
+
+| IOM_210  | The cycles counter and the event counters MUST be at least 40 bits
              wide.
 
-| IOM_210  | The IOMMU SHOULD support the software debug capabilities enumerated
-             by `capabilities.DBG`.
+| IOM_220  | The IOMMU SHOULD support the software debug capabilities enumerated
+             by `DBG` field in the `capabilities` register.
 
-| IOM_220  | The physical address width supported by the IOMMU MUST be greater
+| IOM_230  | The physical address width supported by the IOMMU MUST be greater
              than or equal to the physical address width supported by the RISC-V
              application processor harts in the SoC.
 2+| _Having the physical address width greater than or equal to the width
@@ -218,7 +236,7 @@ deliver external interrupts to the RISC-V application processor harts.
      I/O and facilitates the sharing of page tables between the hart MMU and the
      IOMMU._
 
-| IOM_230  | The reset default of the `iommu_mode` MUST be `Off`.
+| IOM_240  | The reset default of the `iommu_mode` MUST be `Off`.
 2+| _The IOMMU disallowing DMA unconditionally following reset due to the mode
      being Off allows the SoC firmware and software to enable DMA when
      suitable security protections as required have been established. The IOMMU
@@ -227,14 +245,14 @@ deliver external interrupts to the RISC-V application processor harts.
      program the mode in the appropriate IOMMU prior to programming the
      peripheral governed by that IOMMU to perform a DMA._
 
-| IOM_240  | An IOMMU that is implemented as an RCiEP MUST use base class 08H
+| IOM_250  | An IOMMU that is implemented as an RCiEP MUST use base class 08H
              and subclass 06H cite:[PCI-CLS].
 2+| _The base class 08H and sub-class 06H are designated by PCIe for use by an
      IOMMU. Implementing the IOMMU as a PCIe device allows an operating system
      to determine a driver for the IOMMU and to assign resources such as
      interrupt vectors to the IOMMU in a PCIe compatible manner._
 
-| IOM_250  | The host bridge MUST enforce the physical memory attribute checks
+| IOM_260  | The host bridge MUST enforce the physical memory attribute checks
              and physical memory protection checks on memory accesses originated
              by the IOMMU and signal detected access violations to the IOMMU.
 
@@ -242,9 +260,19 @@ deliver external interrupts to the RISC-V application processor harts.
      RISC-V hart. The host bridge (also known as IO bridge) invokes the IOMMU
      for address translations. To perform the operations requested by the host
      bridge the IOMMU may need to access in-memory data structures such as the
-     device directory table and page tables._
+     device directory table and page tables.                                   +
+                                                                               +
+     The physical memory protection limit access from IOMMUs to phusical
+     addresses to support secure processing and contain faults. These checks
+     allow restricting the IOMMU to only have access to the same memory that
+     the hart software that programs the IOMMU has access to.                  +
+                                                                               +
+     The IOMMU specification requires an IOMMU to support locating IOMMUs
+     in-memory data structures, in-memory queues, and page tables in memory
+     address ranges that hold main memory. Support for locating these in I/O
+     memory is not required._
 
-| IOM_260  | An IOMMU MUST support 24-bit device IDs if the IOMMU governs
+| IOM_270  | An IOMMU MUST support 24-bit device IDs if the IOMMU governs
              multiple PCIe root ports that may be part of different PCIe
              hierarchies.
 2+| _An IOMMU governing PCIe root ports uses requester ID (RID) - the tuple of
@@ -255,33 +283,39 @@ deliver external interrupts to the RISC-V application processor harts.
      (also known as segment ID) - an 8-bit number - to uniquely identify a
      requester across PCIe hierarchies._
 
-| IOM_270  | The host bridge MUST provide the PCIe RID as the bits 15:0 of the
+| IOM_280  | The host bridge MUST provide the PCIe RID as the bits 15:0 of the
              `device_id` input to the IOMMU for requests from PCIe EPs and
              RCiEP.
 
-| IOM_280  | When the IOMMU supports 24-bit device IDs, the host bridge MUST
+| IOM_290  | When the IOMMU supports 24-bit device IDs, the host bridge MUST
              specify the segment number associated with the PCIe hierarchy from
              which requests were received as the bits 23:16 of the `device_id`
              to the IOMMU.
 
-| IOM_290  | The determination of `device_id` input to an IOMMU for requests
+| IOM_300  | The determination of `device_id` input to an IOMMU for requests
              originating from non-PCIe devices is `UNSPECIFIED`. If PCIe and
              non-PCIe endpoints/RCiEP are governed by the same IOMMU, the SoC
              MUST ensure that there is no overlap between any `device_id`
              associated with non-PCIe devices with any `device_id` formed using
              the PCIe RID (and if applicable the segment ID).
 
-| IOM_300  | The host bridge MUST provide the 20-bit PASID from the PCIe PASID
+| IOM_310  | The host bridge MUST provide the 20-bit PASID from the PCIe PASID
              TLP Prefix as the `process_id` input to the IOMMU along with an
              indication about the validity of the `process_id` input. When the
              `process_id` is indicated as valid, the host bridge MUST
              additionally provide the "Execute Requested" and the "Privilege
              Mode Requested" bits from the PASID TLP prefix as input to the
-             IOMMU. When `process_id` input is indicated as not valid the host
+             IOMMU. When `process_id` input is indicated as not valid, the host
              bridge MUST set the "Execute Requested" and "Privilege Mode
-             Requested" inputs as 0.
+             Requested" inputs to 0.
 
-| IOM_310  | The determination of `process_id`, "Execute Requested", and
+2+| _The host bridge providing the full 20-bit value without truncation from
+     the PASID TLP prefix to the IOMMU enables the IOMMU to determine if the
+     PASID value is wider than supported by the current configuration of the
+     process directory table for that device and generate a fault notification
+     if so._
+
+| IOM_320  | The determination of `process_id`, "Execute Requested", and
              "Privilege Mode Requested" inputs to an IOMMU for requests
              originating from non-PCIe devices is `UNSPECIFIED`.
 
@@ -336,6 +370,14 @@ The host bridge is placed between the device(s) and the system interconnect to
 process DMA transactions. Devices perform DMA transactions using IO Virtual
 Addresses (VA, GVA or GPA). The host bridge invokes the associated IOMMU to
 translate the IOVA to Supervisor Physical Addresses (SPA).
+
+[width=100%]
+[%header, cols="5,25"]
+|===
+| RCI_010  | The PCIe root ports, host bridges, RCRBs, and RCECs in the root
+             compplex MUST implement all software visible rules defined by the
+             PCIe specification 6.0 for the root complex as applicable.
+|===
 
 ==== Enhanced Configuration Access Method (ECAM)
 
@@ -402,21 +444,27 @@ hierarchy domain originating at each PCIe root port.
      configuration space registers of the PCIe root port itself and the PCIe
      root port is a PCI-PCI bridge device on the primary bus._
 
-| ECM_070 | The PCIe root port MUST enumerate as a PCI-PCI bridge to software
-            and comply with the rules specified for PCIe root ports in PCIe
-            specification 6.0.
-
-| ECM_080 | The PCIe root port MUST support the PCIe Configuration RRS software
+| ECM_070 | The PCIe root port MUST support the PCIe Configuration RRS software
             (CRS) visibility enable control.
 2+| _The number of times a configuration request is retried on an RRS response
      is `UNSPECIFIED`._
 
-| ECM_090 | Read and/or write to the ECAM range of the hierarchy domain
+| ECM_080 | Read and/or write to the ECAM range of the hierarchy domain
             originating at a root port MUST generate PCIe configuration
             transactions as type 0 or type 1 configuration transactions
             following the rules specified for ECAM in PCIe specification 6.0.
+2+| _Determination of the type of configuration transaction based on whether
+     the access is to the primary, secondary or subordinate buses may involve
+     logic in the host bridge to work in conjunction with the root port PCIe
+     controller. See also Alternative Routing-ID Interpretation in PCIe
+     specification 6.0 section 6.13 for rules related to converting type 1
+     configuration requests into type 0 configuration request based on the
+     traditional Device Number field being 0. Specifically, when ARI forwarding
+     is disabled, write accesses to configuration space of Device Number greater
+     than 0 must be silently dropped, and read accesses must be responded to
+     with all 1s data._
 
-| ECM_100 a| Read access to ECAM address range from a RISC-V hart MUST be
+| ECM_090 a| Read access to ECAM address range from a RISC-V hart MUST be
              responded with all 1s data if any of the following conditions are
              TRUE:
 
@@ -437,12 +485,12 @@ hierarchy domain originating at each PCIe root port.
      MUST follow the PCIe defined rules. See also the recommendations in PCIe
      specification 6.0 section 2.3.2._
 
-| ECM_110 | Write access from a RISC-V hart to configuration registers of a
+| ECM_100 | Write access from a RISC-V hart to configuration registers of a
             non-existent function on the primary bus MUST be dropped (silently
             ignored or discarded) and the write completed. Such accesses MUST
             NOT lead to any other behavior (e.g., hangs, deadlocks, etc.).
 
-| ECM_120 | Poisoned data received from completers (EP=1) MUST be forwarded to
+| ECM_110 | Poisoned data received from completers (EP=1) MUST be forwarded to
             the requesting RISC-V hart as poisoned data unless such forwarding
             is disallowed (e.g., SoC does not support data poisoning or
             forwarding of poisoned data is disabled though implementation
@@ -498,7 +546,7 @@ hierarchy domain originating at each PCIe root port.
 
 | MMS_040 a| A load from a RISC-V application processor hart to memory ranges
              designated for mapping memory spaces of endpoints or RCiEP MUST
-             complete with an all 1s response and MUST NOT lead to any other
+             complete with an all 1s response and MUST NOT lead to any abnormal
              behavior (e.g., hangs, deadlocks, etc.) if any of the following are
              TRUE:
 
@@ -519,7 +567,7 @@ hierarchy domain originating at each PCIe root port.
 | MMS_050 a| A store from a RISC-V application processor hart to memory ranges
              designated for mapping memory space of endpoints or RCiEP MUST
              be dropped (silently ignored or discarded) and MUST NOT lead to any
-             other behavior (e.g., hangs, deadlocks, etc.) if any of the
+             abnormal behavior (e.g., hangs, deadlocks, etc.) if any of the
              following are TRUE:
 
              * Address is not within any of the following address ranges:
@@ -592,10 +640,6 @@ devices, and SR-IOV capable devices.
 2+| _More commonly, P2P routing is accomplished by forwarding the TLP to the host
      bridge for routing. For further information, refer to the application note
      accompanying Fig 2-14 and Section 1.3.1 of the PCIe specification 6.0._
-
-| ACS_050  | The ACS features, including the detection, logging, and reporting of
-             ACS violations MUST adhere to the rules outlined in the PCIe
-             specifications 6.0.
 |===
 
 ==== Address Routed Transactions
@@ -774,14 +818,7 @@ mechanism in PCIe.
 | ID#     ^| Requirement
 | MSI_010  | Message Signaled Interrupts MUST be supported.
 
-| MSI_020  | SoC MUST NOT require any further action from the operating system
-             besides configuring the MSI address register in devices with the
-             address of an IMSIC interrupt file -- a supervisor-level interrupt
-             file or a guest interrupt file -- and the MSI data register in
-             devices with an external interrupt identity to enable the use of
-             MSI or MSI-X.
-
-| MSI_030  | SoC MUST NOT support INTx virtual wire based interrupt signaling.
+| MSI_020  | SoC MUST NOT support INTx virtual wire based interrupt signaling.
 2+| _PCIe supports INTx emulation to support legacy PCI interrupt mechanisms.
      Modern SoC and devices are not expected be limited by the lack of this
      emulation mode._
@@ -812,8 +849,11 @@ mechanism in PCIe.
      enable coordination of events across multiple PCIe devices._
 
 | PTM_030  | When PCIe PTM capability is supported, the PTM master time MUST be
-             64-bit wide and MUST use the same or higher resolution clock than
-             the clock used to provide `time`.
+             64-bit wide.
+
+| PTM_040  | When PCIe PTM capability is supported, the PTM master time MUST use
+             the same or higher resolution clock than the clock used to increment
+             `time` CSR of the RISC-V application processor harts.
 
 |===
 
@@ -876,18 +916,18 @@ mechanism in PCIe.
              * Vendor specific extended capability.
              * Designated Vendor Specific extended capability.
 
-| VSR_020  | SoC MUST NOT require hypervisor and/or operating system
-             interaction with configuration space registers that are not defined
-             by an industry standard. Non-standard vendor specific registers,
-             if implemented in the configuration space, must only be used by the
-             SoC firmware.
+| VSR_020  | SoC MUST NOT require hypervisor and/or operating system interaction
+             with PCIe configuration space registers that are not defined by an
+             industry standard. Non-standard vendor specific registers, if
+             implemented in the PCIe configuration space, must only be used by
+             the SoC firmware.
 2+| _Some industry standards such a CXL may define standard DVSEC structures in
-     the configuration space._                                                 +
+     the PCIe configuration space._                                            +
                                                                                +
     _The preferred way to implement device/SoC vendor specific registers that
      need to be used by drivers in the run-time environment is to implement
      them in the memory space of the device. Certain operating systems and
-     hypervisors may disallow and/or require mediating access to the
+     hypervisors may disallow and/or require mediating access to the PCIe
      configuration space of devices. See also the implementation note in the
      PCIe specification 6.0 section 7.2.2.2._
 |===
@@ -907,9 +947,8 @@ mechanism in PCIe.
      participate in RAS frameworks like data poisoning and AER, power management,
      etc._
 
-| SID_020  | SoC-integrated PCIe devices MUST NOT require the use of I/O space,
-             I/O transactions, or the INTx virtual wire interrupt signaling
-             mechanism.
+| SID_020  | SoC-integrated PCIe devices MUST NOT require the use of I/O space
+             or I/O transactions.
 
 | SID_030  | SoC integrated PCIe devices that cache address translations MUST
              implement the PCIe ATS capability if the address translation cache
@@ -1053,7 +1092,7 @@ mechanism in PCIe.
              RAS-initiated reset. The state of RAS error records MAY persist
              across other types of implementation-defined resets. After a reset,
              including a RAS-initiated reset, the state of the control register
-             is considered `UNSPECIFIED`.
+             in the RAS error record is considered `UNSPECIFIED`.
 2+| _Some errors may lead a hardware component to enter a failure mode in which
      it becomes incapable of servicing additional requests- colloquially termed
      'jammed' or 'wedged'. In these situations, the SoC may require a reset to
@@ -1131,7 +1170,7 @@ and more.
                                                                                +
    _The `srmcfg` CSR is provided by the Ssqosid extension cite:[PRIV]._
 
-| QOS_040  | If CBQRI is supported, the IOMMU in the SoC SHOULD incorporate
+| QOS_040  | If CBQRI is supported, the IOMMUs in the SoC SHOULD incorporate
              support for the CBQRI-defined extension, enabling the association
              of RCID and MCID with requests initiated by devices and the IOMMU.
 
@@ -1286,7 +1325,7 @@ data centers and enterprises.
              counting based on whether the request is to local memory or to
              remote memory.
 
-| SPM_060  | The PCIe Gen6 ports within the SoC SHOULD incorporate support for
+| SPM_060  | All PCIe Gen6 ports within the SoC SHOULD incorporate support for
              the Flit performance measurement extended capability defined by
              PCIe specification 6.0.
 |===
@@ -1299,42 +1338,32 @@ data centers and enterprises.
 [%header, cols="5,25"]
 |===
 | ID#     ^| Requirement
-| SEC_010 a| The Server SoC MUST comply with the requirements and guidelines
-             detailed in Reference Model, Ecosystem Security Objectives, and
-             the Cryptography sections of the RISC-V Security Model Version
-             1.0 cite:[SEC]. The Server SoC is classified as a complex
-             security system for the purposes of SR_ROT_001 and SR_ATT_002.
+| SEC_010 a| The Server SoC MUST implement a hardware RoT as the _primary_ root
+             of trust.
+2+| _A root of trust (RoT) is the foundation on which all secure operations of a
+     system depend. A hardware RoT is a dedicated and possibly isolated trusted
+     subsystem that can provide stronger protections against physical and
+     logical attacks._
 
-| SEC_020 a| The Server SoC MUST support the Generic System Without Supervisor
-             Domains use case detailed in the RISC-V Security Model Version 1.0.
-             The building blocks used to implement this use case MUST comply
-             with the requirements specified in the RISC-V Security Building
-             Blocks section of the RISC-V Security Model specification.
-
-| SEC_030 a| The Server SoC MAY support the Confidential Computing on RISC-V
-             (CoVE) use case detailed in the RISC-V Security Model Version 1.0. The
-             building blocks used to implement this use case MUST comply with
-             the requirements specified in the RISC-V Security Building Blocks
-             section of the RISC-V Security Model specification.
-
-| SEC_040  | The PCIe root ports within the SoC SHOULD support PCIe Integrity and
+| SEC_020  | The PCIe root ports within the SoC SHOULD support PCIe Integrity and
              Data Encryption (IDE) capability.
 2+| _The IDE extension adds optional capabilities to perform hardware encryption
      and integrity checks on packets transferred across PCIe links. This addition
      provides confidentiality, integrity, and replay protection against
      hardware-level attacks._
 
-| SEC_050  | The SoC SHOULD support encryption of off-chip DRAM using a
+| SEC_030  | The SoC SHOULD support encryption of off-chip DRAM using a
              transient memory encryption key that has at least 256-bit key
              lengths.
 2+| _Off-chip memory encryption provides protection to critical assets in memory
      such as credentials, data encryption keys, and other secrets._
 
-| SEC_060  | The cryptographic modules used to implement PCIe and off-chip DRAM
+| SEC_040  | The cryptographic modules used to implement PCIe and off-chip DRAM
              encryption SHOULD comply with security requirements specified by
-             standards such as FIPS 140-3.
+             relevant security standards from national standards laboratories.
+2+| _FIPS 140-3 is an example of such a standard_
 
-| SEC_040  | The SoC SHOULD have the capability of interfacing with a Trusted
+| SEC_050  | The SoC SHOULD have the capability of interfacing with a Trusted
              Platform Module (TPM) that adheres to the TPM 2.0 Library
              specification cite:[TPM20].
 2+| _A TPM enhances security by providing secure storage for sensitive
