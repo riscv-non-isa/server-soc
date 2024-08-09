@@ -1320,8 +1320,8 @@ data centers and enterprises.
 
              * Cache lookup
              * Cache miss
-2+| _It is recommended that a cache with a capacity larger than approximately
-     16 KiB be considered a significant cache._
+2+| _It is recommended that a cache with a capacity that is approximately 16 KiB
+     or larger be considered a significant cache._
 
 | SPM_020 a| The memory controllers within the SoC SHOULD incorporate an HPM
              capable of counting:
