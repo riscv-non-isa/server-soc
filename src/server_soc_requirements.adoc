@@ -5,7 +5,7 @@
 [width=100%]
 [%header, cols="5,25"]
 |===
-| ID#     ^| Requirement
+| ID#     ^| Rule
 | CTI_010  | The `time` CSR MUST increment at a constant frequency and the count
              MUST be in units of 1 ns. The frequency at which the CSR provides
              an updated time value MUST be at least 100 MHz.
@@ -15,7 +15,7 @@
 | CTI_020  | The `time` counter MUST appear to be always on and MUST appear to
              not lose its count across hart low power idle states, including
              when the hart is powered off.
-2+a| _This requirement does not apply to system power states such as G3 (power
+2+a| _This rule does not apply to system power states such as G3 (power
       off), S3 (Suspend to RAM), or S4 (Hibernate)._                           +
                                                                                +
      _Losing `time` count across hart low power idle states may lead to the
@@ -37,7 +37,7 @@ deliver external interrupts to the RISC-V application processor harts.
 [width=100%]
 [%header, cols="5,25"]
 |===
-| ID#     ^| Requirement
+| ID#     ^| Rule
 | IIC_010  | The RISC-V Advanced Interrupt Architecture cite:[AIA] MUST be
              supported.
 
@@ -107,7 +107,7 @@ deliver external interrupts to the RISC-V application processor harts.
 [width=100%]
 [%header, cols="5,25"]
 |===
-| ID#     ^| Requirement
+| ID#     ^| Rule
 | IOM_010  | All IOMMUs in the SoC MUST support the RISC-V IOMMU specification
              cite:[IOMMU].
 
@@ -115,7 +115,7 @@ deliver external interrupts to the RISC-V application processor harts.
              PCIe root ports accessible by software on the RISC-V application
              processor harts MUST be governed by an IOMMU.                     +
                                                                                +
-             Initiators, such as the following, are exempt from this requirement:
+             Initiators, such as the following, are exempt from this rule:
 
              * Interrupt controllers, such as the APLIC.
              * IOMMUs.
@@ -130,7 +130,7 @@ deliver external interrupts to the RISC-V application processor harts.
      provided by the IOMMU enables usages such as passthrough of such devices to
      virtual machines, shared virtual addressing, etc._                        +
                                                                                +
-    _The number of IOMMUs implemented in the SoC to satisfy requirement IOM_020
+    _The number of IOMMUs implemented in the SoC to satisfy rule IOM_020
      is `UNSPECIFIED`._
 
 | IOM_030  | The IOMMU governing a PCIe root port MUST support at least 16-bit
@@ -396,7 +396,7 @@ hierarchy domain originating at each PCIe root port.
 [width=100%]
 [%header, cols="5,25"]
 |===
-| ID#     ^| Requirement
+| ID#     ^| Rule
 | ECM_010 a| The ECAM address ranges MUST have the following physical memory
              attributes (PMAs):
 
@@ -416,7 +416,7 @@ hierarchy domain originating at each PCIe root port.
 2+| _Besides performing a write, software executing on a hart must not
      require any additional actions to achieve this property._                 +
                                                                                +
-    _This requirement satisfies the processor and host bridge implementation
+    _This rule satisfies the processor and host bridge implementation
      requirement mentioned in the “Ordering Considerations for the Enhanced
      Configuration Access Mechanism” implementation note of the PCIe 6.0
      specification._
@@ -503,7 +503,7 @@ hierarchy domain originating at each PCIe root port.
 [width=100%]
 [%header, cols="5,25"]
 |===
-| ID#     ^| Requirement
+| ID#     ^| Rule
 | MMS_010  | The SoC MUST support designating, for each hierarchy domain, one or
              more ranges of system physical addresses that may be used for
              mapping memory space of endpoints in that hierarchy domain using
@@ -526,8 +526,7 @@ hierarchy domain originating at each PCIe root port.
      and system requirements._
 
 | MMS_030 a| The system physical address ranges designated for mapping endpoint
-             memory spaces have the following physical memory attribute (PMAs)
-             requirements:
+             memory spaces have the following physical memory attribute (PMAs):
 
              * MUST be not cacheable, non-idempotent, coherent, strongly-ordered
                (I/O ordering) I/O region.
@@ -628,7 +627,7 @@ devices, and SR-IOV capable devices.
 [width=100%]
 [%header, cols="5,25"]
 |===
-| ID#     ^| Requirement
+| ID#     ^| Rule
 | ACS_010 a| PCIe root ports and SoC integrated downstream switch ports MUST
              support the following PCIe access control services (ACS) controls:
 
@@ -673,7 +672,7 @@ space of an endpoint or RCiEP.
 [width=100%]
 [%header, cols="5,25"]
 |===
-| ID#     ^| Requirement
+| ID#     ^| Rule
 | ADR_010  | The host bridge MUST request IOMMU translations for addresses
              (Translated, Untranslated, or a PCIe ATS address translation
              request) used in the request by endpoints and RCiEPs.
@@ -744,7 +743,7 @@ messages or completions.
 [width=100%]
 [%header, cols="5,25"]
 |===
-| ID#     ^| Requirement
+| ID#     ^| Rule
 | IDR_010  | Configuration requests from endpoints and RCiEP MUST be treated as
              Unsupported Requests.
 
@@ -766,7 +765,7 @@ messages or completions.
 [width=100%]
 [%header, cols="5,25"]
 |===
-| ID#     ^| Requirement
+| ID#     ^| Rule
 | CCS_010  | The host bridge MUST enforce PCIe memory ordering rules and SHOULD
              support the relaxed ordering (RO) and ID-based ordering (IDO).
 2+| _An implementation may occasionally or never permit the relaxations allowed
@@ -836,7 +835,7 @@ mechanism in PCIe.
 
 [%header, cols="5,25"]
 |===
-| ID#     ^| Requirement
+| ID#     ^| Rule
 | MSI_010  | Message Signaled Interrupts MUST be supported.
 
 | MSI_020  | SoC MUST NOT support INTx virtual wire based interrupt signaling.
@@ -853,7 +852,7 @@ mechanism in PCIe.
 [width=100%]
 [%header, cols="5,25"]
 |===
-| ID#     ^| Requirement
+| ID#     ^| Rule
 | PTM_010  | PCIe root ports MAY support PCIe PTM capability.
 2+| _Several applications such as instrumentation, media servers, telecom
      servers, etc. require high precision monitoring and tracking of time. The
@@ -883,7 +882,7 @@ mechanism in PCIe.
 [width=100%]
 [%header, cols="5,25"]
 |===
-| ID#     ^| Requirement
+| ID#     ^| Rule
 | AER_010  | PCIe root ports MUST support advanced error reporting (AER)
              capability for reporting errors from connected devices or the
              errors detected by the root port itself.
@@ -928,7 +927,7 @@ mechanism in PCIe.
 [width=100%]
 [%header, cols="5,25"]
 |===
-| ID#     ^| Requirement
+| ID#     ^| Rule
 | VSR_010 a| Vendor specific registers in the root ports, host bridge, RCiEP,
              and RCRB MUST be implemented using one or more of the following
              capabilities:
@@ -958,7 +957,7 @@ mechanism in PCIe.
 [width=100%]
 [%header, cols="5,25"]
 |===
-| ID#     ^| Requirement
+| ID#     ^| Rule
 | SID_010  | SoC-integrated PCIe devices MUST implement all software visible
              rules defined by the PCIe specification 6.0 for an EP or RCiEP as
              applicable.
@@ -1026,7 +1025,7 @@ mechanism in PCIe.
 [width=100%]
 [%header, cols="5,25"]
 |===
-| ID#     ^| Requirement
+| ID#     ^| Rule
 | RAS_010  | The level of RAS implemented by the SoC is `UNSPECIFIED`.
 2+| _The level of RAS implemented by an SoC depends on the reliability goals
      established for the SoC, which are commonly measured using metrics such as
@@ -1153,7 +1152,7 @@ mechanism in PCIe.
      increment the corrected error counter only if the error differs from a
      previously reported one. Additionally, some hardware units could
      incorporate low-pass filters like leaky buckets, which regulate the rate at
-     which corrected errors are reported and counted. This requirement pertains
+     which corrected errors are reported and counted. This rule pertains
      to corrected errors tracked by the error record once the hardware component
      determines reporting and counting based on its specific filtering rules._
 |===
@@ -1173,7 +1172,7 @@ and more.
 [width=100%]
 [%header, cols="5,25"]
 |===
-| ID#     ^| Requirement
+| ID#     ^| Rule
 | QOS_010  | The SoC SHOULD incorporate QoS mechanisms to mitigate unwarranted
              performance interference that arises when multiple workloads access
              shared resources like caches and system memory.
@@ -1280,7 +1279,7 @@ data centers and enterprises.
 [width=100%]
 [%header, cols="5,25"]
 |===
-| ID#     ^| Requirement
+| ID#     ^| Rule
 | MNG_010  | The SoC SHOULD incorporate support for an x1 PCIe lane, preferably
              Gen 5, but at least Gen 3, to establish a connection with the BMC.
 2+| _This interface is commonly linked to a BMC as a PCIe endpoint, serving
@@ -1314,7 +1313,7 @@ data centers and enterprises.
 [width=100%]
 [%header, cols="5,25"]
 |===
-| ID#     ^| Requirement
+| ID#     ^| Rule
 | SPM_010 a| Significant caches within the SoC SHOULD incorporate an HPM capable
              of counting:
 
@@ -1358,7 +1357,7 @@ data centers and enterprises.
 [width=100%]
 [%header, cols="5,25"]
 |===
-| ID#     ^| Requirement
+| ID#     ^| Rule
 | SEC_010 a| The Server SoC MUST implement a hardware RoT as the _primary_ root
              of trust.
 2+| _A root of trust (RoT) is the foundation on which all secure operations of a
