@@ -1184,11 +1184,9 @@ and more.
 | QOS_030  | If CBQRI is supported, RISC-V harts within the application
              processors of the SoC MUST include support for the `srmcfg` CSR.
              Furthermore, this CSR MUST support a minimum of 16 RCIDs and at
-             least 32 MCIDs.
-2+a| _The count of RCID and MCID that can be used in the SoC should scale with
-     the number of RISC-V harts in the SoC._                                   +
-                                                                               +
-   _The `srmcfg` CSR is provided by the Ssqosid extension cite:[PRIV]._
+             least 32 MCIDs. The count of RCID and MCID that can be used in the
+             SoC SHOULD scale with the number of RISC-V harts in the SoC.
+2+| _The `srmcfg` CSR is provided by the Ssqosid extension cite:[PRIV]._
 
 | QOS_040  | If CBQRI is supported, the IOMMUs in the SoC SHOULD incorporate
              support for the CBQRI-defined extension, enabling the association
@@ -1317,8 +1315,11 @@ data centers and enterprises.
 | SPM_010 a| Significant caches within the SoC SHOULD incorporate an HPM capable
              of counting:
 
-             * Cache lookup
-             * Cache miss
+             * Cache lookups for reads
+             * Cache misses on reads
+             * Cache lookups for writes
+             * Cache misses on writes
+
 2+| _It is recommended that a cache with a capacity that is approximately 16 KiB
      or larger be considered a significant cache._
 
