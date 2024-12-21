@@ -102,6 +102,7 @@ deliver external interrupts to the RISC-V application processor harts.
 
 <<<
 
+[[IOMMU]]
 === Input-Output Memory Management Unit (IOMMU)
 
 [width=100%]
@@ -1350,6 +1351,8 @@ data centers and enterprises.
              the Flit performance measurement extended capability defined by
              PCIe specification 6.0.
 |===
+
+Please refer to <<IOMMU>> for details on the IOMMU performance monitoring rules.
 
 <<<
 
