@@ -1,4 +1,4 @@
-= RISC-V Server SoC specification
+= RISC-V Server SoC specification DOT NOT MERGE
 
 This document is capturing discussions at the Server SoC HW TG.
 This is not an official specification and everything in this document may change.
