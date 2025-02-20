@@ -618,6 +618,8 @@ hierarchy domain originating at each PCIe root port.
              allocation to endpoints downstream of a PCIe root port.
 |===
 
+<<<
+
 ==== Access Control Services (ACS)
 
 The PCIe ACS provides controls on routing of PCIe TLPs. ACS controls may be used
@@ -845,8 +847,6 @@ mechanism in PCIe.
      emulation mode._
 
 |===
-
-<<<
 
 ==== Precision Time Measurement (PTM)
 
