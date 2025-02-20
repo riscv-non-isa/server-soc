@@ -1,9 +1,9 @@
 [[header]]
 :description: RISC-V Server SoC Specification
 :company: RISC-V.org
-:revdate: 10/2024
+:revdate: 09/2025
 :revnumber: 1.0
-:revremark: This document is Frozen. See http://riscv.org/spec-state for details.
+:revremark: This document is Ratified. See http://riscv.org/spec-state for details.
 :url-riscv: http://riscv.org
 :doctype: book
 :preface-title: Preamble
@@ -41,12 +41,10 @@ Server SoC Task Group
 
 // Preamble
 [WARNING]
-.This document is in the link:http://riscv.org/spec-state[Frozen state]
+.This document is in the link:http://riscv.org/spec-state[Ratified state]
 ====
-Change is extremely unlikely. A high threshold will be used, and a change
-will only occur because of some truly critical issue being identified during
-the public review cycle. Any other desired or needed changes can be the subject
-of a follow-on new extension.
+No changes are allowed. Any desired or needed changes can be the subject of a
+follow-on new extension. Ratified extensions are never revised
 ====
 
 [preface]
@@ -56,7 +54,7 @@ Attribution 4.0 International License (CC-BY 4.0). The full
 license text is available at
 https://creativecommons.org/licenses/by/4.0/.
 
-Copyright 2022-2024 by RISC-V International.
+Copyright 2022-2025 by RISC-V International.
 
 :imagesdir: images
 [preface]
