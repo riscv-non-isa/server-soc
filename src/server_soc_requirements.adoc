@@ -922,8 +922,6 @@ mechanism in PCIe.
 
 |===
 
-<<<
-
 ==== Vendor Specific Registers
 [width=100%]
 [%header, cols="5,25"]
