@@ -744,6 +744,18 @@ space of an endpoint or RCiEP.
              within the SoC MUST result in a response with poisoned data (EP=1)
              if transmission of poisoned TLPs is not blocked (see also section
              2.7.2.1 of PCIe specification 6.0).
+
+| ADR_080  | PCIe root ports and the host bridge SHOULD provide support for
+             32-bit AtomicOp Completer, 64-bit AtomicOp Completer, and 128-bit
+             CAS Completer operations.
+2+| _The root ports advertise this capability in the Device Capabilities 2
+     Register._
+
+| ADR_090  | PCIe root ports and the host bridge SHOULD provide support for
+             AtomicOp routing among all root ports.
+2+| _The root ports advertise this capability in the Device Capabilities 2
+     Register._
+
 |===
 
 ==== ID Routed Transactions
