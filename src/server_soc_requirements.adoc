@@ -616,6 +616,26 @@ hierarchy domain originating at each PCIe root port.
 
 | MMS_080  | SoC MUST NOT use EA capability to indicate memory resources for
              allocation to endpoints downstream of a PCIe root port.
+
+| MMS_090  | SoC SHOULD support designating sufficient system physical addresses
+             per hierarchy domain to support mapping 64-bit device BARs as large
+             as 256 GiB and 32-bit device BARs as large as 16 MiB. The allocation
+             of system physical address space SHOULD be independently
+             configurable on a per-Root-Port basis to match the needs of devices
+             downstream of that Root Port.
+2+| _Some devices such as GPUs require large BAR resources to map device-side
+     memory such as HBMs. Multiple such devices may be present in a hierarchy
+     domain, necessitating the SoC to support designating sufficient address
+     space to map the BARs of each such device._
+
+    _The system physical address space requirements for hierarchy domains may
+     not be identical. Some hierarchy domains may need significantly larger
+     address space for mapping device BARs compared to others, particularly
+     those with multiple downstream devices. Such allocation of address space
+     is usually done by PCIe firmware by enumerating the needs of the devices
+     in each hierarchy domain. The allocation SHOULD be independently
+     configurable on a per-Root-Port basis and MAY be adjusted post-discovery to
+     match device needs._
 |===
 
 <<<
