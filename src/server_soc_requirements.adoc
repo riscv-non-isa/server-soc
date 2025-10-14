@@ -320,6 +320,14 @@ deliver external interrupts to the RISC-V application processor harts.
              "Privilege Mode Requested" inputs to an IOMMU for requests
              originating from non-PCIe devices is `UNSPECIFIED`.
 
+| IOM_330  | The IOMMU SHOULD support the Non-Leaf PTE Invalidation Extension.
+
+| IOM_340  | The IOMMU SHOULD support the Address Range Invalidation Extension.
+
+2+| _The Non-leaf PTE Invalidation and Address Range Invalidation extensions
+     enable efficient invalidation of PTEs cached in the IOMMU's address
+     translation caches._
+
 |===
 
 <<<
