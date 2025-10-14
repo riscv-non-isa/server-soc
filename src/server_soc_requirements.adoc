@@ -616,6 +616,26 @@ hierarchy domain originating at each PCIe root port.
 
 | MMS_080  | SoC MUST NOT use EA capability to indicate memory resources for
              allocation to endpoints downstream of a PCIe root port.
+
+| MMS_090  | SoC SHOULD support designating sufficient system physical addresses
+             per hierarchy domain to support mapping 64-bit device BARs as large
+             as 256 GiB and 32-bit device BARs as large as 16 MiB. The allocation
+             of system physical address space SHOULD be independently
+             configurable on a per-Root-Port basis to match the needs of devices
+             downstream of that Root Port.
+2+| _Some devices such as GPUs require large BAR resources to map device-side
+     memory such as HBMs. Multiple such devices may be present in a hierarchy
+     domain, necessitating the SoC to support designating sufficient address
+     space to map the BARs of each such device._
+
+    _The system physical address space requirements for hierarchy domains may
+     not be identical. Some hierarchy domains may need significantly larger
+     address space for mapping device BARs compared to others, particularly
+     those with multiple downstream devices. Such allocation of address space
+     is usually done by PCIe firmware by enumerating the needs of the devices
+     in each hierarchy domain. The allocation SHOULD be independently
+     configurable on a per-Root-Port basis and MAY be adjusted post-discovery to
+     match device needs._
 |===
 
 <<<
@@ -707,7 +727,7 @@ space of an endpoint or RCiEP.
              whether the transaction is targeting host memory or peer device
              memory.
 
-| ADR_040  | The host bridge MAY support devices accessing peer devices' memory.
+| ADR_040  | The host bridge SHOULD support devices accessing peer devices' memory.
              If peer device memory access is not enabled (either by design or
              configuration), then such accesses MUST be responded to with a
              UR/CA response. The host bridge MUST NOT cause any other errors
@@ -720,6 +740,15 @@ space of an endpoint or RCiEP.
      must not result in system instabilities (e.g., hangs, deadlocks, etc.) or
      errors. Compliance with this directive ensures system resilience against
      unauthorized access attempts, maintaining operational integrity._
+
+   _This rule’s conformance level has been raised from *“MAY”* to *“SHOULD”* to
+    address accelerated computing use cases. Examples include GPU-direct
+    networking and storage, which require network and/or storage devices to
+    directly read from and/or write to GPU memory using P2P accesses._
+
+   _A root complex implementation is permitted to *“take ownership”* of requests
+    that pass P2P between root ports, or to incorporate a real or virtual switch
+    to enable P2P support._
 
 | ADR_050  | When a posted or non-posted-with-data request from a device is
              allowed to access peer device memory, then any poisoned data (EP=1)
@@ -735,6 +764,18 @@ space of an endpoint or RCiEP.
              within the SoC MUST result in a response with poisoned data (EP=1)
              if transmission of poisoned TLPs is not blocked (see also section
              2.7.2.1 of PCIe specification 6.0).
+
+| ADR_080  | PCIe root ports and the host bridge SHOULD provide support for
+             32-bit AtomicOp Completer, 64-bit AtomicOp Completer, and 128-bit
+             CAS Completer operations.
+2+| _The root ports advertise this capability in the Device Capabilities 2
+     Register._
+
+| ADR_090  | PCIe root ports and the host bridge SHOULD provide support for
+             AtomicOp routing among all root ports.
+2+| _The root ports advertise this capability in the Device Capabilities 2
+     Register._
+
 |===
 
 ==== ID Routed Transactions
