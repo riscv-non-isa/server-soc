@@ -51,6 +51,13 @@ This specification groups the tests in the following broad categories:
 * Performance monitoring
 * Security
 
+A *system hardware table* denotes any platform-defined data structure that
+conveys static hardware information to software. Software may use this table to
+identify and configure hardware resources. Throughout this specification, the
+term *system hardware table* is used as a format-agnostic abstraction that
+encompasses ACPI, Device Tree, or any equivalent mechanism supplied by platform
+firmware.
+
 === Glossary
 
 Most terminology has the standard RISC-V meaning. This table captures other
