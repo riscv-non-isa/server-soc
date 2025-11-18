@@ -42,7 +42,7 @@
                       the `eidelivery` register.
                     . Map the physical address of the S-mode interrupt register
                       file of the hart with a virtual address using PBMT set to
-                      IO. The physical address is determined using the system
+                      IO. The physical address is determined using the system hardware
                       table.
                     . Write a supported external interrupt identity to the
                       S-level interrupt register file using a 4-byte store to
