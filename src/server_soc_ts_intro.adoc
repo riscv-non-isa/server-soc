@@ -9,6 +9,11 @@ the implementation. In most cases the tests only check for existence of the
 feature. Future versions of this specification may include more exhaustive
 tests.
 
+Some tests may require additional hardware information to be provided,
+such as base addresses or configuration data.  This information can be
+provided by editing test source code files, or by supplying command
+line arguments to the test, or by other suitable means.
+
 The tests in this specification are documented use the following format:
 
 [width=100%]
