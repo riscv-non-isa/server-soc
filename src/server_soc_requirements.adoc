@@ -263,7 +263,7 @@ deliver external interrupts to the RISC-V application processor harts.
      bridge the IOMMU may need to access in-memory data structures such as the
      device directory table and page tables.                                   +
                                                                                +
-     The physical memory protection limit access from IOMMUs to phusical
+     The physical memory protection limit access from IOMMUs to physical
      addresses to support secure processing and contain faults. These checks
      allow restricting the IOMMU to only have access to the same memory that
      the hart software that programs the IOMMU has access to.                  +
