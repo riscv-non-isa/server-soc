@@ -51,12 +51,14 @@ This specification groups the tests in the following broad categories:
 * Performance monitoring
 * Security
 
-A *system hardware table* denotes any platform-defined data structure that
-conveys static hardware information to software. Software may use this table to
-identify and configure hardware resources. Throughout this specification, the
-term *system hardware table* is used as a format-agnostic abstraction that
-encompasses ACPI, Device Tree, or any equivalent mechanism supplied by platform
-firmware.
+[[system-information-table]]
+A *system information table* denotes any data structure that conveys static
+hardware information to software. Software may use this table to identify and
+configure hardware resources. Throughout this specification, the term
+*system information table* is used as a format-agnostic abstraction that
+encompasses ACPI, Device Tree, and any equivalent mechanism supplied by platform
+firmware or by any other means through which such information is provided to the
+tests.
 
 === Glossary
 
