@@ -969,6 +969,18 @@ mechanism in PCIe.
 2+| _Retaining port configurations on transition to DL_Down state is important
      to support hot-plug._
 
+| AER_090  | PCIe Root Ports SHOULD support the Enhanced System Firmware
+             Intermediary (eSFI) Extended Capability.
+2+| _Enhanced SFI provides a firmware-first mediation layer that stabilizes PCIe
+     async hot-plug by coordinating with DPC/eDPC, validating newly inserted
+     devices, and applying platform policy before the OS interacts with them.
+     eSFI with PCIe-MI enables a BMC-controlled SFI solution. This reduces
+     crashes, deadlocks, and race conditions associated with hot-plug events,
+     and also improves security by preventing partially powered, malformed, or
+     untrusted devices from exposing inconsistent or adversarial configuration
+     states to the OS. This rule may be mandated by a future version of this
+     specification._
+
 |===
 
 ==== Vendor Specific Registers
