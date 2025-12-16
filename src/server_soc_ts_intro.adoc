@@ -51,6 +51,15 @@ This specification groups the tests in the following broad categories:
 * Performance monitoring
 * Security
 
+[[system-information-table]]
+A *system information table* denotes any data structure that conveys static
+hardware information to software. Software may use this table to identify and
+configure hardware resources. Throughout this specification, the term
+*system information table* is used as a format-agnostic abstraction that
+encompasses ACPI, Device Tree, and any equivalent mechanism supplied by platform
+firmware or by any other means through which such information is provided to the
+tests.
+
 === Glossary
 
 Most terminology has the standard RISC-V meaning. This table captures other

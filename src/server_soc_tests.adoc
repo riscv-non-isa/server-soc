@@ -6,12 +6,31 @@
 [%header, cols="8,25"]
 |===
 | ID#            ^| Algorithm
-| ME_CTI_010_010 a| Parse ACPI RHCT table to determine the time base frequency
-                    and verify it is equal to 1 GHz.
-| ME_CTI_020_010 a| Locate the _LPI objects for each RISC-V application
-                    processor hart. If present, verify that the __Architectural
-                    Context Lost Flags__ have bit 0 set to 0, indicating no loss
-                    of timer context for each supported low-power idle state.
+| ME_CTI_010_010 a| On each RISC-V application-processor hart, set the hart’s
+                    operating frequency to the lowest supported fixed frequency
+                    *F*. If the implementation does not support operation at a
+                    fixed frequency, this test is skipped.                     +
+                                                                               +
+                    Record the initial values of the `time` and `cycles` CSRs
+                    as `T1` and `C1` respectively. Poll the `time` CSR until it
+                    has advanced by 1 × 10^9^ ticks, and then record the final
+                    value of the `time` and `cycles` CSR as `T2` and `C2`
+                    respectively.                                              +
+                                                                               +
+                    Verify that:
+                    ((C2 − C1)/(T2 - T1)) x 10^9^ = F ± E-CTI_020_010          +
+                                                                               +
+                    where *E-CTI_020_010* is a test-suite-defined tolerance.
+| ME_CTI_020_010 a| Determine the low-power states implemented by each RISC-V
+                    application-processor hart using the system information
+                    table.                                                     +
+                                                                               +
+                    On each application-processor hart, for each supported low-
+                    power state, verify that the timer context is preserved
+                    across the low-power state by programming the `stimecmp` to
+                    cause a timer interrupt in the future, entering the low-
+                    power state, and upon wakeup verifying that `time` matches
+                    the expected wakeup time.
 |===
 
 <<<
@@ -22,26 +41,29 @@
 [%header, cols="8,25"]
 |===
 | ID#            ^| Algorithm
-| ME_IIC_010_010 a| For each application processor hart:
-
-                    . Determine the ISA node in ACPI RHCT table for that hart.
-                    . Parse the ISA string in the ISA node and verify that Ssaia
-                      extension is supported.
-                    . Parse the RINTC structure in ACPI MADT tables to verify that
-                      the interrupt controller type for the hart is IMSIC.
-| ME_IIC_020_010 a| See ME_IIC_010_010.
-| MF_IIC_030_010 a| . Verify presence of `siselect`, `sireg`, `stopi`, and
-                      `stopei` CSRs.
+| ME_IIC_010_010 a| See ME_IIC_030_010.
+| ME_IIC_020_010 a| See ME_IIC_030_010.
+| MF_IIC_030_010 a| For each application processor hart:
+                    . Verify presence of `siselect` and `sireg` CSRs provided
+                      by the Sscsrind extension. Verify that bit 60 of
+                      `hstateen0` CSR is writable.
+                    . Verify presence of `stopi` CSR provided by Ssaia
+                      extension. Verify that bit 59 of `hstateen0` CSR is
+                      writable.
+                    . Verify presence of `stopei` CSR provided by Ssaia
+                      extension. Verify that bit 58 of `hstateen0` CSR is
+                      writable.
                     . For each external interrupt identity supported by the
                       S-level interrupt file, verify the ability to set the
                       corresponding bit in the `eip__k__` and `eie__k__`
-                      registers.
+                      registers. Verify that at least 255 interrupt identities
+                      are supported.
                     . Verify ability to enable and disable interrupt delivery in
                       the `eidelivery` register.
                     . Map the physical address of the S-mode interrupt register
                       file of the hart with a virtual address using PBMT set to
-                      IO. The physical address is provided by the RINTC
-                      structure in ACPI MADT table.
+                      IO. The physical address is determined using the system
+                      information table.
                     . Write a supported external interrupt identity to the
                       S-level interrupt register file using a 4-byte store to
                       the `seteipnum_le` register using virtual address
@@ -60,22 +82,26 @@
 | ME_IIC_040_010 a| Use WARL discovery method on `hstatus.VGEIN` CSR field to
                     determine the `GEILEN` and verify that at least 5 guest
                     interrupt files are supported.
-| ME_IIC_050_010 a| Verify the number of supported supervisor mode interrupt
-                    identities in IMSIC structure of the ACPI MADT table is at
-                    least 255.
-| ME_IIC_060_010 a| Verify the number of supported guest mode interrupt
-                    identities in IMSIC structure of the ACPI MADT table is at
-                    least 63.
+| ME_IIC_050_010 a| See ME_IIC_030_010.
+| ME_IIC_060_010 a| For each application processor hart:
+                    . Verify presence of `vsiselect`, `vsireg`, `vstopi`, and
+                      `vstopei` CSRs.
+                    . For each guest interrupt file, determine the number of
+                      guest mode interrupt identities supported by verifying the
+                      ability to set the corresponding bit in `eip__k__` and
+                      `eie__k`__` registers of the guest interrupt file. Verify
+                      that at least 63 interrupt identities are supported.
 | ME_IIC_070_010 a| See MF_IIC_030_010.
-| ME_IIC_080_010 a| . Parse ACPI MADT to determine if an APLIC for supervisor
-                      interrupt domain is reported.
+| ME_IIC_080_010 a| . Parse the system information table to determine if an APLIC
+                      for supervisor interrupt domain is reported.
                     . If no APLIC is reported then skip the remaining steps.
-                    . Locate the APLIC structure.
-                    . Verify that number of interrupt delivery control.
-                      structures is reported as 0 indicating it is used as a
-                      wired-to-MSI bridge.
-                    . Verify the `domaincfg` supports MSI delivery mode and is
-                      configured to be in MSI delivery mode.
+                    . Locate the APLIC related information in the system
+                      information table.
+                    . Verify that number of interrupt delivery controls
+                      is reported as 0 indicating it is used as a wired-to-MSI
+                      bridge.
+                    . Verify that `domaincfg` supports MSI delivery mode and can
+                      be configured to be in MSI delivery mode.
                     . Write an external interrupt ID to `genmsi` register and
                       verify that the extempore MSI is delivered to the IMSIC
                       of the targeted hart.
@@ -92,14 +118,13 @@
 [%header, cols="8,25"]
 |===
 | ID#            ^| Algorithm
-| ME_IOM_010_010 a| . Locate all IOMMUs reported by APCI and verify they are of
-                      RIMT type.
+| ME_IOM_010_010 a| . Locate all IOMMUs using the system information table.
                     . For each IOMMU, read the `capabilities` register and
                       verify that it supports version 1.0 of the RISC-V IOMMU
                       specification.
                     . Output the `capabilities` register in the test output log.
 | ME_IOM_020_010 a| . Use PCIe discovery to locate all RCiEPs and PCIe RPs.
-                    . Locate the ACPI RIMT tables of all IOMMUs
+                    . Locate the system information table entries of all IOMMUs
                     . For each RCiEP, verify that there is a governing IOMMU.
                     . For each RP, verify that there is a governing IOMMU.
 | ME_IOM_030_010 a| . Locate all IOMMUs governing PCIe root ports.
@@ -109,12 +134,13 @@
                       .. if `capabilities.MSI_FLAT` is 1, then the `ddtp` must
                          support 3 level DDT.
 | ME_IOM_040_010 a| For each IOMMU that does not govern a PCIe root port:
-                    . Parse the ACPI RIMT structure of that IOMMU to determine
-                      the widest device ID.
+                    . From the system information table entry of that IOMMU,
+                      determine the widest device ID.
                     . Verify that the `ddtp` supports a mode that supports the
                       widest device ID.
-| ME_IOM_050_010 a| . Parse ISA string in ACPI RHCT table and determine the
-                      page based virtual memory systems supported by the harts.
+| ME_IOM_050_010 a| . Using WARL discovery determine the page based virtual
+                      memory systems supported by the application processor
+                      harts.
                     . For each IOMMU in reported:
                       .. Verify that the `capabilities` register enumerates
                          support for each of the page based virtual memory
@@ -129,7 +155,8 @@
                     . For each RCiEP:
                       .. If PCIe ATS capability not supported by the RCiEP
                          then continue.
-                      .. Locate the governing IOMMU using ACPI RIMT table.
+                      .. Locate the governing IOMMU using system information
+                         table.
                       .. Verify that the `capabilities.ATS` is 1 in the
                          governing IOMMU.
 | OE_IOM_120_010 a| See ME_IOM_010_010.
@@ -171,9 +198,9 @@
                       the bus:device:function numbers of the IOMMUs in the test
                       output log.
 | ME_IOM_250_010 a| No test.
-| ME_IOM_260_010 a| . Parse the PCIe root complex device binding structures from
-                      ACPI RIMT table and build a mapping of root complexes associated
-                      with each IOMMU.
+| ME_IOM_260_010 a| . Parse the PCIe root complex device binding information from
+                      the system information table and build a mapping of root
+                      complexes associated with each IOMMU.
                     . For each IOMMU determine the PCIe segment number of the
                       associated PCIe root complexes and create a list of IOMMUs
                       that govern multiple root complexes where the PCIe root
@@ -196,7 +223,7 @@
 [%header, cols="8,25"]
 |===
 | ID#            ^| Algorithm
-| MF_ECM_010_010 a| . Parse ACPI MCFG tables to local all ECAM ranges.
+| MF_ECM_010_010 a| . Parse system information table to local all ECAM ranges.
                     . For each 4 KiB range in the ECAM range, verify that the
                       following reads do not cause any errors or exceptions.
                       .. 4-bytes at offset 0 - vendor and device ID
@@ -210,8 +237,8 @@
                     . Issue a `fence iorw, iorw` instruction.
                     . Capture timestamp B from `time` CSR.
                     . Verify that the two timestamps are at least 1000 ns apart.
-| MF_ECM_030_010 a| . Parse ACPI MCFG table and obtain ECAM ranges for all
-                      heirarchies.
+| MF_ECM_030_010 a| . Parse system information table and obtain ECAM ranges for
+                      all heirarchies.
                     . Verify that the ECAM ranges for each hierarchy are all
                       contigous and the base address is naturally aligned to
                       the size.
@@ -286,11 +313,11 @@
 [%header, cols="8,25"]
 |===
 | ID#            ^| Algorithm
-| ME_MMS_010_010 a| Use ACPI DSDT table to locate PCI host bridges and collect
-                    the memory ranges routed to each host bridge. Verify that
-                    each host bridge has a memory range available for use with
-                    64-bit BARs and a memory range available for use with 32-bit
-                    BARs.
+| ME_MMS_010_010 a| Use system information table to locate PCI host bridges and
+                    collect the memory ranges routed to each host bridge. Verify
+                    that each host bridge has a memory range available for use
+                    with 64-bit BARs and a memory range available for use with
+                    32-bit BARs.
 | ME_MMS_020_010 a| See ME_MMS_010_010.
 | MF_MMS_030_010 a| . Use PCIe discovery to locate the RISC-V PCIe test card.
                     . Map the BAR 0 of the test card as IO memory using PBMT
@@ -596,39 +623,48 @@ No tests are defined for these requirements.
 [%header, cols="8,25"]
 |===
 | ID#            ^| Algorithm
-| OE_QOS_010_010 a| . Determine the ISA node in ACPI RHCT table for hart 0.
-                    . Parse the ISA string in the ISA node and report in test
-                      output log if Ssqosid extension is supported.
-                    . Determine if ACPI RQSC table is present and if present
-                      report support for CBQRI extension in test output log.
+| OE_QOS_010_010 a| . Verify that the Ssqosid extension is supported by
+                      determining presence of `srmcfg` CSR. Use WARL discovery
+                      to determine the range of `RCID` and `MCID` values
+                      supported. Report the presence of the extension and the
+                      range of `RCID` and `MCID` values into the test output
+                      log.
+                    . Determine if the system information table enumerates
+                      support for the CBQRI extension. If present report
+                      support for the CBQRI extension in test output log.
 | OE_QOS_020_010 a| See OE_QOS_010_010.
 | ME_QOS_030_010 a| If Ssqosid extension is supported, then verify that the
-                    `sqoscfg` CSR can hold at least 16 RCID and at least 32
-                    MCID values.
-| OE_QOS_040_010 a| If CBQRI extension is supported, as determined by ACPI
-                    RQSC table, then report `capabilities.QOSID` bit of each
-                    IOMMU in the test output log.
-| OE_QOS_050_010 a| If ACPI RQSC table is not present then this test is skipped.
+                    `srmcfg` CSR can hold at least 16 RCID and at least 32
+                    MCID values. Verify that the supported number of RCID
+                    and MCID is identical across all application processor
+                    harts.
+| OE_QOS_040_010 a| If CBQRI extension is supported, as determined by system
+                    information table, then report `capabilities.QOSID` bit
+                    of each IOMMU in the test output log.
+| OE_QOS_050_010 a| If CBQRI is not supported then this test is skipped.
 
-                    . Determine caches in the Soc from the ACPI PPTT table.
+                    . Determine caches in the Soc using the system information
+                      table.
                     . Determine if there is a capacity controller implemented by
-                      that cache by looking up the cache ID in ACPI RQSC table
-                      and report in test output log whether capacity allocation
-                      and capacity monitoring are supported by that capacity
-                      controller by accessing the controllers capabilities
-                      register.
-                    . Locate all bandwidth controllers in ACPI RQSC table and
-                      and report in test output log whether bandwidth allocation
-                      and bandwidth monitoring are supported by that bandwidth
-                      controller by accessing the controllers capabilities
+                      that cache by looking up the cache ID in system
+                      information table and report in test output log whether
+                      capacity allocation and capacity monitoring are supported
+                      by that capacity controller by accessing the controllers
+                      capabilities register.
+                    . Using the system information table, locate all bandwidth
+                      controllers and report in test output log whether bandwidth
+                      allocation and bandwidth monitoring are supported by that
+                      bandwidth controller by accessing the controllers capabilities
                       register.
 | OE_QOS_060_010 a| See OE_QOS_050_010.
 | OE_QOS_070_010 a| See OE_QOS_050_010.
 | OE_QOS_080_010 a| See OE_QOS_050_010.
-| ME_QOS_090_010 a| If ACPI RQSC table is present then verify that the RCID and
-                    MCID count reported for all capacity and bandwidth
-                    controllers is identical in the quality of service
-                    controllers structures.
+| ME_QOS_090_010 a| If CBQRI is supported then determine the RCID and MCID count
+                    supported by each capacity and bandwidth controller using
+                    WARL discovery on their `cc_alloc_ctl` and `bc_alloc_ctl`
+                    registers. Verify that each controller supports an identical
+                    count for each and that the count matches the number of RCID
+                    and MCID that supported by the `srmcfg` CSR.
 | ME_QOS_100_010 a| No test.
 
 |===
@@ -641,15 +677,8 @@ No tests are defined for these requirements.
 [%header, cols="8,25"]
 |===
 | ID#            ^| Algorithm
-| OE_MNG_010_010 a| . Report into test log if a Management Controller Host
-                      Interface (Type 42) SMBIOS structures are present.
-                    . If Type 42 structures are present report into the test log
-                      the Device Type field indicating the type of network
-                      interface (USB, PCIe v2, etc.).
-| OE_MNG_020_010 a| . Report into test log if a IPMI Device Information
-                      (Type 38) SMBIOS structure is present.
-                    . If Type 38 structure is present report into the
-                      test log the Interface Type (SSIF, etc.).
+| OE_MNG_010_010 a| No tests.
+| OE_MNG_020_010 a| No tests.
 | OE_MNG_030_010 a| No tests.
 |===
 
@@ -663,8 +692,8 @@ These tests require the use of a vendor provided API to access the HPMs.
 [%header, cols="8,25"]
 |===
 | ID#            ^| Algorithm
-| OF_SPM_010_010 a| . Determine caches in the Soc from the ACPI PPTT table and
-                      obtain their cache IDs.
+| OF_SPM_010_010 a| . Determine caches in the SoC using the system information
+                      table and obtain their IDs.
                     . Allocate two regions of memory.
                     . For each data cache:
                       .. Use `CBO.FLUSH` to writeback and invalidate the two
@@ -678,7 +707,7 @@ These tests require the use of a vendor provided API to access the HPMs.
                          a hart that can access that cache.
                       .. Use the vendor provided API to read the performance
                          counters and verify that they update.
-| OF_SPM_020_010 a| . Obtain the memory ranges from ACPI SRAT table and
+| OF_SPM_020_010 a| . Obtain the memory ranges from system information table and
                       determine their proximity domains.
                     . For each proximity domain:
                       .. Allocate a region of memory in each proximity domain.
