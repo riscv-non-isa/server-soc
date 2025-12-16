@@ -260,6 +260,7 @@
                       verify that they match values read before the link was
                       disabled.
                     . Enable the link using the link control register of R.
+| ME_ECM_070_010 a| TBA.
 | ME_ECM_080_010 a| For each PCIe root port in the system:
 
                     . Read root capability register and verify that Configuration
