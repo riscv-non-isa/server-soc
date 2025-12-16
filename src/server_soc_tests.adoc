@@ -41,15 +41,15 @@
 | ME_IIC_010_010 a| See ME_IIC_030_010.
 | ME_IIC_020_010 a| See ME_IIC_030_010.
 | MF_IIC_030_010 a| For each application processor hart:
-                    . Determine the ISA string for the hart from the system
-                      information table.
-                    . Parse the ISA string and verify that Ssaia extension is
-                      supported.
-                    . Determine the interrupt controller connected to the hart
-                      from the system information table and verify it is an
-                      IMSIC.
-                    . Verify presence of `siselect`, `sireg`, `stopi`, and
-                      `stopei` CSRs.
+                    . Verify presence of `siselect` and `sireg` CSRs provided
+                      by the Sscsrind extension. Verify that bit 60 of
+                      `hstateen0` CSR is writable.
+                    . Verify presence of `stopi` CSR provided by Ssaia
+                      extension. Verify that bit 59 of `hstateen0` CSR is
+                      writable.
+                    . Verify presence of `stopei` CSR provided by Ssaia
+                      extension. Verify that bit 58 of `hstateen0` CSR is
+                      writable.
                     . For each external interrupt identity supported by the
                       S-level interrupt file, verify the ability to set the
                       corresponding bit in the `eip__k__` and `eie__k__`
