@@ -6,14 +6,7 @@
 [%header, cols="8,25"]
 |===
 | ID#            ^| Algorithm
-| ME_CTI_010_010 a| On each RISC-V application-processor hart, fix the operating
-                    frequency to the lowest supported value. If the
-                    implementation does not support operating at a fixed
-                    frequency then this test is skipped. Let the fixed operating
-                    frequency by F. Poll on the time and cycles CSRs till the
-                    time CSR value has advanced by 1 billion. Determine if the
-                    cycles CSR has advanced by F.
-| ME_CTI_020_010 a| On each RISC-V application-processor hart, set the hart’s
+| ME_CTI_010_010 a| On each RISC-V application-processor hart, set the hart’s
                     operating frequency to the lowest supported fixed frequency
                     *F*. If the implementation does not support operation at a
                     fixed frequency, this test is skipped.                     +
@@ -28,6 +21,16 @@
                     ((C2 − C1)/(T2 - T1)) x 10^9^ = F ± E-CTI_020_010          +
                                                                                +
                     where *E-CTI_020_010* is a test-suite-defined tolerance.
+| ME_CTI_020_010 a| Determine the low-power states implemented by each RISC-V
+                    application-processor hart using the system information
+                    table.                                                     +
+                                                                               +
+                    On each application-processor hart, for each supported low-
+                    power state, verify that the timer context is preserved
+                    across the low-power state by programming the `stimecmp` to
+                    cause a timer interrupt in the future, entering the low-
+                    power state, and upon wakeup verifying that `time` matches
+                    the expected wakeup time.
 |===
 
 <<<
