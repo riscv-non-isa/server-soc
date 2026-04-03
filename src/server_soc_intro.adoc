@@ -194,7 +194,7 @@ if they are not in this table).
 | PMA              | Physical Memory Attributes.
 | PMP              | Physical Memory Protection.
 | Significant Cache| A large cache that might have significant impact on
-                     performance. This specification recommendeds that a cache
+                     performance. This specification recommends that a cache
                      with a capacity larger than 32 KiB be considered a
                      significant cache if it has a significant impact on
                      performance.
@@ -202,7 +202,7 @@ if they are not in this table).
 | SoC              | System on a chip, also referred as system-on-a-chip and
                      system-on-chip.
 | SPA              | Supervisor Physical Address: Physical address used to
-                     to access memory and memory-mapped resources.
+                     access memory and memory-mapped resources.
 | SPDM             | Follows DMTF Standard. Security Protocols and Data Models.
                      A standard for authentication, attestation and key exchange
                      to assist in providing infrastructure security enablement.

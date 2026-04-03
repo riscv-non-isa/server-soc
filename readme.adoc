@@ -71,7 +71,7 @@ To ensure these checks are also run in the local repository while making changes
 pip3 install pre-commit && pre-commit install
 ----
 
-When enabling additional checks https://pre-commit.com/#plugins[by editing .pre-commit-config.yaml], it is recommended to run to newly added check on all files in the repository. This can be done with the following command:
+When enabling additional checks https://pre-commit.com/#plugins[by editing .pre-commit-config.yaml], it is recommended to run the newly added check on all files in the repository. This can be done with the following command:
 [source,shell]
 ----
 pre-commit run --all-files
