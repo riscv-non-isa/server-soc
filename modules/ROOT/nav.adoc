@@ -1,7 +1,6 @@
-.Server SoC
-* xref:index.adoc[Title Page]
-* xref:server_soc_preamble.adoc[Copyright and License]
-* xref:server_soc_contributors.adoc[Contributors]
-* xref:server_soc_intro.adoc[Introduction]
-* xref:server_soc_requirements.adoc[Server SoC Requirements]
-* xref:server_soc_bibliography.adoc[Bibliography]
+* xref:index.adoc[Server SoC]
+** xref:server_soc_preamble.adoc[Copyright and License]
+** xref:server_soc_contributors.adoc[Contributors]
+** xref:server_soc_intro.adoc[Introduction]
+** xref:server_soc_requirements.adoc[Server SoC Requirements]
+** xref:server_soc_bibliography.adoc[Bibliography]
