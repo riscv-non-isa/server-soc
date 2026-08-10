@@ -6,12 +6,8 @@
 [%header, cols="8,25"]
 |===
 | ID#            ^| Algorithm
-| ME_CTI_010_010 a| Parse ACPI RHCT table to determine the time base frequency
-                    and verify it is equal to 1 GHz.
-| ME_CTI_020_010 a| Locate the _LPI objects for each RISC-V application
-                    processor hart. If present, verify that the __Architectural
-                    Context Lost Flags__ have bit 0 set to 0, indicating no loss
-                    of timer context for each supported low-power idle state.
+| MF_CTI_010_010 a| No direct hardware test specified yet.
+| MF_CTI_020_010 a| No direct hardware test specified yet.
 |===
 
 <<<
@@ -22,14 +18,8 @@
 [%header, cols="8,25"]
 |===
 | ID#            ^| Algorithm
-| ME_IIC_010_010 a| For each application processor hart:
-
-                    . Determine the ISA node in ACPI RHCT table for that hart.
-                    . Parse the ISA string in the ISA node and verify that Ssaia
-                      extension is supported.
-                    . Parse the RINTC structure in ACPI MADT tables to verify that
-                      the interrupt controller type for the hart is IMSIC.
-| ME_IIC_020_010 a| See ME_IIC_010_010.
+| MF_IIC_010_010 a| No direct hardware test specified yet.
+| MF_IIC_020_010 a| No direct hardware test specified yet.
 | MF_IIC_030_010 a| . Verify presence of `siselect`, `sireg`, `stopi`, and
                       `stopei` CSRs.
                     . For each external interrupt identity supported by the
@@ -40,8 +30,7 @@
                       the `eidelivery` register.
                     . Map the physical address of the S-mode interrupt register
                       file of the hart with a virtual address using PBMT set to
-                      IO. The physical address is provided by the RINTC
-                      structure in ACPI MADT table.
+                      IO.
                     . Write a supported external interrupt identity to the
                       S-level interrupt register file using a 4-byte store to
                       the `seteipnum_le` register using virtual address
@@ -60,18 +49,15 @@
 | ME_IIC_040_010 a| Use WARL discovery method on `hstatus.VGEIN` CSR field to
                     determine the `GEILEN` and verify that at least 5 guest
                     interrupt files are supported.
-| ME_IIC_050_010 a| Verify the number of supported supervisor mode interrupt
-                    identities in IMSIC structure of the ACPI MADT table is at
-                    least 255.
-| ME_IIC_060_010 a| Verify the number of supported guest mode interrupt
-                    identities in IMSIC structure of the ACPI MADT table is at
-                    least 63.
+| ME_IIC_050_010 a| No direct hardware test specified yet.
+| ME_IIC_060_010 a| No direct hardware test specified yet.
 | ME_IIC_070_010 a| See MF_IIC_030_010.
-| ME_IIC_080_010 a| . Parse ACPI MADT to determine if an APLIC for supervisor
-                      interrupt domain is reported.
-                    . If no APLIC is reported then skip the remaining steps.
-                    . Locate the APLIC structure.
-                    . Verify that number of interrupt delivery control.
+| ME_IIC_080_010 a| If the SoC does not contain an APLIC, then skip the
+		    remaining steps of this test.  Otherwise, using the test
+		    harness-supplied base address of the APLIC supervisor
+		    interrupt domain, and the test harness-supplied number
+		    of interrupt delivery control structures,
+		    - Verify that number of interrupt delivery control
                       structures is reported as 0 indicating it is used as a
                       wired-to-MSI bridge.
                     . Verify the `domaincfg` supports MSI delivery mode and is
